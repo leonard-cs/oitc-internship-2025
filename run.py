@@ -1,13 +1,17 @@
-from db_uploader.extract_mssql import export_to_json
+import glob
+
+from db_uploader.extract_mssql import export_each_product_to_json
 from db_uploader.upload_to_anythingllm import upload_file_to_llm
 
 def main():
     table = "Products"  # change this
-    output_file = f"{table}.json"
+    output_folder = table
 
-    export_to_json(table, output_file)
-    upload_file_to_llm(output_file)
-    # curl -H "Authorization: Bearer 690B86Y-SHZMP6S-PW7EGWJ-N0F08H3" http://localhost:3001/api/v1/workspaces
+    export_each_product_to_json(table, output_folder)
+
+    for file_path in glob.glob(f"{output_folder}/*.json"):
+        upload_file_to_llm(file_path)
+    print(f"\n✅ Upload complete")
 
 if __name__ == "__main__":
     main()
