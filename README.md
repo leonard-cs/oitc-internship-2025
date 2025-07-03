@@ -9,18 +9,30 @@ Technologies:
 - Ollama (for hosting language models in Docker)
 - Python (API client to interact with AnythingLLM server)
 - Vector database (storing embeddings of your SQL data)
+
 How it works:
 - SQL data rows are formatted as JSON and uploaded to the vector database.
 - When a user inputs a natural language query, the system retrieves relevant data chunks from the vector DB.
 - The language model generates an answer directly (without exposing raw SQL).
 - The answer and relevant source chunks are returned to the user.
 
+## Models and Databases
+### Language Model(LLM)
+- phi3:latest
+### Embedding Model
+Used to convert SQL data rows (text/JSON) into vector embeddings that the vector database indexes.
+- nomic-embed-test:latest
+### Vector Database
+- LanceDB
+
 ## Project Structure
 ```bash
 llm-server/
 ├─db_uploader
+│  ├─ config.py
 │  ├─ extract_mssql.py
 │  └─ upload_to_anythingllm.py
+├── .env
 ├── anythingllm_query.py
 └── run.py
 ```
