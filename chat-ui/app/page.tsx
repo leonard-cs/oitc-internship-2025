@@ -1,9 +1,9 @@
 "use client"
 
 import { useState } from "react"
-import MessageInput from "./components/MessageInput"
-import AgentHeader from "./components/AgentHeader"
-import ChatMessage from "./components/ChatMessage"
+import MessageInput from "../components/MessageInput"
+import AgentHeader from "../components/AgentHeader"
+import ChatMessage from "../components/ChatMessage"
 
 export default function Home() {
   const [inputMessage, setInputMessage] = useState("")
