@@ -1,7 +1,3 @@
-"use client"
-
-import React from 'react'
-
 interface MessageInputProps {
   inputMessage: string
   setInputMessage: (value: string) => void
@@ -11,7 +7,7 @@ interface MessageInputProps {
 
 export default function MessageInput({ inputMessage, setInputMessage, sendMessage, isLoading } : MessageInputProps) {
   return (
-    <div className="flex flex-col flex-auto justify-between bg-gray-100 p-6">
+    <div className="flex flex-col flex-auto justify-between bg-gray-100 p-2">
       <div className="top-[100vh] flex flex-row items-center h-16 rounded-xl bg-white w-full px-4">
         <div className="flex-grow ml-4">
           <div className="relative w-full">
