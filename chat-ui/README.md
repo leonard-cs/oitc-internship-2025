@@ -20,6 +20,24 @@ You can start editing the page by modifying `app/page.tsx`. The page auto-update
 
 This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
 
+## Project Structure
+```bash
+chat-ui/
+├── app/                         # App Router directory
+│   ├── layout.tsx               # Root layout for the entire app
+│   ├── page.tsx                 # Home page
+│   └── globals.css              # Global styles
+├── components/                  # Reusable UI components
+│   ├── ChatMessage.tsx
+│   └── MessageInput.tsx
+├── types/
+│   └── message.ts(should this be capital)
+├── next.config.js               # Next.js configuration
+├── tsconfig.json                # TypeScript config
+├── package.json
+└── README.md
+```
+
 ## Learn More
 
 To learn more about Next.js, take a look at the following resources:
