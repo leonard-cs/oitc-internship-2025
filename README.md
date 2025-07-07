@@ -38,7 +38,18 @@ This will spin up:
 - Chat UI (Next.js)
 - Ollama (for local LLMs)
 - AnythingLLM
-### 4. Access Service
+### 4. Connect to pgAdmin
+1. Open your browser and go to http://localhost:5050.
+2. Click **"Add New Server"**.
+3. Under the **General** tab, set **Server Name** to `ps_db_docker` (or any name you prefer).
+4. Switch to the **Connection** tab.
+5. Run the following command in your terminal to find the IP address of the PostgreSQL container:
+```bash
+docker inspect -f '{{range.NetworkSettings.Networks}}{{.IPAddress}}{{end}}' chat-ui-postgres
+```
+6. Copy the resulting IP address into the **Host name/address** field.
+7. Enter the **Username** and **Password** exactly as set in your `.env` file (`POSTGRES_USER` and `POSTGRES_PASSWORD`).
+### 5. Access Service
 | Service     | URL                                              | Notes                            |
 | ----------- | ------------------------------------------------ | -------------------------------- |
 | Chat UI     | [http://localhost:3000](http://localhost:3000)   | Frontend app                     |
