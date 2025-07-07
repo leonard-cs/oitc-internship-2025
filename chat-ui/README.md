@@ -23,7 +23,11 @@ This project uses [`next/font`](https://nextjs.org/docs/app/building-your-applic
 ## Project Structure
 ```bash
 chat-ui/
+├── prisma/
+│   ├── schema.prisma
+│   └── seed.ts
 ├── app/                         # App Router directory
+│   ├── api/messages/route.ts
 │   ├── layout.tsx               # Root layout for the entire app
 │   ├── page.tsx                 # Home page
 │   └── globals.css              # Global styles
@@ -31,10 +35,12 @@ chat-ui/
 │   ├── ChatMessage.tsx
 │   └── MessageInput.tsx
 ├── types/
-│   └── message.ts(should this be capital)
+│   └── message.ts
 ├── next.config.js               # Next.js configuration
 ├── tsconfig.json                # TypeScript config
 ├── package.json
+├── entrypoint.sh
+├── Dockerfile
 └── README.md
 ```
 

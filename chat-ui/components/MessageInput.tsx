@@ -1,11 +1,11 @@
 interface MessageInputProps {
   inputMessage: string
   setInputMessage: (value: string) => void
-  sendMessage: () => void
+  handleSend: (content: string) => void
   isLoading: boolean
 }
 
-export default function MessageInput({ inputMessage, setInputMessage, sendMessage, isLoading } : MessageInputProps) {
+export default function MessageInput({ inputMessage, setInputMessage, handleSend, isLoading }: MessageInputProps) {
   return (
     <div className="flex flex-col flex-auto justify-between bg-gray-100 p-2">
       <div className="top-[100vh] flex flex-row items-center h-16 rounded-xl bg-white w-full px-4">
@@ -16,14 +16,14 @@ export default function MessageInput({ inputMessage, setInputMessage, sendMessag
               disabled={isLoading}
               value={inputMessage}
               onChange={(e) => setInputMessage(e.target.value)}
-              onKeyDown={(e) => e.key === "Enter" && sendMessage()}
+              onKeyDown={(e) => e.key === "Enter" && handleSend(inputMessage)}
               className="flex w-full border rounded-xl focus:outline-none focus:border-indigo-300 pl-4 h-10"
             />
           </div>
         </div>
         <div className="ml-4">
           <button className="btn btn-info"
-            onClick={sendMessage}
+            onClick={() => handleSend(inputMessage)}
             disabled={isLoading}
           >
             {isLoading ? (

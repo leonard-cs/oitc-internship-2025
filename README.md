@@ -11,6 +11,7 @@ oitc-internship-2025/
 │   ├─ db_uploader/               # Scripts to extract from MSSQL & push to AnythingLLM
 │   └─ requirements.txt
 ├─ chat-ui/
+│   ├─ entrypoint.sh
 │   └─ Dockerfile                 # Next.js frontend
 ├─ anythingllm/
 │   └─ config/
