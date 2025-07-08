@@ -1,3 +1,4 @@
+# db_uploader/extract_mssql.py
 from typing import Callable
 import pyodbc
 import pandas as pd
@@ -90,17 +91,18 @@ def export_sentence(table: str, output_folder: str):
     df = connect_and_fetch(table)
     export_rows(df, output_folder, "txt", product_info_to_sentence)
 
-def export_all_products_as_sentences(table: str, output_file: str):
+def export_all_products_as_sentences(table: str, output_dir: str):
     df = connect_and_fetch(table)
     
     # Convert each row to a sentence
     sentences = [product_info_to_sentence(row.to_dict()) for _, row in df.iterrows()]
 
-    # Write all sentences to a single text file
-    output_file = os.path.join(output_file, f"{output_file}.txt")
-    print(output_file)
-    with open(output_file, "w", encoding="utf-8") as f:
+    # output_dir is folder, define output file name explicitly
+    os.makedirs(output_dir, exist_ok=True)
+    output_file_path = os.path.join(output_dir, f"{table}.txt")
+
+    with open(output_file_path, "w", encoding="utf-8") as f:
         for sentence in sentences:
             f.write(sentence + "\n")
 
-    print(f"📝 Exported {len(sentences)} product descriptions to '{output_file}'")
+    print(f"📝 Exported {len(sentences)} product descriptions to '{output_file_path}'")

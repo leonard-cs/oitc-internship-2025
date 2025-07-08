@@ -1,7 +1,7 @@
 services:
   db:
     image: postgres:15
-    container_name: chat-ui-postgres
+    container_name: postgres
     restart: always
     env_file:
       - .env
@@ -16,7 +16,7 @@ services:
 
   pgadmin:
     image: dpage/pgadmin4
-    container_name: chat-ui-pgadmin
+    container_name: pgadmin
     restart: always
     env_file:
       - .env
@@ -48,13 +48,13 @@ services:
   #   ports:
   #     - "8000:8000"
   #   depends_on:
-  #     - ollama
+  #     - anythingllm
 
   ollama:
     build:
       context: ./ollama
       dockerfile: Dockerfile
-    container_name: chat-ui-ollama
+    container_name: ollama
     ports:
       - "11434:11434"
     volumes:
@@ -65,7 +65,7 @@ services:
 
   anythingllm:
     image: mintplexlabs/anythingllm:latest
-    container_name: chat-ui-anythingllm
+    container_name: anythingllm
     ports:
       - "3001:3001"
     cap_add:
@@ -75,7 +75,7 @@ services:
       - ./anythingllm/.env:/app/server/.env
     environment:
       - OLLAMA_BASE_URL=http://ollama:11434
-      - STORAGE_DIR= /app/server/storage
+      - STORAGE_DIR=/app/server/storage
     restart: always
     depends_on:
       - ollama
