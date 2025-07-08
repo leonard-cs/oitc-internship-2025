@@ -40,6 +40,7 @@ chat-ui/
 ├── tsconfig.json                # TypeScript config
 ├── package.json
 ├── entrypoint.sh
+├── start-app.ps1
 ├── Dockerfile
 └── README.md
 ```

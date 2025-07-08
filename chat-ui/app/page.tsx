@@ -6,10 +6,21 @@ import { Message } from "@/types/message"
 import MessageInput from "@/components/MessageInput"
 import AgentHeader from "@/components/AgentHeader"
 import ChatMessage from "@/components/ChatMessage"
+import { SYSTEM, USER } from "@/constants/chat";
 
 export default function Home() {
   const [inputMessage, setInputMessage] = useState("")
   const [messages, setMessages] = useState<Message[]>([])
+  // const [messages, setMessages] = useState<Message[]>([
+  //   {
+  //     id: "welcome-1",
+  //     name: SYSTEM.name,
+  //     avatarUrl: SYSTEM.avatarUrl,
+  //     time: new Date().toLocaleTimeString(),
+  //     content: "Welcome to the chat! How can I help you today?",
+  //     position: "start"
+  //   }
+  // ])
   const [isLoading, setIsLoading] = useState(false)
 
   useEffect(() => {
@@ -19,6 +30,7 @@ export default function Home() {
       .then((data) => {
         console.log("📥 Fetched messages:", data); // <-- log here
         setMessages(data);
+        // setMessages((prev) => [...prev, ...data]);
       })
       .catch(console.error)
       .finally(() => setIsLoading(false));
@@ -28,8 +40,8 @@ export default function Home() {
     setIsLoading(true)
 
     const newMessage = await sendMessage({
-      name: 'You',
-      avatarUrl: 'https://example.com/your-avatar.png',
+      name: USER.name,
+      avatarUrl: USER.avatarUrl,
       content,
       position: 'end',
     });
@@ -46,37 +58,35 @@ export default function Home() {
       </div>
 
       <div className="absolute top-[3rem] bottom-[4.5rem] left-0 right-0 overflow-y-auto px-4 py-2 space-y-2">
-        <div className="chat chat-start">
+        <div className="chat chat-start hidden">
           <div className="chat-image avatar">
             <div className="w-10 rounded-full">
               <img
                 alt="Tailwind CSS chat bubble component"
-                src="https://img.daisyui.com/images/profile/demo/kenobee@192.webp"
+                src={SYSTEM.avatarUrl}
               />
             </div>
           </div>
           <div className="chat-header">
-            Obi-Wan Kenobi
+            {SYSTEM.name}
             <time className="text-xs opacity-50">12:45</time>
           </div>
-          <div className="chat-bubble">You were the Chosen One!</div>
-          <div className="chat-footer opacity-50">Delivered</div>
+          <div className="chat-bubble">Welcome to the chat! How can I help you today?</div>
         </div>
-        <div className="chat chat-end">
+        <div className="chat chat-end hidden">
           <div className="chat-image avatar">
             <div className="w-10 rounded-full">
               <img
                 alt="Tailwind CSS chat bubble component"
-                src="https://img.daisyui.com/images/profile/demo/anakeen@192.webp"
+                src={USER.avatarUrl}
               />
             </div>
           </div>
           <div className="chat-header">
-            Anakin
+            {USER.name}
             <time className="text-xs opacity-50">12:46</time>
           </div>
-          <div className="chat-bubble">I hate you!</div>
-          <div className="chat-footer opacity-50">Seen at 12:46</div>
+          <div className="chat-bubble">Hi!</div>
         </div>
         {messages.map((msg: Message) => <ChatMessage
           key={msg.id}
