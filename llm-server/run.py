@@ -5,8 +5,8 @@ from db_uploader.upload_to_anythingllm import upload_file_to_llm
 from db_uploader.utils import *
 
 def main():
-    # mode = 'txt'
-    mode = 'json'
+    mode = 'txt'
+    # mode = 'json'
     table = "Products"  # change this
     output_folder = table
 
@@ -20,9 +20,9 @@ def main():
     else:
         export_each_product_to_json(table, output_folder)
 
-    # for file_path in glob.glob(f"{output_folder}/*.{mode}"):
-    #     upload_file_to_llm(file_path)
-    # print(f"\n✅ Upload complete")
+    for file_path in glob.glob(f"{output_folder}/*.{mode}"):
+        upload_file_to_llm(file_path)
+    print(f"\n✅ Upload complete")
 
 if __name__ == "__main__":
     main()

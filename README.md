@@ -14,7 +14,11 @@ oitc-internship-2025/
 │   ├─ entrypoint.sh
 │   └─ Dockerfile                 # Next.js frontend
 ├─ anythingllm/
-│   └─ config/
+│   ├─ .env
+│   └─ storage/
+├─ ollama/
+│   ├─ ollama-init.sh
+│   └─ Dockerfile
 └─ README.md
 ```
 

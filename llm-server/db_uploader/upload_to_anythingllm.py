@@ -1,3 +1,4 @@
+import os
 import requests
 from db_uploader.config import LLM_API_URL, LLM_API_KEY, LLM_WORKSPACE_ID
 
@@ -11,16 +12,16 @@ def upload_file_to_llm(file_path: str):
     try:
         with open(file_path, "rb") as f:
             files = {
-                "file": (file_path, f, "application/json"),
-                "addToWorkspaces": (None, LLM_WORKSPACE_ID)  # <-- assign to workspace
+                "file": (os.path.basename(file_path), f, "application/json"),
+                "addToWorkspaces": (None, LLM_WORKSPACE_ID)
             }
             response = requests.post(url, headers=headers, files=files)
 
-        # print(f"✅ Upload response: {response.status_code}")
-        # try:
-        #     print("📦 Response JSON:", response.json())
-        # except Exception:
-        #     print("⚠️ Response not JSON:")
-        #     print(response.text)
+        print(f"✅ Upload response: {response.status_code}")
+        try:
+            print("📦 Response JSON:", response.json())
+        except Exception:
+            print("⚠️ Response not JSON:")
+            print(response.text)
     except Exception as e:
         print(f"❌ Upload failed: {e}")
