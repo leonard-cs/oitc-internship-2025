@@ -1,7 +1,7 @@
 "use client"
 
 import { useEffect, useState } from "react"
-import { fetchMessages, sendMessage } from '@/lib/api';
+import { fetchMessages, sendAndReceiveLLM, storeMessage } from '@/lib/api';
 import { Message } from "@/types/message"
 import MessageInput from "@/components/MessageInput"
 import AgentHeader from "@/components/AgentHeader"
@@ -36,19 +36,39 @@ export default function Home() {
       .finally(() => setIsLoading(false));
   }, []);
 
+  // async function handleSend(content: string) {
+  //   setIsLoading(true)
+
+  //   const newMessage = await storeMessage({
+  //     name: USER.name,
+  //     avatarUrl: USER.avatarUrl,
+  //     content,
+  //     position: 'end',
+  //   });
+  //   setMessages(prev => [...prev, newMessage]);
+  //   setInputMessage("")
+
+  //   setIsLoading(false)
+  // }
+
   async function handleSend(content: string) {
     setIsLoading(true)
 
-    const newMessage = await sendMessage({
-      name: USER.name,
-      avatarUrl: USER.avatarUrl,
-      content,
-      position: 'end',
-    });
-    setMessages(prev => [...prev, newMessage]);
-    setInputMessage("")
+    try {
+      const { userMessage, llmMessage } = await sendAndReceiveLLM({
+        name: USER.name,
+        avatarUrl: USER.avatarUrl,
+        content,
+        position: 'end',
+      });
 
-    setIsLoading(false)
+      setMessages(prev => [...prev, userMessage, llmMessage]);
+      setInputMessage("");
+    } catch (error) {
+      console.error("❌ Failed to send or receive message:", error);
+    } finally {
+      setIsLoading(false);
+    }
   }
 
   return (
