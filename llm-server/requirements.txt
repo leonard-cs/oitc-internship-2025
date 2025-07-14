@@ -2,3 +2,5 @@ pyodbc
 pandas
 dotenv
 requests
+fastapi
+uvicorn

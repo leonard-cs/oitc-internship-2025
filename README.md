@@ -9,6 +9,7 @@ oitc-internship-2025/
 ├─ llm-server/                    # Python backend (MSSQL → AnythingLLM uploader)
 │   ├─ Dockerfile
 │   ├─ db_uploader/               # Scripts to extract from MSSQL & push to AnythingLLM
+│   ├─ image_search/              # Image-based vector search
 │   └─ requirements.txt
 ├─ chat-ui/
 │   ├─ entrypoint.sh
