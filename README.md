@@ -1,25 +1,26 @@
 # OITC Internship 2025
-A multi-service AI platform integrating chat, vector databases, and LLMs using Docker, PostgreSQL, MSSQL, and AnythingLLM.
+This project implements a chatbot that allows users to query a database using natural language. The system leverages the AnythingLLM and Ollama models for natural language understanding and response generation. Data from Microsoft SQL Server (MSSQL) tables is extracted and embedded into vector representations using AnythingLLM. These embeddings are stored in AnythingLLM's vector database, allowing the chatbot to efficiently retrieve relevant information based on semantic similarity and provide natural language responses. Additionally, the system features an image-based query functionality where users can upload images, and the chatbot will find similar images in the database by comparing their vector representations.
 
 ## Project Structure
 ```bash
 oitc-internship-2025/
-├─ docker-compose.yml
-├─ .env
-├─ llm-server/                    # Python backend (MSSQL → AnythingLLM uploader)
+├─ llm-server/                    # Python backend
+│   ├─ db_uploader/               # Extract data from MSSQL and push it to AnythingLLM
+│   ├─ image_search/              # Image-based vector search logic
+│   ├─ app.py                     # Main FastAPI application to handle image search
 │   ├─ Dockerfile
-│   ├─ db_uploader/               # Scripts to extract from MSSQL & push to AnythingLLM
-│   ├─ image_search/              # Image-based vector search
 │   └─ requirements.txt
-├─ chat-ui/
-│   ├─ entrypoint.sh
-│   └─ Dockerfile                 # Next.js frontend
-├─ anythingllm/
-│   ├─ .env
-│   └─ storage/
-├─ ollama/
-│   ├─ ollama-init.sh
+├─ chat-ui/                       # Frontend built with Next.js
+│   ├─ entrypoint.sh              # Entrypoint script to run Next.js app inside a container
 │   └─ Dockerfile
+├─ anythingllm/                   # AnythingLLM configuration and storage
+│   ├─ .env.example
+│   └─ storage/
+├─ ollama/                        # LLM-based processing (Ollama container and API)
+│   ├─ ollama-init.sh             # Initialization script for Ollama container
+│   └─ Dockerfile
+├─ docker-compose.yml
+├─ .env.example
 └─ README.md
 ```
 

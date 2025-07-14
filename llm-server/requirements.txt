@@ -1,6 +1,10 @@
 pyodbc
 pandas
+numpy
 dotenv
 requests
 fastapi
 uvicorn
+torch
+Pillow
+transformers

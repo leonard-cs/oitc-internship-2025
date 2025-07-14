@@ -34,10 +34,11 @@ llm-server/
 │  ├─ extract_mssql.py
 │  └─ upload_to_anythingllm.py
 ├─ image_search/                     # Image-based vector search
-│  ├─ embed_image.py                 # Load model & generate image embedding
+│  ├─ image_embedding.py             # Load model & generate image embedding
 │  ├─ index_images.py                # Batch indexing for existing CAD images
 │  ├─ search_similar.py              # Perform vector similarity search
-│  └─ utils.py                       # Preprocessing, image I/O helpers
+│  ├─ utils.py                       # Preprocessing, image I/O helpers
+│  └─ README.md
 ├─ anythingllm_query.py
 ├─ app.py
 └─ run.py

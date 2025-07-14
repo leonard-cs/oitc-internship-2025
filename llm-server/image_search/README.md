@@ -1,0 +1,3 @@
+**CLIP** (Contrastive Language-Image Pre-Training), which is a vision-language model developed by OpenAI. It’s designed to understand both images and text by mapping them into a shared vector space.
+- `CLIPProcessor`: This is a utility class from the Transformers library. It helps preprocess the input images and text to make them compatible with the CLIP model. Essentially, it formats the images and text (like captions) in a way that CLIP can understand.
+- `CLIPModel`: This is the pre-trained CLIP model. It contains the architecture for both the image encoder and the text encoder, which are used to create embeddings for the respective input (image or text).
