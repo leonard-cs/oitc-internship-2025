@@ -1,28 +1,63 @@
 #app.py
 
-import os
-import shutil
-from fastapi import FastAPI, File, UploadFile
+from contextlib import asynccontextmanager
+from fastapi import FastAPI, File, HTTPException, UploadFile
 from fastapi.responses import JSONResponse
 
 from image_search.image_embedding import ImageEmbedder
+from image_search.qdrant import *
+from image_search.utils import *
 
-app = FastAPI()
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    create_collection()
+    print("Qdrant connection success.")
+    yield
+
+app = FastAPI(title="Image Vector Search API", lifespan=lifespan)
 
 @app.get("/")
-def read_root():
-    return {"message": "Hello from my custom FastAPI app!"}
+def root():
+    return {"message": "Hello from the Image Vector Search API!"}
 
 @app.post("/embed_image/")
 async def embed_image(file: UploadFile = File(...)):
     """
     Receive an image file, generate its embedding, and return the embedding.
     """
-    temp_file_path = f"temp_{file.filename}"
-    with open(temp_file_path, "wb") as buffer:
-        shutil.copyfileobj(file.file, buffer)
+    embedding = embed_image_from_upload(file)
+    return JSONResponse(content={"embedding": embedding})
 
-    embedding = ImageEmbedder().embed_image(temp_file_path)
-    os.remove(temp_file_path)
-
-    return JSONResponse(content={"embedding": embedding.tolist()})
+@app.post("/store_image/")
+async def store_image(file: UploadFile = File(...)):
+    try:
+        embedding = embed_image_from_upload(file)
+        metadata = {"filename": file.filename}
+        point_id = save_embedding(embedding, metadata)
+        return {"message": f"Stored image embedding with id {point_id}"}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+    
+@app.post("/search_similar/")
+async def search_similar_images(file: UploadFile = File(...)):
+    try:
+        embedding = embed_image_from_upload(file)
+        results = search_similar(embedding)
+        hits = []
+        for hit in results:
+            hits.append({
+                "id": hit.id,
+                "score": hit.score,
+                "metadata": hit.payload
+            })
+        return {"results": hits}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+    
+@app.get("/get_embedding/{point_id}")
+async def api_get_embedding(point_id: str):
+    try:
+        result = get_embedding_by_id(point_id)
+        return result
+    except Exception as e:
+        raise HTTPException(status_code=404, detail=str(e))
