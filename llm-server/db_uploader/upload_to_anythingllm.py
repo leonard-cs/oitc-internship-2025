@@ -1,7 +1,7 @@
 # db_uploader/upload_to_anythingllm.py
 import os
 import requests
-from db_uploader.config import LLM_API_URL, LLM_API_KEY, LLM_WORKSPACE_ID
+from config import LLM_API_URL, LLM_API_KEY, LLM_WORKSPACE_ID
 
 def upload_file_to_llm(file_path: str):
     url = f"{LLM_API_URL}/api/v1/document/upload"

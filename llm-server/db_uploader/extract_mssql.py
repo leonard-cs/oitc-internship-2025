@@ -6,7 +6,7 @@ import json
 import sys
 import os
 
-from db_uploader.config import MSSQL_DRIVER, MSSQL_SERVER, MSSQL_DATABASE, MSSQL_USERNAME, MSSQL_PASSWORD
+from config import MSSQL_DRIVER, MSSQL_SERVER, MSSQL_DATABASE, MSSQL_USERNAME, MSSQL_PASSWORD
 from db_uploader.utils import *
 
 def connect_and_fetch(table: str) -> pd.DataFrame:

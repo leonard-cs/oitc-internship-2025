@@ -1,6 +1,6 @@
 import requests
 
-from db_uploader.config import LLM_API_URL, LLM_API_KEY, LLM_WORKSPACE_ID
+from config import LLM_API_URL, LLM_API_KEY, LLM_WORKSPACE_ID
 
 QUERY_TEXT = "show info of product 1"
 

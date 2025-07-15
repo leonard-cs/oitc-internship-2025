@@ -29,19 +29,17 @@ Used to convert SQL data rows (text/JSON) into vector embeddings that the vector
 ```bash
 llm-server/
 ├─ db_uploader
-│  ├─ config.py
 │  ├─ utils.py
 │  ├─ extract_mssql.py
 │  └─ upload_to_anythingllm.py
 ├─ image_search/                     # Image-based vector search
 │  ├─ image_embedding.py             # Load model & generate image embedding
-│  ├─ index_images.py                # Batch indexing for existing CAD images
-│  ├─ search_similar.py              # Perform vector similarity search
 │  ├─ qdrant.py                      # Qdrant connection and helper functions
 │  ├─ utils.py                       # Preprocessing, image I/O helpers
 │  └─ README.md
 ├─ anythingllm_query.py
-├─ app.py
+├─ config.py
+├─ app.py                            # Fast API endpoint
 └─ run.py
 ```
 
