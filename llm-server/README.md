@@ -37,6 +37,7 @@ llm-server/
 │  ├─ image_embedding.py             # Load model & generate image embedding
 │  ├─ index_images.py                # Batch indexing for existing CAD images
 │  ├─ search_similar.py              # Perform vector similarity search
+│  ├─ qdrant.py                      # Qdrant connection and helper functions
 │  ├─ utils.py                       # Preprocessing, image I/O helpers
 │  └─ README.md
 ├─ anythingllm_query.py

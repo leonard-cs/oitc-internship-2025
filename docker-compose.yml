@@ -2,7 +2,6 @@ services:
   db:
     image: postgres:15
     container_name: postgres
-    restart: always
     env_file:
       - .env
     volumes:
@@ -13,11 +12,12 @@ services:
   pgadmin:
     image: dpage/pgadmin4
     container_name: pgadmin
-    restart: always
     env_file:
       - .env
     ports:
       - "5050:80"
+    volumes:
+      - pgadmin_data:/var/lib/pgadmin
     depends_on:
       - db
 
@@ -50,7 +50,8 @@ services:
   #   ports:
   #     - "8000:8000"
   #   depends_on:
-  #     - anythingllm
+      # - anythingllm
+      # - qdrant
 
   ollama:
     build:
@@ -63,7 +64,6 @@ services:
       - ollama_data:/root/.ollama
     cap_add:
       - SYS_ADMIN
-    restart: always
 
   anythingllm:
     image: mintplexlabs/anythingllm:latest
@@ -78,10 +78,19 @@ services:
     environment:
       - OLLAMA_BASE_URL=http://ollama:11434
       - STORAGE_DIR=/app/server/storage
-    restart: always
     depends_on:
       - ollama
+  
+  qdrant:
+    image: qdrant/qdrant
+    container_name: qdrant
+    ports:
+      - "6333:6333"
+    volumes:
+      - qdrant_storage:/qdrant/storage
 
 volumes:
   postgres_data:
+  pgadmin_data:
   ollama_data:
+  qdrant_storage:
