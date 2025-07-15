@@ -3,7 +3,6 @@
 import torch
 from PIL import Image
 from transformers import CLIPProcessor, CLIPModel
-import numpy as np
 
 class ImageEmbedder:
     def __init__(self, model_name="openai/clip-vit-base-patch32"):

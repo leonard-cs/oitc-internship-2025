@@ -1,7 +1,7 @@
 # image_search/qdrant.py
 
 from qdrant_client import QdrantClient
-from qdrant_client.http.models import models, Filter
+from qdrant_client.http.models import models
 import uuid
 
 COLLECTION_NAME = "image"

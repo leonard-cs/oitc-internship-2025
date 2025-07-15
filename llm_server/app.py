@@ -1,12 +1,12 @@
-#app.py
+# llm_server/app.py
+# PS C:\Users\35521\project\oitc-internship-2025> uvicorn llm_server.app:app --reload
 
 from contextlib import asynccontextmanager
 from fastapi import FastAPI, File, HTTPException, UploadFile
 from fastapi.responses import JSONResponse
 
-from image_search.image_embedding import ImageEmbedder
-from image_search.qdrant import *
-from image_search.utils import *
+from llm_server.image_search.qdrant import *
+from llm_server.embeddings.utils import *
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):

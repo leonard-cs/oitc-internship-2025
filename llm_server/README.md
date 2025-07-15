@@ -27,19 +27,27 @@ Used to convert SQL data rows (text/JSON) into vector embeddings that the vector
 
 ## Project Structure
 ```bash
-llm-server/
-├─ db_uploader
+llm_server/
+├─ db_uploader/
 │  ├─ utils.py
 │  ├─ extract_mssql.py
 │  └─ upload_to_anythingllm.py
+│
+├── embeddings/                  # Embedding models and interface
+│   ├── base.py                  # BaseEmbedder interface (abstract class)
+│   ├── clip_embedder.py         # CLIP implementation (image + text)
+│   ├── nomic_embedder.py        # e.g. `nomic-embed-text`
+│   ├── utils.py                 # Helper functions for normalization, batching, etc.
+│   └── __init__.py
+│
 ├─ image_search/                     # Image-based vector search
 │  ├─ image_embedding.py             # Load model & generate image embedding
 │  ├─ qdrant.py                      # Qdrant connection and helper functions
 │  ├─ utils.py                       # Preprocessing, image I/O helpers
 │  └─ README.md
 ├─ anythingllm_query.py
-├─ config.py
-├─ app.py                            # Fast API endpoint
+├─ config.py                         # Loads env/config settings
+├─ app.py                            # FastAPI endpoint
 └─ run.py
 ```
 

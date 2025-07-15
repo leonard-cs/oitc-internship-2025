@@ -4,7 +4,7 @@ This project implements a retrieval-augmented generation (RAG) chatbot that allo
 ## Project Structure
 ```bash
 oitc-internship-2025/
-├─ llm-server/                    # Python backend
+├─ llm_server/                    # Python backend
 │   ├─ db_uploader/               # Extract data from MSSQL and push it to AnythingLLM
 │   ├─ image_search/              # Image-based vector search logic
 │   ├─ app.py                     # Main FastAPI application to handle image search
