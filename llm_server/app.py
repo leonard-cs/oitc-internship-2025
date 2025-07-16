@@ -1,5 +1,5 @@
 # llm_server/app.py
-# PS C:\Users\35521\project\oitc-internship-2025> uvicorn llm_server.app:app --reload
+# uvicorn llm_server.app:app --reload
 
 from contextlib import asynccontextmanager
 from fastapi import FastAPI, File, HTTPException, UploadFile

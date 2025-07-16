@@ -10,3 +10,4 @@ Pillow
 transformers
 python-multipart
 qdrant_client
+pytest
