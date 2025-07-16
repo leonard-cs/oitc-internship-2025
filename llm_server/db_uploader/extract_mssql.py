@@ -6,8 +6,8 @@ import json
 import sys
 import os
 
-from config import MSSQL_DRIVER, MSSQL_SERVER, MSSQL_DATABASE, MSSQL_USERNAME, MSSQL_PASSWORD
-from db_uploader.utils import *
+from llm_server.config import MSSQL_SERVER, MSSQL_DATABASE
+from llm_server.db_uploader.utils import *
 
 def connect_and_fetch(table: str) -> pd.DataFrame:
     # conn_str = f"""
