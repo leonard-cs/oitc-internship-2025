@@ -1,0 +1,111 @@
+import json
+from pathlib import Path
+from typing import List, Dict
+
+examples: List[Dict[str, str]] = [
+    {
+        "original_query": "Hey there! Hope your day's going well. I was wondering, which marketing channel drove the most sales last quarter? Thanks!",
+        "summary": "Query about the most effective marketing channel last quarter.",
+        "keywords": ["marketing channel", "sales", "last quarter"]
+    },
+    {
+        "original_query": "Good morning! Before we get started, how do I integrate OpenAI's API with LangChain for building agents?",
+        "summary": "Question about integrating OpenAI API with LangChain for agent development.",
+        "keywords": ["OpenAI API", "LangChain", "agents", "integration"]
+    },
+    {
+        "original_query": "Just had coffee! Anyway, can you pull up the revenue breakdown by region for Q1?",
+        "summary": "Request for revenue breakdown by region for Q1.",
+        "keywords": ["revenue", "region", "Q1"]
+    },
+    {
+        "original_query": "I hope you're doing great! What's our most profitable product category in the past year?",
+        "summary": "Query about the most profitable product category over the past year.",
+        "keywords": ["profitable", "product category", "past year"]
+    },
+    {
+        "original_query": "Quick question—what were the main causes of customer churn last month? Also, hope your family is well.",
+        "summary": "Question about the causes of customer churn last month.",
+        "keywords": ["customer churn", "causes", "last month"]
+    },
+    {
+        "original_query": "Hey! Random thought: what's our average conversion rate on mobile vs desktop this quarter?",
+        "summary": "Query about average conversion rates on mobile vs desktop this quarter.",
+        "keywords": ["conversion rate", "mobile", "desktop", "this quarter"]
+    },
+    {
+        "original_query": "Hi! Can you let me know how to configure the vector store for semantic search in LangChain?",
+        "summary": "Request for vector store configuration for semantic search in LangChain.",
+        "keywords": ["vector store", "semantic search", "LangChain"]
+    },
+    {
+        "original_query": "Before I forget, can you check inventory levels for SKU 9382 in warehouse B?",
+        "summary": "Request to check inventory levels for SKU 9382 in warehouse B.",
+        "keywords": ["inventory", "SKU 9382", "warehouse B"]
+    },
+    {
+        "original_query": "How’s everything? Could you summarize the key findings from the recent user feedback survey?",
+        "summary": "Request to summarize key findings from the recent user feedback survey.",
+        "keywords": ["user feedback", "survey", "key findings"]
+    },
+    {
+        "original_query": "Okay, so not to be random, but what's the uptime of our main API over the past 90 days?",
+        "summary": "Query about the uptime of the main API over the past 90 days.",
+        "keywords": ["API", "uptime", "90 days"]
+    },
+    {
+        "original_query": "By the way, I saw your dog on Zoom yesterday—adorable! Anyway, can we forecast sales for Q3 based on current trends?",
+        "summary": "Request to forecast Q3 sales based on current trends.",
+        "keywords": ["forecast", "sales", "Q3", "trends"]
+    },
+    {
+        "original_query": "Can you believe it's Friday already? Please provide me the churn rate comparison between new and returning users.",
+        "summary": "Request for churn rate comparison between new and returning users.",
+        "keywords": ["churn rate", "new users", "returning users", "comparison"]
+    },
+    {
+        "original_query": "Hey! While you're at it, check how many support tickets were resolved this week. Thanks a ton!",
+        "summary": "Request to check number of support tickets resolved this week.",
+        "keywords": ["support tickets", "resolved", "this week"]
+    },
+    {
+        "original_query": "Haha, Mondays right? What were the top 3 visited product pages last month?",
+        "summary": "Query about top 3 visited product pages last month.",
+        "keywords": ["top pages", "product", "last month", "traffic"]
+    },
+    {
+        "original_query": "Yo! Do we have NPS scores broken down by customer segment for Q2?",
+        "summary": "Query about NPS scores by customer segment for Q2.",
+        "keywords": ["NPS", "customer segment", "Q2"]
+    },
+    {
+        "original_query": "Random question—how do I cache LangChain outputs locally? Just came to mind.",
+        "summary": "Query about caching LangChain outputs locally.",
+        "keywords": ["LangChain", "cache", "outputs", "local"]
+    },
+    {
+        "original_query": "Sorry if this is off-topic, but what’s the data retention policy for user analytics?",
+        "summary": "Query about data retention policy for user analytics.",
+        "keywords": ["data retention", "policy", "user analytics"]
+    },
+    {
+        "original_query": "OMG that meme you sent was hilarious 😂. Anyway, is there a summary report on ad performance for this campaign?",
+        "summary": "Request for summary report on ad performance for a campaign.",
+        "keywords": ["ad performance", "summary report", "campaign"]
+    },
+    {
+        "original_query": "Just thinking out loud—how do we handle rate limiting on our public API endpoints?",
+        "summary": "Query about rate limiting on public API endpoints.",
+        "keywords": ["rate limiting", "API", "public endpoints"]
+    },
+    {
+        "original_query": "Phew, long week! Can you export the list of inactive users in the last 60 days?",
+        "summary": "Request to export list of inactive users in the last 60 days.",
+        "keywords": ["inactive users", "export", "last 60 days"]
+    }
+]
+
+with open(Path("./playground/query_process/semantic_query_examples.json"), "w") as f:
+    json.dump(examples, f, indent=4)
+
+print("✅ semantic_query_examples.json file created successfully.")
