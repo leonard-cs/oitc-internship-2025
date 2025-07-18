@@ -11,3 +11,4 @@ transformers
 python-multipart
 qdrant_client
 pytest
+langchain-ollama
