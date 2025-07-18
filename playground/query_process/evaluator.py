@@ -29,7 +29,7 @@ class Result(BaseModel):
 def evaluate_summary_with_llm(
     reference_summary: str,
     generated_summary: str,
-) -> str:
+) -> Result:
     """
     Uses an LLM to evaluate whether the generated summary is accurate and complete
     compared to the original query and the reference summary.
@@ -42,14 +42,18 @@ def evaluate_summary_with_llm(
         "Return strictly one of the following:\n"
         "- true: if the summary is accurate and complete (semantically equivalent).\n"
         "- false: if the summary is incorrect, incomplete, or changes the meaning.\n\n"
-        "Be strict but fair. Do not explain your answer. Only return true or false."
+        "Do not explain your answer. Only return true or false."
     )
     user_prompt = HumanMessagePromptTemplate.from_template(
         """Reference Summary:\n{reference_summary}\n\n
            Generated Summary:\n{generated_summary}\n\n
-           Do they match semantically?""",
+           Are the meanings similar?""",
         input_variables=["reference_summary", "generated_summary"],
     )
+    # print(user_prompt.format(
+    #     reference_summary=reference_summary,
+    #     generated_summary=generated_summary,
+    # ))
 
     evaluation_prompt = ChatPromptTemplate.from_messages([system_prompt, user_prompt])
     # print(evaluation_prompt.format(
@@ -77,8 +81,9 @@ def evaluate_summary_with_llm(
     return response
 
 
-result = evaluate_summary_with_llm(
-    reference_summary="Most profitable product query",
-    generated_summary="Most profitable product query",
-)
-print(result)
+if __name__ == "__main__":
+    result = evaluate_summary_with_llm(
+        reference_summary="Most profitable product query",
+        generated_summary="Most profitable product query",
+    )
+    print(result)

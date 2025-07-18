@@ -1,0 +1,208 @@
+🧪 Test 1/20
+Query: Hey there! Hope your day's going well. I was wondering, which marketing channel drove the most sales last quarter? Thanks!
+Generated: Inquiry about the top-performing marketing channel for increased sales in the previous quarter
+Reference: Query about the most effective marketing channel last quarter.
+✅ PASSED
+
+🧪 Test 2/20
+Query: Good morning! Before we get started, how do I integrate OpenAI's API with LangChain for building agents?
+Generated: User wants instructions for combining OpenAI's technology with another system (possibly related to language or chatbot development) using LangChain.
+Reference: Question about integrating OpenAI API with LangChain for agent development.
+✅ PASSED
+
+🧪 Test 3/20
+Query: Just had coffee! Anyway, can you pull up the revenue breakdown by region for Q1?
+Generated: Revenue breakdown by region for Q1
+Reference: Request for revenue breakdown by region for Q1.
+❌ FAILED
+Reason: The generated summary is incorrect. It misses the critical aspect of a 'REQUEST' present in the reference summary, and instead provides just information from it.
+
+🧪 Test 4/20
+Query: I hope you're doing great! What's our most profitable product category in the past year?
+Generated: Most profitable product category last year
+Reference: Query about the most profitable product category over the past year.
+✅ PASSED
+
+🧪 Test 5/20
+Query: Quick question—what were the main causes of customer churn last month? Also, hope your family is well.
+Generated: User inquires about primary reasons for customer attrition in previous month.
+Reference: Question about the causes of customer churn last month.
+❌ FAILED
+Reason: The generated summary changed 'last' to 'past'. Furthermore, it omitted information about whether this inquiry was targeted towards a specific customer segment or business-wide and didn't mention the intent behind understanding churn for potential strategy implementation. The original reference lacks details on these nuances but provides enough context that they should be inferred.
+
+🧪 Test 6/20
+Query: Hey! Random thought: what's our average conversion rate on mobile vs desktop this quarter?
+Generated: Average conversion rates comparison between mobile and desktop for the current fiscal quarter.
+Reference: Query about average conversion rates on mobile vs desktop this quarter.
+✅ PASSED
+
+🧪 Test 7/20
+Query: Hi! Can you let me know how to configure the vector store for semantic search in LangChain?
+Generated: The user wants information on configuring a vector store specifically for semantic searching within the context of using LangChain.
+Reference: Request for vector store configuration for semantic search in LangChain.
+❌ FAILED
+Reason: The generated summary does not include any details from the reference summary.
+
+🧪 Test 8/20
+Query: Before I forget, can you check inventory levels for SKU 9382 in warehouse B?
+Generated: Check inventory levels of SKU 9382 in warehouse B
+Reference: Request to check inventory levels for SKU 9382 in warehouse B.
+❌ FAILED
+Reason: The summary provided does not include a generated part; hence the comparison cannot be conducted.
+
+🧪 Test 9/20
+Query: How’s everything? Could you summarize the key findings from the recent user feedback survey?
+Generated: User needs a summary of the main insights gathered from the latest customer satisfaction poll.
+Reference: Request to summarize key findings from the recent user feedback survey.
+❌ FAILED
+Reason: The generated summary changes 'user feedback survey' to 'customer satisfaction poll', which alters meaning. Feedback surveys are typically for user input while customer satisfaction polls assess the customers' overall happiness with a product or service.
+
+🧪 Test 10/20
+Query: Okay, so not to be random, but what's the uptime of our main API over the past 90 days?
+Generated: Uptime inquiry for main company API in the last quarter
+Reference: Query about the uptime of the main API over the past 90 days.
+❌ FAILED
+Reason: The generated summary is grammatically incorrect and does not convey a complete sense of the reference. 'Inquiry' should be changed to 'inquiring', or simply restructured for clarity.
+
+🧪 Test 11/20
+Query: By the way, I saw your dog on Zoom yesterday—adorable! Anyway, can we forecast sales for Q3 based on current trends?
+Generated: Sales forecasting request for Q3.
+Reference: Request to forecast Q3 sales based on current trends.
+❌ FAILED
+Reason: The generated summary matches the reference in content and meaning. Both sentences convey a request for sales forecasting specifically aimed at Q3, referencing current trends as justification.
+
+🧪 Test 12/20
+Query: Can you believe it's Friday already? Please provide me the churn rate comparison between new and returning users.
+Generated: User requests a comparison of churn rates between new and returning customers
+Reference: Request for churn rate comparison between new and returning users.
+✅ PASSED
+
+🧪 Test 13/20
+Query: Hey! While you're at it, check how many support tickets were resolved this week. Thanks a ton!
+Generated: Inquire about the number of resolved customer service inquiries within the current week.
+Reference: Request to check number of support tickets resolved this week.
+❌ FAILED
+Reason: The generated summary is not only factually incorrect by referring to 'last month' instead of this week but also changes words such as from 'support tickets' (an impersonal term) to 'customer service inquiries', which adds a customer-focused perspective that was not present in the reference. Furthermore, it incorrectly states about supported ticket solutions being implemented throughout last month while ignoring past tense inconsistency with requesting information specific for this week.
+
+🧪 Test 14/20
+Query: Haha, Mondays right? What were the top 3 visited product pages last month?
+Generated: Topic: Product Page Visits
+Key Concepts: Top 3 most visited product pages; Last month'th data
+Reference: Query about top 3 visited product pages last month.
+✅ PASSED
+
+🧪 Test 15/20
+Query: Yo! Do we have NPS scores broken down by customer segment for Q2?
+Generated: NPS scores by customer segments in Q2
+Reference: Query about NPS scores by customer segment for Q2.
+❌ FAILED
+Reason: Although the generated summary includes information from the reference summary (such as NPS scores and mention of customer segments), it lacks critical components such as specifying that there was a query about these numbers.
+
+🧪 Test 16/20
+Query: Random question—how do I cache LangChain outputs locally? Just came to mind.
+Generated: The user wants information on how to implement local caching for outputs generated by LangChain.
+Reference: Query about caching LangChain outputs locally.
+❌ FAILED
+Reason: While they convey similar information about local caching for LangChain outputs and are essentially asking to implement this feature locally on their computer or device. The wording is a bit different but the core idea remains unchanged in both summaries.
+
+🧪 Test 17/20
+Query: Sorry if this is off-topic, but what’s the data retention policy for user analytics?
+Generated: Data retention policy inquiry about keeping records of users' behavior
+Reference: Query about data retention policy for user analytics.
+❌ FAILED
+Reason: The generated summary is too short and lacks detail. It does not fully convey the original reference that asks specifically about user analytics.
+
+🧪 Test 18/20
+Query: OMG that meme you sent was hilarious 😂. Anyway, is there a summary report on ad performance for this campaign?
+Generated: Summary report on ad performance for the current campaign.
+Reference: Request for summary report on ad performance for a campaign.
+✅ PASSED
+
+🧪 Test 19/20
+Query: Just thinking out loud—how do we handle rate limiting on our public API endpoints?
+Generated: Rate limiting for a public API
+Reference: Query about rate limiting on public API endpoints.
+✅ PASSED
+
+🧪 Test 20/20
+Query: Phew, long week! Can you export the list of inactive users in the last 60 days?
+Generated: Export list of inactive users
+Reference: Request to export list of inactive users in the last 60 days.
+❌ FAILED
+Reason: The generated summary is missing the specific timeframe detail from the reference summary.
+
+🎯 8/20 tests passed (40.00%)
+
+❗ Failed Test Details:
+
+---
+Query: Just had coffee! Anyway, can you pull up the revenue breakdown by region for Q1?
+Generated: Revenue breakdown by region for Q1
+Reference: Request for revenue breakdown by region for Q1.
+Reason: The generated summary is incorrect. It misses the critical aspect of a 'REQUEST' present in the reference summary, and instead provides just information from it.
+
+---
+Query: Quick question—what were the main causes of customer churn last month? Also, hope your family is well.
+Generated: User inquires about primary reasons for customer attrition in previous month.
+Reference: Question about the causes of customer churn last month.
+Reason: The generated summary changed 'last' to 'past'. Furthermore, it omitted information about whether this inquiry was targeted towards a specific customer segment or business-wide and didn't mention the intent behind understanding churn for potential strategy implementation. The original reference lacks details on these nuances but provides enough context that they should be inferred.
+
+---
+Query: Hi! Can you let me know how to configure the vector store for semantic search in LangChain?
+Generated: The user wants information on configuring a vector store specifically for semantic searching within the context of using LangChain.
+Reference: Request for vector store configuration for semantic search in LangChain.
+Reason: The generated summary does not include any details from the reference summary.
+
+---
+Query: Before I forget, can you check inventory levels for SKU 9382 in warehouse B?
+Generated: Check inventory levels of SKU 9382 in warehouse B
+Reference: Request to check inventory levels for SKU 9382 in warehouse B.
+Reason: The summary provided does not include a generated part; hence the comparison cannot be conducted.
+
+---
+Query: How’s everything? Could you summarize the key findings from the recent user feedback survey?
+Generated: User needs a summary of the main insights gathered from the latest customer satisfaction poll.
+Reference: Request to summarize key findings from the recent user feedback survey.
+Reason: The generated summary changes 'user feedback survey' to 'customer satisfaction poll', which alters meaning. Feedback surveys are typically for user input while customer satisfaction polls assess the customers' overall happiness with a product or service.
+
+---
+Query: Okay, so not to be random, but what's the uptime of our main API over the past 90 days?
+Generated: Uptime inquiry for main company API in the last quarter
+Reference: Query about the uptime of the main API over the past 90 days.
+Reason: The generated summary is grammatically incorrect and does not convey a complete sense of the reference. 'Inquiry' should be changed to 'inquiring', or simply restructured for clarity.
+
+---
+Query: By the way, I saw your dog on Zoom yesterday—adorable! Anyway, can we forecast sales for Q3 based on current trends?
+Generated: Sales forecasting request for Q3.
+Reference: Request to forecast Q3 sales based on current trends.
+Reason: The generated summary matches the reference in content and meaning. Both sentences convey a request for sales forecasting specifically aimed at Q3, referencing current trends as justification.
+
+---
+Query: Hey! While you're at it, check how many support tickets were resolved this week. Thanks a ton!
+Generated: Inquire about the number of resolved customer service inquiries within the current week.
+Reference: Request to check number of support tickets resolved this week.
+Reason: The generated summary is not only factually incorrect by referring to 'last month' instead of this week but also changes words such as from 'support tickets' (an impersonal term) to 'customer service inquiries', which adds a customer-focused perspective that was not present in the reference. Furthermore, it incorrectly states about supported ticket solutions being implemented throughout last month while ignoring past tense inconsistency with requesting information specific for this week.
+
+---
+Query: Yo! Do we have NPS scores broken down by customer segment for Q2?
+Generated: NPS scores by customer segments in Q2
+Reference: Query about NPS scores by customer segment for Q2.
+Reason: Although the generated summary includes information from the reference summary (such as NPS scores and mention of customer segments), it lacks critical components such as specifying that there was a query about these numbers.
+
+---
+Query: Random question—how do I cache LangChain outputs locally? Just came to mind.
+Generated: The user wants information on how to implement local caching for outputs generated by LangChain.
+Reference: Query about caching LangChain outputs locally.
+Reason: While they convey similar information about local caching for LangChain outputs and are essentially asking to implement this feature locally on their computer or device. The wording is a bit different but the core idea remains unchanged in both summaries.
+
+---
+Query: Sorry if this is off-topic, but what’s the data retention policy for user analytics?
+Generated: Data retention policy inquiry about keeping records of users' behavior
+Reference: Query about data retention policy for user analytics.
+Reason: The generated summary is too short and lacks detail. It does not fully convey the original reference that asks specifically about user analytics.
+
+---
+Query: Phew, long week! Can you export the list of inactive users in the last 60 days?
+Generated: Export list of inactive users
+Reference: Request to export list of inactive users in the last 60 days.
+Reason: The generated summary is missing the specific timeframe detail from the reference summary.
