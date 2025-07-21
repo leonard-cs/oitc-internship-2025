@@ -21,7 +21,7 @@ prompt = ChatPromptTemplate.from_messages(
 question = "Why is sky blue?"
 context = "The sky appears blue because of the scattering of light by the atmosphere."
 
-prompt.invoke({"context": context, "question": question})
+# prompt.invoke({"context": context, "question": question})
 
 chain = (
     {
