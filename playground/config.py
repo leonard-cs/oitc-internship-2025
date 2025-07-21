@@ -3,7 +3,7 @@ from pathlib import Path
 
 from dotenv import load_dotenv
 
-load_dotenv(dotenv_path=Path("/playground/.env"))
+load_dotenv(dotenv_path=Path("./playground/.env"))
 
 # Ollama
 OLLAMA_BASE_URL = os.getenv("OLLAMA_BASE_URL", default="http://localhost:11500")
