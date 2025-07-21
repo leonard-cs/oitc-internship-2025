@@ -1,7 +1,7 @@
 # ollama_query.py
+# python -m llm_server.examples.ollama_query
 
 import requests
-import json
 
 from llm_server.config import OLLAMA_BASE_URL, OLLAMA_MODEL
 

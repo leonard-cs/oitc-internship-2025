@@ -2,7 +2,7 @@
 https://github.com/ollama/ollama/blob/main/docs/api.md
 
 ## Ollama Code
-### Query
+### Generate
 ```python
 payload = {
     "model": OLLAMA_MODEL,
@@ -13,6 +13,8 @@ response = requests.post(f"{OLLAMA_BASE_URL}/api/generate", json=payload)
 data = response.json()
 print("Response:", data['response'])
 ```
+### Chat
+Chat with tool calling [[Link](https://github.com/ollama/ollama/blob/main/docs/api.md#chat-request-with-tools)]
 ### Embedding
 ```python
 payload = {
