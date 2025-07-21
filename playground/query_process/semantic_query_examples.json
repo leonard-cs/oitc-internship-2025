@@ -1,188 +1,82 @@
 [
-    {
-        "original_query": "Hey there! Hope your day's going well. I was wondering, which marketing channel drove the most sales last quarter? Thanks!",
-        "summary": "Query about the most effective marketing channel last quarter.",
-        "keywords": [
-            "marketing channel",
-            "sales",
-            "last quarter"
-        ]
-    },
-    {
-        "original_query": "Good morning! Before we get started, how do I integrate OpenAI's API with LangChain for building agents?",
-        "summary": "Question about integrating OpenAI API with LangChain for agent development.",
-        "keywords": [
-            "OpenAI API",
-            "LangChain",
-            "agents",
-            "integration"
-        ]
-    },
-    {
-        "original_query": "Just had coffee! Anyway, can you pull up the revenue breakdown by region for Q1?",
-        "summary": "Request for revenue breakdown by region for Q1.",
-        "keywords": [
-            "revenue",
-            "region",
-            "Q1"
-        ]
-    },
-    {
-        "original_query": "I hope you're doing great! What's our most profitable product category in the past year?",
-        "summary": "Query about the most profitable product category over the past year.",
-        "keywords": [
-            "profitable",
-            "product category",
-            "past year"
-        ]
-    },
-    {
-        "original_query": "Quick question\u2014what were the main causes of customer churn last month? Also, hope your family is well.",
-        "summary": "Question about the causes of customer churn last month.",
-        "keywords": [
-            "customer churn",
-            "causes",
-            "last month"
-        ]
-    },
-    {
-        "original_query": "Hey! Random thought: what's our average conversion rate on mobile vs desktop this quarter?",
-        "summary": "Query about average conversion rates on mobile vs desktop this quarter.",
-        "keywords": [
-            "conversion rate",
-            "mobile",
-            "desktop",
-            "this quarter"
-        ]
-    },
-    {
-        "original_query": "Hi! Can you let me know how to configure the vector store for semantic search in LangChain?",
-        "summary": "Request for vector store configuration for semantic search in LangChain.",
-        "keywords": [
-            "vector store",
-            "semantic search",
-            "LangChain"
-        ]
-    },
-    {
-        "original_query": "Before I forget, can you check inventory levels for SKU 9382 in warehouse B?",
-        "summary": "Request to check inventory levels for SKU 9382 in warehouse B.",
-        "keywords": [
-            "inventory",
-            "SKU 9382",
-            "warehouse B"
-        ]
-    },
-    {
-        "original_query": "How\u2019s everything? Could you summarize the key findings from the recent user feedback survey?",
-        "summary": "Request to summarize key findings from the recent user feedback survey.",
-        "keywords": [
-            "user feedback",
-            "survey",
-            "key findings"
-        ]
-    },
-    {
-        "original_query": "Okay, so not to be random, but what's the uptime of our main API over the past 90 days?",
-        "summary": "Query about the uptime of the main API over the past 90 days.",
-        "keywords": [
-            "API",
-            "uptime",
-            "90 days"
-        ]
-    },
-    {
-        "original_query": "By the way, I saw your dog on Zoom yesterday\u2014adorable! Anyway, can we forecast sales for Q3 based on current trends?",
-        "summary": "Request to forecast Q3 sales based on current trends.",
-        "keywords": [
-            "forecast",
-            "sales",
-            "Q3",
-            "trends"
-        ]
-    },
-    {
-        "original_query": "Can you believe it's Friday already? Please provide me the churn rate comparison between new and returning users.",
-        "summary": "Request for churn rate comparison between new and returning users.",
-        "keywords": [
-            "churn rate",
-            "new users",
-            "returning users",
-            "comparison"
-        ]
-    },
-    {
-        "original_query": "Hey! While you're at it, check how many support tickets were resolved this week. Thanks a ton!",
-        "summary": "Request to check number of support tickets resolved this week.",
-        "keywords": [
-            "support tickets",
-            "resolved",
-            "this week"
-        ]
-    },
-    {
-        "original_query": "Haha, Mondays right? What were the top 3 visited product pages last month?",
-        "summary": "Query about top 3 visited product pages last month.",
-        "keywords": [
-            "top pages",
-            "product",
-            "last month",
-            "traffic"
-        ]
-    },
-    {
-        "original_query": "Yo! Do we have NPS scores broken down by customer segment for Q2?",
-        "summary": "Query about NPS scores by customer segment for Q2.",
-        "keywords": [
-            "NPS",
-            "customer segment",
-            "Q2"
-        ]
-    },
-    {
-        "original_query": "Random question\u2014how do I cache LangChain outputs locally? Just came to mind.",
-        "summary": "Query about caching LangChain outputs locally.",
-        "keywords": [
-            "LangChain",
-            "cache",
-            "outputs",
-            "local"
-        ]
-    },
-    {
-        "original_query": "Sorry if this is off-topic, but what\u2019s the data retention policy for user analytics?",
-        "summary": "Query about data retention policy for user analytics.",
-        "keywords": [
-            "data retention",
-            "policy",
-            "user analytics"
-        ]
-    },
-    {
-        "original_query": "OMG that meme you sent was hilarious \ud83d\ude02. Anyway, is there a summary report on ad performance for this campaign?",
-        "summary": "Request for summary report on ad performance for a campaign.",
-        "keywords": [
-            "ad performance",
-            "summary report",
-            "campaign"
-        ]
-    },
-    {
-        "original_query": "Just thinking out loud\u2014how do we handle rate limiting on our public API endpoints?",
-        "summary": "Query about rate limiting on public API endpoints.",
-        "keywords": [
-            "rate limiting",
-            "API",
-            "public endpoints"
-        ]
-    },
-    {
-        "original_query": "Phew, long week! Can you export the list of inactive users in the last 60 days?",
-        "summary": "Request to export list of inactive users in the last 60 days.",
-        "keywords": [
-            "inactive users",
-            "export",
-            "last 60 days"
-        ]
-    }
+  {
+    "user_query": "Hey, before I forget — could you tell me how many orders were placed last month? I was supposed to check this yesterday.",
+    "reference_query": "number of orders placed last month"
+  },
+  {
+    "user_query": "I know it's late but can you find all customers from New York who made a purchase over $500?",
+    "reference_query": "customers from New York with purchases over $500"
+  },
+  {
+    "user_query": "While waiting for my coffee I realized — do we have any pending shipments in the orders table?",
+    "reference_query": "pending shipments in orders table"
+  },
+  {
+    "user_query": "I was chatting with John and he said there were duplicate emails in the customer database — is that true?",
+    "reference_query": "duplicate emails in customer table"
+  },
+  {
+    "user_query": "Just wondering if you can pull up the list of products that are out of stock. I need it for a report.",
+    "reference_query": "products that are out of stock"
+  },
+  {
+    "user_query": "I had a weird dream about invoices — anyway, can you get me all invoices issued in June 2023?",
+    "reference_query": "invoices issued in June 2023"
+  },
+  {
+    "user_query": "By the way, happy Monday! Can you find employees who joined after 2022?",
+    "reference_query": "employees who joined after 2022"
+  },
+  {
+    "user_query": "Oh shoot, I meant to ask yesterday — what’s the total revenue from orders this quarter?",
+    "reference_query": "total revenue from orders this quarter"
+  },
+  {
+    "user_query": "My manager is on my case again 🙄 — can you pull customers with no purchases in the last year?",
+    "reference_query": "customers with no purchases in the last year"
+  },
+  {
+    "user_query": "Not sure if this makes sense, but can you show all product names and their stock count?",
+    "reference_query": "product names and stock count"
+  },
+  {
+    "user_query": "While updating the sales deck, I thought — how many orders are in 'processing' status?",
+    "reference_query": "orders with status processing"
+  },
+  {
+    "user_query": "Sorry if this is dumb, but what's the average delivery time for completed orders?",
+    "reference_query": "average delivery time for completed orders"
+  },
+  {
+    "user_query": "I hope you can help — find top 5 customers by total order value. Thanks!",
+    "reference_query": "top 5 customers by total order value"
+  },
+  {
+    "user_query": "I was cleaning up some data and got curious — which suppliers are from China?",
+    "reference_query": "suppliers from China"
+  },
+  {
+    "user_query": "Random question during lunch — how many unique products have been sold?",
+    "reference_query": "number of unique products sold"
+  },
+  {
+    "user_query": "I know this is last minute, but get all orders shipped via FedEx last month?",
+    "reference_query": "orders shipped via FedEx last month"
+  },
+  {
+    "user_query": "Before I hop off this call — show me customers with more than 3 returns.",
+    "reference_query": "customers with more than 3 returns"
+  },
+  {
+    "user_query": "Can you check if any products have a negative stock quantity? Weird bug maybe?",
+    "reference_query": "products with negative stock quantity"
+  },
+  {
+    "user_query": "LOL I almost forgot — are there any employees without an assigned department?",
+    "reference_query": "employees without an assigned department"
+  },
+  {
+    "user_query": "During my walk I remembered this — which orders were cancelled in December?",
+    "reference_query": "orders cancelled in December"
+  }
 ]

@@ -1,208 +1,129 @@
 🧪 Test 1/20
-Query: Hey there! Hope your day's going well. I was wondering, which marketing channel drove the most sales last quarter? Thanks!
-Generated: Inquiry about the top-performing marketing channel for increased sales in the previous quarter
-Reference: Query about the most effective marketing channel last quarter.
+Query: Hey, before I forget — could you tell me how many orders were placed last month? I was supposed to check this yesterday.
+Generated: number of orders placed last month
+Reference: number of orders placed last month
 ✅ PASSED
 
 🧪 Test 2/20
-Query: Good morning! Before we get started, how do I integrate OpenAI's API with LangChain for building agents?
-Generated: User wants instructions for combining OpenAI's technology with another system (possibly related to language or chatbot development) using LangChain.
-Reference: Question about integrating OpenAI API with LangChain for agent development.
+Query: I know it's late but can you find all customers from New York who made a purchase over $500?
+Generated: customers from New York with purchases over $500
+Reference: customers from New York with purchases over $500
 ✅ PASSED
 
 🧪 Test 3/20
-Query: Just had coffee! Anyway, can you pull up the revenue breakdown by region for Q1?
-Generated: Revenue breakdown by region for Q1
-Reference: Request for revenue breakdown by region for Q1.
-❌ FAILED
-Reason: The generated summary is incorrect. It misses the critical aspect of a 'REQUEST' present in the reference summary, and instead provides just information from it.
-
-🧪 Test 4/20
-Query: I hope you're doing great! What's our most profitable product category in the past year?
-Generated: Most profitable product category last year
-Reference: Query about the most profitable product category over the past year.
+Query: While waiting for my coffee I realized — do we have any pending shipments in the orders table?
+Generated: pending shipments in the orders table
+Reference: pending shipments in orders table
 ✅ PASSED
 
-🧪 Test 5/20
-Query: Quick question—what were the main causes of customer churn last month? Also, hope your family is well.
-Generated: User inquires about primary reasons for customer attrition in previous month.
-Reference: Question about the causes of customer churn last month.
+🧪 Test 4/20
+Query: I was chatting with John and he said there were duplicate emails in the customer database — is that true?
+Generated: duplicate emails in customer database
+Reference: duplicate emails in customer table
 ❌ FAILED
-Reason: The generated summary changed 'last' to 'past'. Furthermore, it omitted information about whether this inquiry was targeted towards a specific customer segment or business-wide and didn't mention the intent behind understanding churn for potential strategy implementation. The original reference lacks details on these nuances but provides enough context that they should be inferred.
+Reason: The generated summary changes a specific field ('customer table') to a more general term ('database'), which could potentially alter the scope of data being queried. This might result in retrieving duplicate records across multiple tables rather than just within one customer-related table.
+
+🧪 Test 5/20
+Query: Just wondering if you can pull up the list of products that are out of stock. I need it for a report.
+Generated: list of out-of-stock products
+Reference: products that are out of stock
+✅ PASSED
 
 🧪 Test 6/20
-Query: Hey! Random thought: what's our average conversion rate on mobile vs desktop this quarter?
-Generated: Average conversion rates comparison between mobile and desktop for the current fiscal quarter.
-Reference: Query about average conversion rates on mobile vs desktop this quarter.
+Query: I had a weird dream about invoices — anyway, can you get me all invoices issued in June 2023?
+Generated: invoices from June 2023
+Reference: invoices issued in June 2023
 ✅ PASSED
 
 🧪 Test 7/20
-Query: Hi! Can you let me know how to configure the vector store for semantic search in LangChain?
-Generated: The user wants information on configuring a vector store specifically for semantic searching within the context of using LangChain.
-Reference: Request for vector store configuration for semantic search in LangChain.
-❌ FAILED
-Reason: The generated summary does not include any details from the reference summary.
+Query: By the way, happy Monday! Can you find employees who joined after 2022?
+Generated: employees who joined after 2022
+Reference: employees who joined after 2022
+✅ PASSED
 
 🧪 Test 8/20
-Query: Before I forget, can you check inventory levels for SKU 9382 in warehouse B?
-Generated: Check inventory levels of SKU 9382 in warehouse B
-Reference: Request to check inventory levels for SKU 9382 in warehouse B.
+Query: Oh shoot, I meant to ask yesterday — what’s the total revenue from orders this quarter?
+Generated: total revenue from orders for this fiscal period
+Reference: total revenue from orders this quarter
 ❌ FAILED
-Reason: The summary provided does not include a generated part; hence the comparison cannot be conducted.
+Reason: The generated summary changes 'this quarter' to 'this fiscal period'. While both terms refer to a similar timeframe within the company’s financial year, they are not always interchangeable. A fiscal period could be longer than one calendar quarter and may include multiple quarters or even an entire year if it aligns with specific reporting periods of the business.
 
 🧪 Test 9/20
-Query: How’s everything? Could you summarize the key findings from the recent user feedback survey?
-Generated: User needs a summary of the main insights gathered from the latest customer satisfaction poll.
-Reference: Request to summarize key findings from the recent user feedback survey.
-❌ FAILED
-Reason: The generated summary changes 'user feedback survey' to 'customer satisfaction poll', which alters meaning. Feedback surveys are typically for user input while customer satisfaction polls assess the customers' overall happiness with a product or service.
+Query: My manager is on my case again 🙄 — can you pull customers with no purchases in the last year?
+Generated: customers who haven't made a purchase in the past year
+Reference: customers with no purchases in the last year
+✅ PASSED
 
 🧪 Test 10/20
-Query: Okay, so not to be random, but what's the uptime of our main API over the past 90 days?
-Generated: Uptime inquiry for main company API in the last quarter
-Reference: Query about the uptime of the main API over the past 90 days.
+Query: Not sure if this makes sense, but can you show all product names and their stock count?
+Generated: product list with stock information
+Reference: product names and stock count
 ❌ FAILED
-Reason: The generated summary is grammatically incorrect and does not convey a complete sense of the reference. 'Inquiry' should be changed to 'inquiring', or simply restructured for clarity.
+Reason: The generated summary does not explicitly mention product names and their corresponding stock count. While it suggests that a 'list' is being provided which could include such details, the omission of explicit reference to both elements introduces ambiguity about whether this list will contain only products or other types of data as well (e.g., suppliers). Therefore, without additional context confirming equivalence in scope and detail between the two summaries, we cannot assume they convey identical retrieval intent.
 
-🧪 Test 11/20
-Query: By the way, I saw your dog on Zoom yesterday—adorable! Anyway, can we forecast sales for Q3 based on current trends?
-Generated: Sales forecasting request for Q3.
-Reference: Request to forecast Q3 sales based on current trends.
+
+atus?
+Generated: number of orders with processing status
+Reference: orders with status processing
 ❌ FAILED
-Reason: The generated summary matches the reference in content and meaning. Both sentences convey a request for sales forecasting specifically aimed at Q3, referencing current trends as justification.
+Reason: The generated summary changes the meaning by replacing a phrase that implies an ongoing process ('status processing') with one that suggests counting or quantifying something in progress. This could lead to confusion about whether it's asking for active orders still being processed.
 
 🧪 Test 12/20
-Query: Can you believe it's Friday already? Please provide me the churn rate comparison between new and returning users.
-Generated: User requests a comparison of churn rates between new and returning customers
-Reference: Request for churn rate comparison between new and returning users.
+Query: Sorry if this is dumb, but what's the average delivery time for completed orders?
+Generated: average delivery time for completed orders
+Reference: average delivery time for completed orders
 ✅ PASSED
 
 🧪 Test 13/20
-Query: Hey! While you're at it, check how many support tickets were resolved this week. Thanks a ton!
-Generated: Inquire about the number of resolved customer service inquiries within the current week.
-Reference: Request to check number of support tickets resolved this week.
-❌ FAILED
-Reason: The generated summary is not only factually incorrect by referring to 'last month' instead of this week but also changes words such as from 'support tickets' (an impersonal term) to 'customer service inquiries', which adds a customer-focused perspective that was not present in the reference. Furthermore, it incorrectly states about supported ticket solutions being implemented throughout last month while ignoring past tense inconsistency with requesting information specific for this week.
+Query: I hope you can help — find top 5 customers by total order value. Thanks!
+Generated: top 5 customers by total order value
+Reference: top 5 customers by total order value
+✅ PASSED
 
 🧪 Test 14/20
-Query: Haha, Mondays right? What were the top 3 visited product pages last month?
-Generated: Topic: Product Page Visits
-Key Concepts: Top 3 most visited product pages; Last month'th data
-Reference: Query about top 3 visited product pages last month.
+Query: I was cleaning up some data and got curious — which suppliers are from China?
+Generated: suppliers from China
+Reference: suppliers from China
 ✅ PASSED
 
 🧪 Test 15/20
-Query: Yo! Do we have NPS scores broken down by customer segment for Q2?
-Generated: NPS scores by customer segments in Q2
-Reference: Query about NPS scores by customer segment for Q2.
+Query: Random question during lunch — how many unique products have been sold?
+Generated: number of distinctly sold items
+Reference: number of unique products sold
 ❌ FAILED
-Reason: Although the generated summary includes information from the reference summary (such as NPS scores and mention of customer segments), it lacks critical components such as specifying that there was a query about these numbers.
+Reason: The phrase 'distinctly sold items' is ambiguous and could imply that only one instance per unique item was counted. This differs from the standard interpretation of counting each sale as a separate event for different products.
 
 🧪 Test 16/20
-Query: Random question—how do I cache LangChain outputs locally? Just came to mind.
-Generated: The user wants information on how to implement local caching for outputs generated by LangChain.
-Reference: Query about caching LangChain outputs locally.
-❌ FAILED
-Reason: While they convey similar information about local caching for LangChain outputs and are essentially asking to implement this feature locally on their computer or device. The wording is a bit different but the core idea remains unchanged in both summaries.
+Query: I know this is last minute, but get all orders shipped via FedEx last month?
+Generated: orders shipped via FedEx in the previous month.
+Reference: orders shipped via FedEx last month
+✅ PASSED
 
 🧪 Test 17/20
-Query: Sorry if this is off-topic, but what’s the data retention policy for user analytics?
-Generated: Data retention policy inquiry about keeping records of users' behavior
-Reference: Query about data retention policy for user analytics.
-❌ FAILED
-Reason: The generated summary is too short and lacks detail. It does not fully convey the original reference that asks specifically about user analytics.
+Query: Before I hop off this call — show me customers with more than 3 returns.
+Generated: customers with more than 3 returns
+Reference: customers with more than 3 returns
+✅ PASSED
 
 🧪 Test 18/20
-Query: OMG that meme you sent was hilarious 😂. Anyway, is there a summary report on ad performance for this campaign?
-Generated: Summary report on ad performance for the current campaign.
-Reference: Request for summary report on ad performance for a campaign.
-✅ PASSED
+Query: Can you check if any products have a negative stock quantity? Weird bug maybe?
+Generated: products with negative stock
+Reference: products with negative stock quantity
+❌ FAILED
+Reason: The generated summary omits a crucial quantifier ('quantity') which is essential for understanding that we are referring to products where the inventory level has fallen below zero. Without this specification, it's unclear whether all items with negative stock or just one item at any given time would be retrieved.
 
 🧪 Test 19/20
-Query: Just thinking out loud—how do we handle rate limiting on our public API endpoints?
-Generated: Rate limiting for a public API
-Reference: Query about rate limiting on public API endpoints.
-✅ PASSED
+Query: LOL I almost forgot — are there any employees without an assigned department?
+Generated: employees without a department
+Reference: employees without an assigned department
+❌ FAILED
+Reason: The generated summary omits the word 'assigned,' which is crucial in understanding that we are looking for employees who do not have any department at all. This could result in retrieving data about part-time or temporary workers without departments assigned to them, rather than full-time permanent staff with no current assignments.
 
 🧪 Test 20/20
-Query: Phew, long week! Can you export the list of inactive users in the last 60 days?
-Generated: Export list of inactive users
-Reference: Request to export list of inactive users in the last 60 days.
+Query: During my walk I remembered this — which orders were cancelled in December?
+Generated: cancelled orders in December
+Reference: orders cancelled in December
 ❌ FAILED
-Reason: The generated summary is missing the specific timeframe detail from the reference summary.
+Reason: The generated summary lacks specificity and clarity. The term 'orders' is too broad without specifying which type of order or the reason for cancellation within the context provided by the reference summary.
 
-🎯 8/20 tests passed (40.00%)
-
-❗ Failed Test Details:
-
----
-Query: Just had coffee! Anyway, can you pull up the revenue breakdown by region for Q1?
-Generated: Revenue breakdown by region for Q1
-Reference: Request for revenue breakdown by region for Q1.
-Reason: The generated summary is incorrect. It misses the critical aspect of a 'REQUEST' present in the reference summary, and instead provides just information from it.
-
----
-Query: Quick question—what were the main causes of customer churn last month? Also, hope your family is well.
-Generated: User inquires about primary reasons for customer attrition in previous month.
-Reference: Question about the causes of customer churn last month.
-Reason: The generated summary changed 'last' to 'past'. Furthermore, it omitted information about whether this inquiry was targeted towards a specific customer segment or business-wide and didn't mention the intent behind understanding churn for potential strategy implementation. The original reference lacks details on these nuances but provides enough context that they should be inferred.
-
----
-Query: Hi! Can you let me know how to configure the vector store for semantic search in LangChain?
-Generated: The user wants information on configuring a vector store specifically for semantic searching within the context of using LangChain.
-Reference: Request for vector store configuration for semantic search in LangChain.
-Reason: The generated summary does not include any details from the reference summary.
-
----
-Query: Before I forget, can you check inventory levels for SKU 9382 in warehouse B?
-Generated: Check inventory levels of SKU 9382 in warehouse B
-Reference: Request to check inventory levels for SKU 9382 in warehouse B.
-Reason: The summary provided does not include a generated part; hence the comparison cannot be conducted.
-
----
-Query: How’s everything? Could you summarize the key findings from the recent user feedback survey?
-Generated: User needs a summary of the main insights gathered from the latest customer satisfaction poll.
-Reference: Request to summarize key findings from the recent user feedback survey.
-Reason: The generated summary changes 'user feedback survey' to 'customer satisfaction poll', which alters meaning. Feedback surveys are typically for user input while customer satisfaction polls assess the customers' overall happiness with a product or service.
-
----
-Query: Okay, so not to be random, but what's the uptime of our main API over the past 90 days?
-Generated: Uptime inquiry for main company API in the last quarter
-Reference: Query about the uptime of the main API over the past 90 days.
-Reason: The generated summary is grammatically incorrect and does not convey a complete sense of the reference. 'Inquiry' should be changed to 'inquiring', or simply restructured for clarity.
-
----
-Query: By the way, I saw your dog on Zoom yesterday—adorable! Anyway, can we forecast sales for Q3 based on current trends?
-Generated: Sales forecasting request for Q3.
-Reference: Request to forecast Q3 sales based on current trends.
-Reason: The generated summary matches the reference in content and meaning. Both sentences convey a request for sales forecasting specifically aimed at Q3, referencing current trends as justification.
-
----
-Query: Hey! While you're at it, check how many support tickets were resolved this week. Thanks a ton!
-Generated: Inquire about the number of resolved customer service inquiries within the current week.
-Reference: Request to check number of support tickets resolved this week.
-Reason: The generated summary is not only factually incorrect by referring to 'last month' instead of this week but also changes words such as from 'support tickets' (an impersonal term) to 'customer service inquiries', which adds a customer-focused perspective that was not present in the reference. Furthermore, it incorrectly states about supported ticket solutions being implemented throughout last month while ignoring past tense inconsistency with requesting information specific for this week.
-
----
-Query: Yo! Do we have NPS scores broken down by customer segment for Q2?
-Generated: NPS scores by customer segments in Q2
-Reference: Query about NPS scores by customer segment for Q2.
-Reason: Although the generated summary includes information from the reference summary (such as NPS scores and mention of customer segments), it lacks critical components such as specifying that there was a query about these numbers.
-
----
-Query: Random question—how do I cache LangChain outputs locally? Just came to mind.
-Generated: The user wants information on how to implement local caching for outputs generated by LangChain.
-Reference: Query about caching LangChain outputs locally.
-Reason: While they convey similar information about local caching for LangChain outputs and are essentially asking to implement this feature locally on their computer or device. The wording is a bit different but the core idea remains unchanged in both summaries.
-
----
-Query: Sorry if this is off-topic, but what’s the data retention policy for user analytics?
-Generated: Data retention policy inquiry about keeping records of users' behavior
-Reference: Query about data retention policy for user analytics.
-Reason: The generated summary is too short and lacks detail. It does not fully convey the original reference that asks specifically about user analytics.
-
----
-Query: Phew, long week! Can you export the list of inactive users in the last 60 days?
-Generated: Export list of inactive users
-Reference: Request to export list of inactive users in the last 60 days.
-Reason: The generated summary is missing the specific timeframe detail from the reference summary.
+🎯 12/20 tests passed (60.00%)

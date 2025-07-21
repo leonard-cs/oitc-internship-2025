@@ -1,4 +1,5 @@
 import json
+import time
 from pathlib import Path
 
 from evaluator import evaluate_summary_with_llm
@@ -21,14 +22,15 @@ def run_semantic_summary_tests(
     failed_cases = []
 
     for idx, item in enumerate(samples, 1):
-        original_query = item["original_query"]
-        reference_summary = item["summary"]
+        original_query = item["user_query"]
+        reference_summary = item["reference_query"]
+        
+        print(f"\n🧪 Test {idx}/{total}")
+        print(f"Query: {original_query}")
 
         extracted = extract_semantic_query(original_query)
         generated_summary = extracted.summary
 
-        print(f"\n🧪 Test {idx}/{total}")
-        print(f"Query: {original_query}")
         print(f"Generated: {generated_summary}")
         print(f"Reference: {reference_summary}")
 
@@ -53,15 +55,20 @@ def run_semantic_summary_tests(
 
     print(f"\n🎯 {passed}/{total} tests passed ({(passed / total) * 100:.2f}%)")
 
-    if failed_cases:
-        print("\n❗ Failed Test Details:")
-        for fail in failed_cases:
-            print("\n---")
-            print(f"Query: {fail['query']}")
-            print(f"Generated: {fail['generated']}")
-            print(f"Reference: {fail['reference']}")
-            print(f"Reason: {fail['reason']}")
+    # if failed_cases:
+    #     print("\n❗ Failed Test Details:")
+    #     for fail in failed_cases:
+    #         print("\n---")
+    #         print(f"Query: {fail['query']}")
+    #         print(f"Generated: {fail['generated']}")
+    #         print(f"Reference: {fail['reference']}")
+    #         print(f"Reason: {fail['reason']}")
 
 
 if __name__ == "__main__":
+    start_time = time.time()
     run_semantic_summary_tests()
+    end_time = time.time()
+    total_seconds = end_time - start_time
+    minutes, seconds = divmod(total_seconds, 60)
+    print(f"⏱️ Total time: {int(minutes)} min {seconds:.2f} sec")
