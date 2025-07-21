@@ -5,10 +5,13 @@ Welcome to **playground**, a modular, extensible Python environment for experime
 ## Project Structure
 ```bash
 playground/
+├─ mssql/
 ├─ ollama/                          # Ollama query/embed playground
 │   ├─ Dockerfile
 │   ├─ ollama_init.sh
 │   └─ main.py                      # python -m playground.ollama.main
+├─ langchain/                       # Lanchain experiment
+├─ query_process/                   # User query processor prototype with accuracy evaluator
 ├─ .env.example
 └─ README.md
 ```

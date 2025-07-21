@@ -1,8 +1,8 @@
 import os
-import pandas as pd
 
-from llm_server.config import EXPORT_DIR
-from llm_server.mssql.utils import TIME, delete_file
+import pandas as pd
+from utils import EXPORT_DIR, TIME, delete_file
+
 
 def export_products_csv(table: str, df: pd.DataFrame):
     os.makedirs(EXPORT_DIR, exist_ok=True)
@@ -10,6 +10,7 @@ def export_products_csv(table: str, df: pd.DataFrame):
     delete_file(path=EXPORT_DIR, prefix=f"{table}_", sufix="csv")
     df.to_csv(file_name, index=False)
     print(f"✅ Table {table} saved to {file_name} as csv")
+
 
 def make_product_sentence(row: pd.Series) -> str:
     """Generate a human-readable sentence from a product row."""
@@ -20,10 +21,11 @@ def make_product_sentence(row: pd.Series) -> str:
         f"{'It is currently discontinued.' if row['Discontinued'] else 'It is currently available.'}"
     )
 
+
 def export_products_sentences(table_name: str, df: pd.DataFrame) -> None:
     """Export all product sentences into a single file."""
     os.makedirs(EXPORT_DIR, exist_ok=True)
-    
+
     file_name = f"{table_name}_{TIME}.txt"
     file_path = os.path.join(EXPORT_DIR, file_name)
 
@@ -34,6 +36,7 @@ def export_products_sentences(table_name: str, df: pd.DataFrame) -> None:
             f.write(make_product_sentence(row) + "\n")
 
     print(f"✅ Table '{table_name}' saved to {file_path} as sentences")
+
 
 def export_product_sentence_s(table_name: str, df: pd.DataFrame) -> None:
     """Export each product sentence into a separate file."""
