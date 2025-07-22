@@ -1,4 +1,4 @@
-from backend.app.models.chat import ChatResponse
+from backend.app.models.chat import ChatResponse, LLMResponse
 from backend.app.services.query_processor import process_query
 from backend.app.services.rag_chain import generate_answer_from_docs
 from backend.app.services.vectorstore import retrieve_relevant_documents
@@ -14,11 +14,10 @@ async def handle_chat_request(
     # TODO: embed processed query
     # TODO: retrieve relevant documents
     docs, sources = await retrieve_relevant_documents(semantic_query)
-    # TODO: generate final answer
-    answer = await generate_answer_from_docs(query=semantic_query, docs=docs)
+    response: LLMResponse = await generate_answer_from_docs(query=semantic_query, docs=docs)
 
     return ChatResponse(
-        answer=answer,
+        answer=response.answer,
         semantic_query=semantic_query,
         sources=sources,
     )
