@@ -4,12 +4,14 @@ from backend.app.services.embed.embedder import get_embeddings
 from backend.app.services.query_processor import process_query
 from backend.app.services.rag_chain import generate_answer_from_docs
 from backend.app.services.vectorstore import retrieve_relevant_documents
+from backend.app.config import backend_logger
 
 
 async def handle_chat_request(
     user_query: str, use_query_processor: bool = True
 ) -> ChatResponse:
-    # TODO: process user query
+    backend_logger.info("Received chat request")
+    
     semantic_query = user_query
     if use_query_processor:
         processor_response: QueryProcessorResponse = await process_query(user_query)
@@ -19,7 +21,7 @@ async def handle_chat_request(
     # TODO: retrieve relevant documents
     docs, sources = await retrieve_relevant_documents(query_embedding)
     llm_response: LLMResponse = await generate_answer_from_docs(
-        query=semantic_query, docs=docs
+        query=user_query, docs=docs
     )
 
     return ChatResponse(

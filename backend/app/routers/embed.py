@@ -14,10 +14,6 @@ async def embed_image_text(
     image: Optional[UploadFile] = File(default=None),
     text: Optional[str] = Form(default=None),
 ):
-    if image is None and text is None:
-        raise HTTPException(
-            status_code=400, detail="Either image or text must be provided."
-        )
     image_bytes = await image.read() if image else None
     result: EmbedderResponse = get_embeddings(image_bytes, text)
     return JSONResponse(content=result.model_dump())

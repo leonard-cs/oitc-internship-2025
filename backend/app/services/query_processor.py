@@ -7,7 +7,7 @@ from langchain_core.prompts import (
 from langchain_core.runnables import RunnablePassthrough
 from langchain_ollama import ChatOllama
 
-from backend.app.config import OLLAMA_BASE_URL, OLLAMA_CHAT_MODEL
+from backend.app.config import OLLAMA_BASE_URL, OLLAMA_CHAT_MODEL, backend_logger
 from backend.app.models.query_process import QueryProcessorResponse
 
 ollama = ChatOllama(
@@ -64,4 +64,5 @@ chain = {"user_query": RunnablePassthrough()} | prompt | structured_ollama
 
 async def process_query(query: str) -> QueryProcessorResponse:
     response: QueryProcessorResponse = chain.invoke({"user_query": query})
+    backend_logger.success("Query processed successfully")
     return QueryProcessorResponse(original_query=query, summary=response.summary)

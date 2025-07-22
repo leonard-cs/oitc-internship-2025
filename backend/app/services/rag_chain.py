@@ -4,7 +4,8 @@ from langchain_core.prompts import (
     SystemMessagePromptTemplate,
 )
 from langchain_ollama import ChatOllama
-from backend.app.config import OLLAMA_BASE_URL, OLLAMA_CHAT_MODEL
+
+from backend.app.config import OLLAMA_BASE_URL, OLLAMA_CHAT_MODEL, backend_logger
 from backend.app.models.chat import LLMResponse
 
 ollama = ChatOllama(
@@ -37,7 +38,8 @@ pipelines = (
 
 
 async def generate_answer_from_docs(query: str, docs: list[str]) -> LLMResponse:
-    # print(f"Input variables: {prompt_template.input_variables}")
-    # print(f"Prompt template:\n{prompt_template.format(query=query, context=docs)}")
+    backend_logger.trace(f"Input variables: {prompt_template.input_variables}")
+    backend_logger.trace(f"Prompt template:\n{prompt_template.format(query=query, context=docs)}")
     response = pipelines.invoke({"query": query, "context": docs})
+    backend_logger.success("Generated answer from LLM successfully")
     return response

@@ -4,6 +4,7 @@ import open_clip
 import torch
 from PIL import Image
 
+from backend.app.config import backend_logger
 from backend.app.models.embed import EmbedderResponse
 
 model = None
@@ -43,6 +44,10 @@ def get_embeddings(image_bytes: bytes = None, text: str = None) -> EmbedderRespo
     if image_features is not None and text_features is not None:
         similarity = (image_features @ text_features.T).item()
 
+    if image_features is None and text_features is None:
+        backend_logger.warning("Both image and text are missing")
+    else:
+        backend_logger.success("Generated embeddings successfully")
     return EmbedderResponse(
         similarity=similarity,
         image_embedding=image_features[0].tolist()
