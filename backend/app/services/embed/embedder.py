@@ -6,17 +6,25 @@ from PIL import Image
 
 from backend.app.models.embed import EmbedderResponse
 
-model, _, preprocess = open_clip.create_model_and_transforms(
-    "ViT-B-32", pretrained=None
-)
-model.load_state_dict(torch.load("weights/ViT-B-32.pt", map_location="cpu"))
-model.eval()
+model = None
+preprocess = None
+tokenizer = None
 
-tokenizer = open_clip.get_tokenizer("ViT-B-32")
+
+def load_model():
+    global model, preprocess, tokenizer
+    if model is None:
+        model, _, preprocess = open_clip.create_model_and_transforms(
+            "ViT-B-32", pretrained=None
+        )
+        model.load_state_dict(torch.load("weights/ViT-B-32.pt", map_location="cpu"))
+        model.eval()
+        tokenizer = open_clip.get_tokenizer("ViT-B-32")
 
 
 @torch.no_grad()
 def get_embeddings(image_bytes: bytes = None, text: str = None) -> EmbedderResponse:
+    load_model()
     image_features = None
     text_features = None
     similarity = None
