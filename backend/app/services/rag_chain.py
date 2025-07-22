@@ -37,7 +37,7 @@ pipelines = (
 
 
 async def generate_answer_from_docs(query: str, docs: list[str]) -> LLMResponse:
-    print(f"Input variables: {prompt_template.input_variables}")
-    print(f"Prompt template:\n{prompt_template.format(query=query, context=docs)}")
+    # print(f"Input variables: {prompt_template.input_variables}")
+    # print(f"Prompt template:\n{prompt_template.format(query=query, context=docs)}")
     response = pipelines.invoke({"query": query, "context": docs})
     return response

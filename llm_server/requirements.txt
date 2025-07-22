@@ -5,7 +5,10 @@ dotenv
 requests
 fastapi
 uvicorn
+
 torch
+open_clip_torch
+
 Pillow
 transformers
 python-multipart

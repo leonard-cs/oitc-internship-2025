@@ -7,4 +7,6 @@ exports/
 anythingllm/storage/
 anythingllm/.env
 
+weights/
+
 .env
