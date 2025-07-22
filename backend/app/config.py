@@ -7,7 +7,8 @@ from loguru import logger
 
 load_dotenv(dotenv_path=Path(".env"))
 OLLAMA_BASE_URL = os.getenv("OLLAMA_BASE_URL", default="")
-OLLAMA_CHAT_MODEL = os.getenv("OLLAMA_CHAT_MODEL", default="")
+# OLLAMA_CHAT_MODEL = os.getenv("PHI3_MODEL", default="")
+OLLAMA_CHAT_MODEL = os.getenv("DEEPSEEK_MODEL", default="")
 WEIGHTS_DIR = os.getenv("WEIGHTS_DIR", default="weights")
 
 logger.remove()

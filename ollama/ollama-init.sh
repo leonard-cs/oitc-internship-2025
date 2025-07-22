@@ -13,6 +13,7 @@ echo "✅ Ollama is up. Pulling models..."
 
 ollama pull phi3
 ollama pull nomic-embed-text
+ollama pull deepseek-r1:7b
 
 echo "✅ Finished pulling models. Server is running..."
 
