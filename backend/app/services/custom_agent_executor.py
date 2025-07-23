@@ -91,4 +91,4 @@ class CustomAgentExecutor:
         backend_logger.trace(
             f"Agent execution completed with response: {json.dumps(tool_out)}"
         )
-        return final_answer
+        return json.dumps(tool_out)

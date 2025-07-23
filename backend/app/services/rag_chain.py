@@ -1,17 +1,16 @@
+import json
+
 from fastapi import HTTPException
 from langchain_core.prompts import (
     ChatPromptTemplate,
     HumanMessagePromptTemplate,
-    MessagesPlaceholder,
     SystemMessagePromptTemplate,
 )
-from langchain_core.runnables.base import RunnableSerializable
 from langchain_ollama import ChatOllama
 
 from backend.app.config import OLLAMA_BASE_URL, OLLAMA_CHAT_MODEL, backend_logger
 from backend.app.models.chat import LLMResponse
 from backend.app.services.custom_agent_executor import CustomAgentExecutor
-from backend.app.services.vectorstore import tools
 
 ollama = ChatOllama(
     model=OLLAMA_CHAT_MODEL,
@@ -59,7 +58,8 @@ async def generate_answer(query: str) -> LLMResponse:
         response: str = agent.invoke(query=query)
         backend_logger.trace(f"LLM response: {response}")
         backend_logger.success("Generated answer from LLM successfully")
-        return LLMResponse(answer=response)
+        response_dict = json.loads(response)
+        return LLMResponse(**response_dict)
     except Exception as e:
         msg = f"Error occurred while generating answer: {e}"
         backend_logger.error(msg)

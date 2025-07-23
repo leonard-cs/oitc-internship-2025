@@ -41,5 +41,6 @@ async def handle_chat_request_agent(
     return ChatResponse(
         answer=llm_response.answer,
         semantic_query="",
-        sources=[""],
+        sources=llm_response.sources,
+        tools_used=llm_response.tools_used,
     )
