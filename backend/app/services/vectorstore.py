@@ -14,9 +14,9 @@ qdrant = QdrantClient(url=QDRANT_URL)
 
 
 def handle_sync_collection(collection: CollectionName):
-    _create_collection(collection)
-    EXPORT_DIR = Path("exports/Products")
-    files = sorted(EXPORT_DIR.glob("Products_*.txt"))
+    _create_collection(collection.value)
+    EXPORT_DIR = Path(f"exports/{collection.value}")
+    files = sorted(EXPORT_DIR.glob(f"{collection.value}_*.txt"))
     for file_path in files:
         # TODO: Check if file_path.name already exists in the collection
         id, date, time = _extract_file_info(file_path.name)
@@ -25,32 +25,32 @@ def handle_sync_collection(collection: CollectionName):
             embedding: list[float] = get_embeddings(text=text).text_embedding
             # backend_logger.debug(f"Embedding size: {len(embedding)}")
             _save_embedding(
-                collection,
-                TextEntry(id=id, embedding=embedding, date=date, time=time, text=text),
+                collection_name=collection.value,
+                entry=TextEntry(id=id, embedding=embedding, date=date, time=time, text=text)
             )
 
 
-def _create_collection(collection: CollectionName):
-    if not qdrant.collection_exists(collection.value):
+def _create_collection(collection_name: str):
+    if not qdrant.collection_exists(collection_name):
         qdrant.create_collection(
-            collection_name=collection.value,
+            collection_name=collection_name,
             vectors_config=models.VectorParams(
                 size=QDRANT_VECTOR_SIZE, distance=models.Distance.COSINE
             ),
         )
-        backend_logger.info(f"Collection '{collection.value}' created successfully.")
+        backend_logger.info(f"Collection '{collection_name}' created successfully.")
     else:
-        backend_logger.info(f"Collection '{collection.value}' already exists.")
+        backend_logger.info(f"Collection '{collection_name}' already exists.")
 
 
-def _save_embedding(collection: CollectionName, entry: TextEntry) -> str:
+def _save_embedding(collection_name: str, entry: TextEntry) -> str:
     if (
         not isinstance(entry.embedding, list)
         or len(entry.embedding) != QDRANT_VECTOR_SIZE
     ):
         raise ValueError(f"Embedding must be a list of {QDRANT_VECTOR_SIZE} floats.")
     qdrant.upsert(
-        collection_name=collection.value,
+        collection_name=collection_name,
         points=[
             models.PointStruct(
                 id=int(entry.id),
