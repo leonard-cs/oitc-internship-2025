@@ -1,4 +1,77 @@
+import re
+from pathlib import Path
+from typing import Optional
+
 from langchain_core.tools import tool
+from qdrant_client import QdrantClient
+from qdrant_client.http.models import models
+
+from backend.app.config import QDRANT_URL, QDRANT_VECTOR_SIZE, backend_logger
+from backend.app.models.vectorstore import CollectionName, TextEntry
+from backend.app.services.embed.embedder import get_embeddings
+
+qdrant = QdrantClient(url=QDRANT_URL)
+
+
+def handle_sync_collection(collection: CollectionName):
+    _create_collection(collection)
+    EXPORT_DIR = Path("exports/Products")
+    files = sorted(EXPORT_DIR.glob("Products_*.txt"))
+    for file_path in files:
+        # TODO: Check if file_path.name already exists in the collection
+        id, date, time = _extract_file_info(file_path.name)
+        with file_path.open("r", encoding="utf-8") as f:
+            text = f.read()
+            embedding: list[float] = get_embeddings(text=text).text_embedding
+            # backend_logger.debug(f"Embedding size: {len(embedding)}")
+            _save_embedding(
+                collection,
+                TextEntry(id=id, embedding=embedding, date=date, time=time, text=text),
+            )
+
+
+def _create_collection(collection: CollectionName):
+    if not qdrant.collection_exists(collection.value):
+        qdrant.create_collection(
+            collection_name=collection.value,
+            vectors_config=models.VectorParams(
+                size=QDRANT_VECTOR_SIZE, distance=models.Distance.COSINE
+            ),
+        )
+        backend_logger.info(f"Collection '{collection.value}' created successfully.")
+    else:
+        backend_logger.info(f"Collection '{collection.value}' already exists.")
+
+
+def _save_embedding(collection: CollectionName, entry: TextEntry) -> str:
+    if (
+        not isinstance(entry.embedding, list)
+        or len(entry.embedding) != QDRANT_VECTOR_SIZE
+    ):
+        raise ValueError(f"Embedding must be a list of {QDRANT_VECTOR_SIZE} floats.")
+    qdrant.upsert(
+        collection_name=collection.value,
+        points=[
+            models.PointStruct(
+                id=int(entry.id),
+                vector=entry.embedding,
+                payload={"text": entry.text, "date": entry.date, "time": entry.time},
+            )
+        ],
+    )
+    # backend_logger.info(
+    #     f"Saved embedding for ID: {entry.id} in collection: {collection.value}"
+    # )
+    return entry.id
+
+
+def _extract_file_info(filename: str) -> Optional[tuple[str, str, str]]:
+    pattern = r"Products_(\d+)_(\d{8})_(\d{6})"
+    match = re.search(pattern, filename)
+    if match:
+        product_id, date, time = match.groups()
+        return product_id, date, time
+    return None
 
 
 async def retrieve_relevant_documents(query: str) -> tuple[list[str], list[str]]:
