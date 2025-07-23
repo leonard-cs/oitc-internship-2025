@@ -26,7 +26,9 @@ def handle_sync_collection(collection: CollectionName):
             # backend_logger.debug(f"Embedding size: {len(embedding)}")
             _save_embedding(
                 collection_name=collection.value,
-                entry=TextEntry(id=id, embedding=embedding, date=date, time=time, text=text)
+                entry=TextEntry(
+                    id=id, embedding=embedding, date=date, time=time, text=text
+                ),
             )
 
 
@@ -65,7 +67,9 @@ def _save_embedding(collection_name: str, entry: TextEntry) -> str:
     return entry.id
 
 
-def _extract_file_info(filename: str, collection_name: str) -> Optional[tuple[str, str, str]]:
+def _extract_file_info(
+    filename: str, collection_name: str
+) -> Optional[tuple[str, str, str]]:
     pattern = r"^{}_(\d+)_(\d{{8}})_(\d{{6}})".format(re.escape(collection_name))
     match = re.search(pattern, filename)
     if match:
@@ -74,18 +78,60 @@ def _extract_file_info(filename: str, collection_name: str) -> Optional[tuple[st
     return None
 
 
-async def retrieve_relevant_documents(embedding: list[float], limit: int = 5) -> tuple[list[str], list[str]]:
+def get_all_ids(
+    collection_name: str, with_payload: bool, limit: int = 10000
+) -> list[dict[str, any]]:
+    all_entries = []
+    offset = None
+
+    while True:
+        scroll_result = qdrant.scroll(
+            collection_name=collection_name,
+            with_payload=with_payload,
+            with_vectors=False,
+            limit=256,
+            offset=offset,
+        )
+
+        points = scroll_result[0]
+        if not points:
+            break
+
+        for point in points:
+            if with_payload:
+                entry = {
+                    "id": str(point.id),
+                    "date": point.payload["date"],
+                    "time": point.payload["time"],
+                }
+            else:
+                entry = {"id": str(point.id)}
+            all_entries.append(entry)
+
+        offset = scroll_result[1]
+
+        if offset is None or len(all_entries) >= limit:
+            break
+
+    return all_entries
+
+
+async def retrieve_relevant_documents(
+    embedding: list[float], limit: int = 5
+) -> tuple[list[str], list[str]]:
     points = qdrant.search(
         collection_name="Products",
         query_vector=embedding,
         limit=limit,
-        with_payload=True
+        with_payload=True,
     )
     docs = []
     sources = []
     for point in points:
         docs.append(point.payload["text"])
-        sources.append(f"Product ID: {point.id}, Date: {point.payload['date']}, Time: {point.payload['time']}")
+        sources.append(
+            f"Product ID: {point.id}, Date: {point.payload['date']}, Time: {point.payload['time']}"
+        )
     return docs, sources
 
 

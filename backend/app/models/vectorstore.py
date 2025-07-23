@@ -1,4 +1,5 @@
 from enum import Enum
+from typing import Optional
 
 from pydantic import BaseModel
 
@@ -23,3 +24,14 @@ class TextEntry(BaseModel):
     date: str
     time: str
     text: str
+
+
+class AllIdRequest(BaseModel):
+    collection: CollectionName
+    with_payload: Optional[bool] = False
+
+
+class AllIdResponse(BaseModel):
+    id: str
+    date: Optional[str] = None
+    time: Optional[str] = None
