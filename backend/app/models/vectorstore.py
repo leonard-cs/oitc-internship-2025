@@ -5,6 +5,7 @@ from pydantic import BaseModel
 
 class CollectionName(str, Enum):
     products = "Products"
+    employees = "Employees"
 
 
 class SyncRequest(BaseModel):

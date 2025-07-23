@@ -19,7 +19,7 @@ def handle_sync_collection(collection: CollectionName):
     files = sorted(EXPORT_DIR.glob(f"{collection.value}_*.txt"))
     for file_path in files:
         # TODO: Check if file_path.name already exists in the collection
-        id, date, time = _extract_file_info(file_path.name)
+        id, date, time = _extract_file_info(file_path.name, collection.value)
         with file_path.open("r", encoding="utf-8") as f:
             text = f.read()
             embedding: list[float] = get_embeddings(text=text).text_embedding
@@ -65,8 +65,8 @@ def _save_embedding(collection_name: str, entry: TextEntry) -> str:
     return entry.id
 
 
-def _extract_file_info(filename: str) -> Optional[tuple[str, str, str]]:
-    pattern = r"Products_(\d+)_(\d{8})_(\d{6})"
+def _extract_file_info(filename: str, collection_name: str) -> Optional[tuple[str, str, str]]:
+    pattern = r"^{}_(\d+)_(\d{{8}})_(\d{{6}})".format(re.escape(collection_name))
     match = re.search(pattern, filename)
     if match:
         product_id, date, time = match.groups()

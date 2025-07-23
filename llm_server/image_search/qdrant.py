@@ -73,7 +73,7 @@ def search_similar(embedding: list, limit: int = 5):
     )
     return result
 
-def get_all_ids(limit: int = 10000) -> list[str]:
+def get_all_ids(collection_name: str, limit: int = 10000) -> list[str]:
     """
     Retrieve all point IDs from the Qdrant collection.
     Returns a list of IDs (as strings).
@@ -83,7 +83,7 @@ def get_all_ids(limit: int = 10000) -> list[str]:
 
     while True:
         scroll_result = qdrant.scroll(
-            collection_name=COLLECTION_NAME,
+            collection_name=collection_name,
             with_payload=False,
             with_vectors=False,
             limit=256,
@@ -103,6 +103,6 @@ def get_all_ids(limit: int = 10000) -> list[str]:
     return all_ids
 
 if __name__ == "__main__":
-    create_collection()
-    print("Qdrant collection setup complete.")
-    print(get_all_ids())
+    # create_collection()
+    # print("Qdrant collection setup complete.")
+    print(get_all_ids("Employees"))
