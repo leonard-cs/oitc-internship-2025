@@ -3,12 +3,12 @@ from backend.app.models.chat import ChatResponse, LLMResponse
 from backend.app.models.query_process import QueryProcessorResponse
 from backend.app.services.embed.embedder import get_embeddings
 from backend.app.services.query_processor import process_query
-from backend.app.services.rag_chain import generate_answer_from_docs
+from backend.app.services.rag_chain import generate_answer, generate_answer_from_docs
 from backend.app.services.vectorstore import retrieve_relevant_documents
 
 
 async def handle_chat_request(
-    user_query: str, use_query_processor: bool = True
+    user_query: str, use_query_processor: bool = False
 ) -> ChatResponse:
     backend_logger.info("Received chat request")
 
@@ -28,4 +28,18 @@ async def handle_chat_request(
         answer=llm_response.answer,
         semantic_query=semantic_query,
         sources=sources,
+    )
+
+
+async def handle_chat_request_agent(
+    user_query: str, use_query_processor: bool = False
+) -> ChatResponse:
+    backend_logger.info("Received chat request for agent")
+
+    llm_response: LLMResponse = await generate_answer(user_query)
+
+    return ChatResponse(
+        answer=llm_response.answer,
+        semantic_query="",
+        sources=[""],
     )

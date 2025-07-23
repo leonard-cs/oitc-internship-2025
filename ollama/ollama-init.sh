@@ -11,9 +11,11 @@ done
 
 echo "✅ Ollama is up. Pulling models..."
 
-ollama pull phi3
-ollama pull nomic-embed-text
-ollama pull deepseek-r1:7b
+# ollama pull phi3
+# ollama pull nomic-embed-text
+# ollama pull deepseek-r1
+# ollama pull gemma3n:e4b
+ollama pull qwen3:latest
 
 echo "✅ Finished pulling models. Server is running..."
 

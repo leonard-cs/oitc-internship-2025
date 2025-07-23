@@ -3,7 +3,7 @@ from pydantic import BaseModel, Field
 
 class ChatRequest(BaseModel):
     user_query: str
-    use_query_processor: bool = True  # Optional toggle
+    use_query_processor: bool = False
 
 
 class ChatResponse(BaseModel):
