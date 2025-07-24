@@ -2,15 +2,46 @@ import re
 from pathlib import Path
 from typing import Optional
 
+from langchain_core.documents import Document
 from langchain_core.tools import tool
+from langchain_qdrant import QdrantVectorStore
 from qdrant_client import QdrantClient
 from qdrant_client.http.models import models
 
 from backend.app.config import QDRANT_URL, QDRANT_VECTOR_SIZE, backend_logger
 from backend.app.models.vectorstore import CollectionName, TextEntry
+from backend.app.services.embed.clipembedder import CLIPEmbedder
 from backend.app.services.embed.embedder import get_embeddings
 
 qdrant = QdrantClient(url=QDRANT_URL)
+embedder = CLIPEmbedder()
+
+
+def store_text(text: str) -> str:
+    collection: str = CollectionName.test.value
+    _create_collection(collection)
+    vector_store = QdrantVectorStore(
+        client=qdrant,
+        collection_name=collection,
+        embedding=embedder,
+    )
+    ids = vector_store.add_documents(
+        documents=[Document(page_content=text, metadata={"date": "07/24"})]
+    )
+    return ids[0]
+
+
+def search(query: str) -> list:
+    collection: str = CollectionName.test.value
+    if not qdrant.collection_exists(collection):
+        backend_logger.error(f"Collection '{collection}' does not exist.")
+        return []
+    vector_store = QdrantVectorStore(
+        client=qdrant,
+        collection_name=collection,
+        embedding=embedder,
+    )
+    return vector_store.similarity_search(query=query, k=4, filter=None)
 
 
 def handle_sync_collection(collection: CollectionName):

@@ -7,6 +7,7 @@ from pydantic import BaseModel
 class CollectionName(str, Enum):
     products = "Products"
     employees = "Employees"
+    test = "Test"
 
 
 class SyncRequest(BaseModel):
@@ -16,6 +17,10 @@ class SyncRequest(BaseModel):
 class SyncResponse(BaseModel):
     status: str
     collection: CollectionName
+
+
+class StoreTextRequest(BaseModel):
+    text: str
 
 
 class TextEntry(BaseModel):

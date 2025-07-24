@@ -2,7 +2,7 @@ import os
 import shutil
 from typing import Optional
 
-from fastapi import APIRouter, File, Form, HTTPException, UploadFile
+from fastapi import APIRouter, File, Form, UploadFile
 from fastapi.responses import JSONResponse
 
 from backend.app.models.embed import EmbedderResponse
@@ -27,7 +27,7 @@ async def embed_image_text(
 
 
 @router.post("/embed-image")
-async def embed_image(file: UploadFile = File(...)):
+async def embed_image(file: UploadFile = File(...)) -> list[float]:
     image_path = _file_preprocess(file)
     embedder = CLIPEmbedder()
     embedding = embedder.embed_query(image_path)
