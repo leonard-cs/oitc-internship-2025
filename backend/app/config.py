@@ -19,6 +19,8 @@ WEIGHTS_DIR = os.getenv("WEIGHTS_DIR", default="weights")
 QDRANT_URL = os.getenv("QDRANT_URL", default="")
 QDRANT_VECTOR_SIZE = int(os.getenv("QDRANT_VECTOR_SIZE", default=0))
 
+EMBEDDING_MODEL_PATH = "weights/ViT-B-32.pt"
+
 logger.remove()
 logger.add(sys.stderr, level="TRACE")
 backend_logger = logger.bind(name="backend")

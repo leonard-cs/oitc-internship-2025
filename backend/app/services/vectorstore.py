@@ -139,8 +139,9 @@ async def retrieve_relevant_documents(
 def vector_search(query: str, collection_name: str) -> tuple[list[str], list[str]]:
     """
     Perform a vector similarity search against a set of documents.
+    The query should contain the semantic meaning of original query.
     collection_name can be "Products" or "Employees"
-    Returns top 5 most relevant context documents.
+    Returns top 5 most relevant context documents and their sources.
     """
     embedding = get_embeddings(text=query).text_embedding
     points = qdrant.search(

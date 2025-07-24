@@ -1,9 +1,12 @@
+import os
+import shutil
 from typing import Optional
 
 from fastapi import APIRouter, File, Form, HTTPException, UploadFile
 from fastapi.responses import JSONResponse
 
 from backend.app.models.embed import EmbedderResponse
+from backend.app.services.embed.clipembedder import CLIPEmbedder
 from backend.app.services.embed.embedder import get_embeddings
 
 router = APIRouter()
@@ -21,3 +24,19 @@ async def embed_image_text(
 
 # with open("your_image.jpg", "rb") as f:
 #     response = requests.post("http://localhost:8000/embed", files={"image": f}, data={"text": "a photo of a cat"})
+
+
+@router.post("/embed-image")
+async def embed_image(file: UploadFile = File(...)):
+    image_path = _file_preprocess(file)
+    embedder = CLIPEmbedder()
+    embedding = embedder.embed_query(image_path)
+    os.remove(image_path)
+    return embedding
+
+
+def _file_preprocess(file: UploadFile = File(...)) -> str:
+    image_path = f"temp_{file.filename}"
+    with open(image_path, "wb") as buffer:
+        shutil.copyfileobj(file.file, buffer)
+    return image_path
