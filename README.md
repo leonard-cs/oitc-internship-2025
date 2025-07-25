@@ -4,20 +4,26 @@ This project implements a retrieval-augmented generation (RAG) chatbot that allo
 ## Project Structure
 ```bash
 oitc-internship-2025/
-├─ llm_server/                    # Python backend
-│   ├─ db_uploader/               # Extract data from MSSQL and push it to AnythingLLM
-│   ├─ image_search/              # Image-based vector search logic
-│   ├─ app.py                     # Main FastAPI application to handle image search
+├─ llm_server/                      # Python backend
+│   ├─ db_uploader/                 # Extract data from MSSQL and push it to AnythingLLM
+│   ├─ image_search/                # Image-based vector search logic
+│   ├─ app.py                       # Main FastAPI application to handle image search
 │   ├─ Dockerfile
 │   └─ requirements.txt
-├─ chat-ui/                       # Frontend built with Next.js
-│   ├─ entrypoint.sh              # Entrypoint script to run Next.js app inside a container
+├─ chat-ui/                         # Frontend built with Next.js
+│   ├─ entrypoint.sh                # Entrypoint script to run Next.js app inside a container
 │   └─ Dockerfile
-├─ anythingllm/                   # AnythingLLM configuration and storage
+├─ backend/
+│   ├─
+│   └─
+├─ data_pipeline/
+│   ├─ extract/                     # Extract data from MSSQL
+│   └─ embed/                       # Embed data and push to vector store
+├─ anythingllm/                     # AnythingLLM configuration and storage
 │   ├─ .env.example
 │   └─ storage/
-├─ ollama/                        # LLM-based processing (Ollama container and API)
-│   ├─ ollama-init.sh             # Initialization script for Ollama container
+├─ ollama/                          # LLM-based processing (Ollama container and API)
+│   ├─ ollama-init.sh               # Initialization script for Ollama container
 │   └─ Dockerfile
 ├─ docker-compose.yml
 ├─ .env.example
@@ -63,11 +69,11 @@ Once added, restart the Chat UI container:
 docker-compose restart chat-ui
 ```
 ### 5. Access Service
-| Service     | URL                                              | Notes                            |
-| ----------- | ------------------------------------------------ | -------------------------------- |
-| Chat UI     | [http://localhost:3000](http://localhost:3000)   | Frontend app                     |
-| AnythingLLM | [http://localhost:3001](http://localhost:3001)   | LLM interface                    |
-| pgAdmin     | [http://localhost:5050](http://localhost:5050)   | DB Admin UI (use `db` as host)   |
+| Service     | URL                                                             | Notes                            |
+| ----------- | --------------------------------------------------------------- | -------------------------------- |
+| Chat UI     | [http://localhost:3000](http://localhost:3000)                  | Frontend app                     |
+| Backend     | [http://localhost:8000/docs#/](http://localhost:8000/docs#/)    | FastAPI documents                |
+| pgAdmin     | [http://localhost:5050](http://localhost:5050)                  | DB Admin UI (use `db` as host)   |
 
 <!-- | Service     | URL                                              | Description                                  |
 | ----------- | ------------------------------------------------ | -------------------------------------------- |
