@@ -11,6 +11,7 @@ from backend.app.models.vectorstore import (
 from backend.app.services.vectorstore import (
     get_all_ids,
     handle_sync_collection,
+    new_handle_sync_collection,
     store_text,
 )
 
@@ -19,7 +20,7 @@ router = APIRouter()
 
 @router.post("/sync_collection", response_model=SyncResponse)
 async def sync_collection(payload: SyncRequest) -> SyncResponse:
-    handle_sync_collection(payload.collection)
+    new_handle_sync_collection(payload.collection)
     return SyncResponse(status="success", collection=payload.collection)
 
 

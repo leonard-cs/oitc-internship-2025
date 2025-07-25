@@ -1,4 +1,5 @@
 import re
+import uuid
 from pathlib import Path
 from typing import Optional
 
@@ -63,6 +64,38 @@ def handle_sync_collection(collection: CollectionName):
             )
 
 
+def new_handle_sync_collection(collection: CollectionName):
+    _create_collection(collection.value)
+    EXPORT_DIR = Path(f"exports/{collection.value}")
+    files = sorted(EXPORT_DIR.glob(f"{collection.value}_*.txt"))
+    for file_path in files:
+        # TODO: Check if file_path.name already exists in the collection
+        id, date, time = _extract_file_info(file_path.name, collection.value)
+        with file_path.open("r", encoding="utf-8") as f:
+            text = f.read()
+            metadata = {
+                "date": date,
+                "time": time,
+            }
+            _store_product(
+                collection=collection.value, id=id, text=text, metadata=metadata
+            )
+
+
+def _store_product(collection: str, id: str, text: str, metadata: dict):
+    _create_collection(collection)
+    vector_store = QdrantVectorStore(
+        client=qdrant,
+        collection_name=collection,
+        embedding=embedder,
+    )
+    ids = vector_store.add_documents(
+        documents=[Document(page_content=text, metadata=metadata, id=id)],
+        ids=[str(uuid.uuid4())],
+    )
+    return ids[0]
+
+
 def _create_collection(collection_name: str):
     if not qdrant.collection_exists(collection_name):
         qdrant.create_collection(
@@ -104,8 +137,8 @@ def _extract_file_info(
     pattern = r"^{}_(\d+)_(\d{{8}})_(\d{{6}})".format(re.escape(collection_name))
     match = re.search(pattern, filename)
     if match:
-        product_id, date, time = match.groups()
-        return product_id, date, time
+        id, date, time = match.groups()
+        return f"{collection_name}_{id}", date, time
     return None
 
 
