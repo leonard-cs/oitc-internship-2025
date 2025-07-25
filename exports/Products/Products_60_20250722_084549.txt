@@ -1,0 +1,1 @@
+Product 'Camembert Pierrot' (ID 60) is supplied by supplier #28 under category #4. Each unit contains '15 - 300 g rounds' and costs $34.00. There are 19 in stock, 0 on order, and the reorder level is 0. It is currently available.

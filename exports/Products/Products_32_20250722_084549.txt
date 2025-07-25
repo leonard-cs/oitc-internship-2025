@@ -1,0 +1,1 @@
+Product 'Mascarpone Fabioli' (ID 32) is supplied by supplier #14 under category #4. Each unit contains '24 - 200 g pkgs.' and costs $32.00. There are 9 in stock, 40 on order, and the reorder level is 25. It is currently available.

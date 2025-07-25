@@ -1,0 +1,1 @@
+Product 'Northwoods Cranberry Sauce' (ID 8) is supplied by supplier #3 under category #2. Each unit contains '12 - 12 oz jars' and costs $40.00. There are 6 in stock, 0 on order, and the reorder level is 0. It is currently available.

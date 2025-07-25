@@ -1,0 +1,1 @@
+Product 'Perth Pasties' (ID 53) is supplied by supplier #24 under category #6. Each unit contains '48 pieces' and costs $32.80. There are 0 in stock, 0 on order, and the reorder level is 0. It is currently discontinued.

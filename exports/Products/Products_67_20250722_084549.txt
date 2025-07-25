@@ -1,0 +1,1 @@
+Product 'Laughing Lumberjack Lager' (ID 67) is supplied by supplier #16 under category #1. Each unit contains '24 - 12 oz bottles' and costs $14.00. There are 52 in stock, 0 on order, and the reorder level is 10. It is currently available.

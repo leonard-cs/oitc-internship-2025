@@ -1,0 +1,1 @@
+Product 'Tourtiere' (ID 54) is supplied by supplier #25 under category #6. Each unit contains '16 pies' and costs $7.45. There are 21 in stock, 0 on order, and the reorder level is 10. It is currently available.

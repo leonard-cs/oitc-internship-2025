@@ -1,0 +1,1 @@
+Product 'Gravad lax' (ID 37) is supplied by supplier #17 under category #8. Each unit contains '12 - 500 g pkgs.' and costs $26.00. There are 11 in stock, 50 on order, and the reorder level is 25. It is currently available.

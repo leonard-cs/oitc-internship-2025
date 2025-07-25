@@ -1,0 +1,1 @@
+Product 'Tarte au sucre' (ID 62) is supplied by supplier #29 under category #3. Each unit contains '48 pies' and costs $49.30. There are 17 in stock, 0 on order, and the reorder level is 0. It is currently available.

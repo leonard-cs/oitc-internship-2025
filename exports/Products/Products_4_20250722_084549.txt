@@ -1,0 +1,1 @@
+Product 'Chef Anton's Cajun Seasoning' (ID 4) is supplied by supplier #2 under category #2. Each unit contains '48 - 6 oz jars' and costs $22.00. There are 53 in stock, 0 on order, and the reorder level is 0. It is currently available.

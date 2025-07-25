@@ -1,0 +1,1 @@
+Product 'Wimmers gute Semmelknodel' (ID 64) is supplied by supplier #12 under category #5. Each unit contains '20 bags x 4 pieces' and costs $33.25. There are 22 in stock, 80 on order, and the reorder level is 30. It is currently available.

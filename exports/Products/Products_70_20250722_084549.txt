@@ -1,0 +1,1 @@
+Product 'Outback Lager' (ID 70) is supplied by supplier #7 under category #1. Each unit contains '24 - 355 ml bottles' and costs $15.00. There are 15 in stock, 10 on order, and the reorder level is 30. It is currently available.

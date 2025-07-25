@@ -1,0 +1,1 @@
+Product 'Jack's New England Clam Chowder' (ID 41) is supplied by supplier #19 under category #8. Each unit contains '12 - 12 oz cans' and costs $9.65. There are 85 in stock, 0 on order, and the reorder level is 10. It is currently available.

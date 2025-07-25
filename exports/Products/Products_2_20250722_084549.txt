@@ -1,0 +1,1 @@
+Product 'Chang' (ID 2) is supplied by supplier #1 under category #1. Each unit contains '24 - 12 oz bottles' and costs $19.00. There are 17 in stock, 40 on order, and the reorder level is 25. It is currently available.
