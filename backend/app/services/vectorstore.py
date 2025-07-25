@@ -15,7 +15,7 @@ from backend.app.services.embed.clipembedder import CLIPEmbedder
 from backend.app.services.embed.embedder import get_embeddings
 
 qdrant = QdrantClient(url=QDRANT_URL)
-embedder = CLIPEmbedder()
+# embedder = CLIPEmbedder()
 
 
 def store_text(text: str) -> str:
@@ -24,7 +24,7 @@ def store_text(text: str) -> str:
     vector_store = QdrantVectorStore(
         client=qdrant,
         collection_name=collection,
-        embedding=embedder,
+        embedding=CLIPEmbedder(),
     )
     ids = vector_store.add_documents(
         documents=[Document(page_content=text, metadata={"date": "07/24"})]
@@ -40,7 +40,7 @@ def search(query: str) -> list:
     vector_store = QdrantVectorStore(
         client=qdrant,
         collection_name=collection,
-        embedding=embedder,
+        embedding=CLIPEmbedder(),
     )
     return vector_store.similarity_search(query=query, k=4, filter=None)
 
@@ -87,7 +87,7 @@ def _store_product(collection: str, id: str, text: str, metadata: dict):
     vector_store = QdrantVectorStore(
         client=qdrant,
         collection_name=collection,
-        embedding=embedder,
+        embedding=CLIPEmbedder(),
     )
     ids = vector_store.add_documents(
         documents=[Document(page_content=text, metadata=metadata, id=id)],
