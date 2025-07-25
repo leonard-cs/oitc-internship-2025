@@ -1,0 +1,1 @@
+Product 'Ravioli Angelo' (ID 57) is supplied by supplier #26 under category #5. Each unit contains '24 - 250 g pkgs.' and costs $19.50. There are 36 in stock, 0 on order, and the reorder level is 20. It is currently available.

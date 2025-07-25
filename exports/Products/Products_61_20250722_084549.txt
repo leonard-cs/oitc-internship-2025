@@ -1,0 +1,1 @@
+Product 'Sirop d'erable' (ID 61) is supplied by supplier #29 under category #2. Each unit contains '24 - 500 ml bottles' and costs $28.50. There are 113 in stock, 0 on order, and the reorder level is 25. It is currently available.

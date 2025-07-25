@@ -1,0 +1,1 @@
+Product 'Chef Anton's Gumbo Mix' (ID 5) is supplied by supplier #2 under category #2. Each unit contains '36 boxes' and costs $21.35. There are 0 in stock, 0 on order, and the reorder level is 0. It is currently discontinued.

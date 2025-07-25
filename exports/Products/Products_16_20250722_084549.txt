@@ -1,0 +1,1 @@
+Product 'Pavlova' (ID 16) is supplied by supplier #7 under category #3. Each unit contains '32 - 500 g boxes' and costs $17.45. There are 29 in stock, 0 on order, and the reorder level is 10. It is currently available.

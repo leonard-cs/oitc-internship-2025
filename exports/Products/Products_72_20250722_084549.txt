@@ -1,0 +1,1 @@
+Product 'Mozzarella di Giovanni' (ID 72) is supplied by supplier #14 under category #4. Each unit contains '24 - 200 g pkgs.' and costs $34.80. There are 14 in stock, 0 on order, and the reorder level is 0. It is currently available.

@@ -1,0 +1,1 @@
+Product 'Schoggi Schokolade' (ID 27) is supplied by supplier #11 under category #3. Each unit contains '100 - 100 g pieces' and costs $43.90. There are 49 in stock, 0 on order, and the reorder level is 30. It is currently available.

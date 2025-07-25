@@ -1,0 +1,1 @@
+Product 'Chai' (ID 1) is supplied by supplier #1 under category #1. Each unit contains '10 boxes x 20 bags' and costs $18.00. There are 39 in stock, 0 on order, and the reorder level is 10. It is currently available.

@@ -1,0 +1,1 @@
+Product 'Vegie-spread' (ID 63) is supplied by supplier #7 under category #2. Each unit contains '15 - 625 g jars' and costs $43.90. There are 24 in stock, 0 on order, and the reorder level is 5. It is currently available.

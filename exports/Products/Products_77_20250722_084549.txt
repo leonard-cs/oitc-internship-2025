@@ -1,0 +1,1 @@
+Product 'Original Frankfurter grune Sose' (ID 77) is supplied by supplier #12 under category #2. Each unit contains '12 boxes' and costs $13.00. There are 32 in stock, 0 on order, and the reorder level is 15. It is currently available.

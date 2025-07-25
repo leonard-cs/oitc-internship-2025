@@ -1,0 +1,1 @@
+Product 'Scottish Longbreads' (ID 68) is supplied by supplier #8 under category #3. Each unit contains '10 boxes x 8 pieces' and costs $12.50. There are 6 in stock, 10 on order, and the reorder level is 15. It is currently available.

@@ -1,0 +1,1 @@
+Product 'Rhonbrau Klosterbier' (ID 75) is supplied by supplier #12 under category #1. Each unit contains '24 - 0.5 l bottles' and costs $7.75. There are 125 in stock, 0 on order, and the reorder level is 25. It is currently available.

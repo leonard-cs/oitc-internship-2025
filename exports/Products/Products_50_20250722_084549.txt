@@ -1,0 +1,1 @@
+Product 'Valkoinen suklaa' (ID 50) is supplied by supplier #23 under category #3. Each unit contains '12 - 100 g bars' and costs $16.25. There are 65 in stock, 0 on order, and the reorder level is 30. It is currently available.

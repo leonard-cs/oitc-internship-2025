@@ -1,0 +1,1 @@
+Product 'Konbu' (ID 13) is supplied by supplier #6 under category #8. Each unit contains '2 kg box' and costs $6.00. There are 24 in stock, 0 on order, and the reorder level is 5. It is currently available.

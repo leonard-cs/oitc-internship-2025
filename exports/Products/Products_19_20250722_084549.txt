@@ -1,0 +1,1 @@
+Product 'Teatime Chocolate Biscuits' (ID 19) is supplied by supplier #8 under category #3. Each unit contains '10 boxes x 12 pieces' and costs $9.20. There are 25 in stock, 0 on order, and the reorder level is 5. It is currently available.

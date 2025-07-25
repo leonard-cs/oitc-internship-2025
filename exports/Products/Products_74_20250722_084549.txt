@@ -1,0 +1,1 @@
+Product 'Longlife Tofu' (ID 74) is supplied by supplier #4 under category #7. Each unit contains '5 kg pkg.' and costs $10.00. There are 4 in stock, 20 on order, and the reorder level is 5. It is currently available.
