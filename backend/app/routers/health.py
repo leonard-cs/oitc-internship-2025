@@ -4,7 +4,7 @@ from fastapi.responses import JSONResponse
 router = APIRouter()
 
 
-@router.get("/ping", tags=["health"])
+@router.get("/ping", tags=["Health"])
 async def ping():
     """
     Simple health check endpoint.

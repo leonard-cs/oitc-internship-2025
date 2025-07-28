@@ -1,6 +1,4 @@
-import re
 from pathlib import Path
-from typing import Optional
 
 from langchain_core.documents import Document
 from langchain_core.tools import tool
@@ -9,7 +7,7 @@ from qdrant_client import QdrantClient
 from qdrant_client.http.models import models
 
 from backend.app.config import QDRANT_URL, QDRANT_VECTOR_SIZE, backend_logger
-from backend.app.models.vectorstore import CollectionName, TextEntry
+from backend.app.models.vectorstore import CollectionName
 from backend.app.services.embed.clipembedder import CLIPEmbedder
 from backend.app.services.embed.embedder import get_embeddings
 from backend.app.services.utils import extract_file_info, generate_uuid
@@ -52,20 +50,6 @@ def handle_sync_collection(collection: str) -> list[str] | None:
     )
     backend_logger.success(f"{collection}: {len(added_ids)} entries synced.")
     return added_ids
-
-
-def store_text(text: str) -> str:
-    collection: str = CollectionName.test.value
-    _create_collection(collection)
-    vector_store = QdrantVectorStore(
-        client=qdrant,
-        collection_name=collection,
-        embedding=CLIPEmbedder(),
-    )
-    ids = vector_store.add_documents(
-        documents=[Document(page_content=text, metadata={})]
-    )
-    return ids[0]
 
 
 def search(query: str) -> list[Document]:

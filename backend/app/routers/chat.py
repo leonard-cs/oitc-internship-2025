@@ -6,7 +6,7 @@ from backend.app.services.chat import handle_chat_request, handle_chat_request_a
 router = APIRouter()
 
 
-@router.post("/ask", response_model=ChatResponse, tags=["chat"])
+@router.post("/ask", response_model=ChatResponse, tags=["Chats"])
 async def ask_chat(payload: ChatRequest) -> ChatResponse:
     """
     Process a user query through the full RAG chatbot pipeline.
@@ -22,7 +22,7 @@ async def ask_chat(payload: ChatRequest) -> ChatResponse:
         raise HTTPException(status_code=500, detail=str(e))
 
 
-@router.post("/ask_agent")
+@router.post("/ask_agent", tags=["Chats"])
 async def ask_chat_agent(payload: ChatRequest):
     """
     Process a user query through the agent RAG chatbot pipeline.

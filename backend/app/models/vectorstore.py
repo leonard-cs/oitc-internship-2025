@@ -19,18 +19,6 @@ class SyncResponse(BaseModel):
     collections_failed: list[str]
 
 
-class StoreTextRequest(BaseModel):
-    text: str
-
-
-class TextEntry(BaseModel):
-    id: str
-    embedding: list[float]
-    date: str
-    time: str
-    text: str
-
-
 class AllIdRequest(BaseModel):
     collection: CollectionName
     with_payload: Optional[bool] = False
