@@ -1,5 +1,4 @@
 import re
-import uuid
 from pathlib import Path
 from typing import Optional
 
@@ -13,9 +12,46 @@ from backend.app.config import QDRANT_URL, QDRANT_VECTOR_SIZE, backend_logger
 from backend.app.models.vectorstore import CollectionName, TextEntry
 from backend.app.services.embed.clipembedder import CLIPEmbedder
 from backend.app.services.embed.embedder import get_embeddings
+from backend.app.services.utils import extract_file_info, generate_uuid
 
 qdrant = QdrantClient(url=QDRANT_URL)
-# embedder = CLIPEmbedder()
+
+
+def handle_sync_collection(collection: str) -> list[str] | None:
+    export_path = Path(f"exports/{collection}")
+    files = sorted(export_path.glob(f"{collection}_*.txt"))
+
+    if not files:
+        backend_logger.error(f"No export files found for collection: '{collection}'")
+        return
+
+    _create_collection(collection)
+    vector_store = QdrantVectorStore(
+        client=qdrant,
+        collection_name=collection,
+        embedding=CLIPEmbedder(),
+    )
+
+    documents: list[Document] = []
+    ids: list[str] = []
+
+    for file_path in files:
+        id_str, date, time = extract_file_info(file_path.name)
+        with file_path.open("r", encoding="utf-8") as f:
+            text = f.read()
+            metadata = {
+                "id": id_str,
+                "date": date,
+                "time": time,
+            }
+            documents.append(Document(page_content=text, metadata=metadata))
+            ids.append(generate_uuid(id_str))
+    added_ids = vector_store.add_documents(
+        documents=documents,
+        ids=ids,
+    )
+    backend_logger.success(f"{collection}: {len(added_ids)} entries synced.")
+    return added_ids
 
 
 def store_text(text: str) -> str:
@@ -27,12 +63,12 @@ def store_text(text: str) -> str:
         embedding=CLIPEmbedder(),
     )
     ids = vector_store.add_documents(
-        documents=[Document(page_content=text, metadata={"date": "07/24"})]
+        documents=[Document(page_content=text, metadata={})]
     )
     return ids[0]
 
 
-def search(query: str) -> list:
+def search(query: str) -> list[Document]:
     collection: str = CollectionName.test.value
     if not qdrant.collection_exists(collection):
         backend_logger.error(f"Collection '{collection}' does not exist.")
@@ -43,57 +79,6 @@ def search(query: str) -> list:
         embedding=CLIPEmbedder(),
     )
     return vector_store.similarity_search(query=query, k=4, filter=None)
-
-
-def handle_sync_collection(collection: CollectionName):
-    _create_collection(collection.value)
-    EXPORT_DIR = Path(f"exports/{collection.value}")
-    files = sorted(EXPORT_DIR.glob(f"{collection.value}_*.txt"))
-    for file_path in files:
-        # TODO: Check if file_path.name already exists in the collection
-        id, date, time = _extract_file_info(file_path.name, collection.value)
-        with file_path.open("r", encoding="utf-8") as f:
-            text = f.read()
-            embedding: list[float] = get_embeddings(text=text).text_embedding
-            # backend_logger.debug(f"Embedding size: {len(embedding)}")
-            _save_embedding(
-                collection_name=collection.value,
-                entry=TextEntry(
-                    id=id, embedding=embedding, date=date, time=time, text=text
-                ),
-            )
-
-
-def new_handle_sync_collection(collection: CollectionName):
-    _create_collection(collection.value)
-    EXPORT_DIR = Path(f"exports/{collection.value}")
-    files = sorted(EXPORT_DIR.glob(f"{collection.value}_*.txt"))
-    for file_path in files:
-        # TODO: Check if file_path.name already exists in the collection
-        id, date, time = _extract_file_info(file_path.name, collection.value)
-        with file_path.open("r", encoding="utf-8") as f:
-            text = f.read()
-            metadata = {
-                "date": date,
-                "time": time,
-            }
-            _store_product(
-                collection=collection.value, id=id, text=text, metadata=metadata
-            )
-
-
-def _store_product(collection: str, id: str, text: str, metadata: dict):
-    _create_collection(collection)
-    vector_store = QdrantVectorStore(
-        client=qdrant,
-        collection_name=collection,
-        embedding=CLIPEmbedder(),
-    )
-    ids = vector_store.add_documents(
-        documents=[Document(page_content=text, metadata=metadata, id=id)],
-        ids=[str(uuid.uuid4())],
-    )
-    return ids[0]
 
 
 def _create_collection(collection_name: str):
@@ -107,39 +92,6 @@ def _create_collection(collection_name: str):
         backend_logger.info(f"Collection '{collection_name}' created successfully.")
     else:
         backend_logger.info(f"Collection '{collection_name}' already exists.")
-
-
-def _save_embedding(collection_name: str, entry: TextEntry) -> str:
-    if (
-        not isinstance(entry.embedding, list)
-        or len(entry.embedding) != QDRANT_VECTOR_SIZE
-    ):
-        raise ValueError(f"Embedding must be a list of {QDRANT_VECTOR_SIZE} floats.")
-    qdrant.upsert(
-        collection_name=collection_name,
-        points=[
-            models.PointStruct(
-                id=int(entry.id),
-                vector=entry.embedding,
-                payload={"text": entry.text, "date": entry.date, "time": entry.time},
-            )
-        ],
-    )
-    # backend_logger.info(
-    #     f"Saved embedding for ID: {entry.id} in collection: {collection.value}"
-    # )
-    return entry.id
-
-
-def _extract_file_info(
-    filename: str, collection_name: str
-) -> Optional[tuple[str, str, str]]:
-    pattern = r"^{}_(\d+)_(\d{{8}})_(\d{{6}})".format(re.escape(collection_name))
-    match = re.search(pattern, filename)
-    if match:
-        id, date, time = match.groups()
-        return f"{collection_name}_{id}", date, time
-    return None
 
 
 def get_all_ids(
@@ -222,6 +174,10 @@ def vector_search(query: str, collection_name: str) -> tuple[list[str], list[str
             f"{collection_name} ID: {point.id}, Date: {point.payload['date']}, Time: {point.payload['time']}"
         )
     return docs, sources
+
+
+# docs, source = vector_search(query="Most expensive product", collection_name=CollectionName.products.value)
+# print(docs)
 
 
 @tool

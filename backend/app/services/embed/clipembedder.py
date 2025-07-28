@@ -36,7 +36,7 @@ class CLIPEmbedder(Embeddings):
         """
         try:
             model, _, preprocess = open_clip.create_model_and_transforms(
-                model_name="ViT-B-32", pretrained=None
+                model_name="ViT-B-32", pretrained="openai"
             )
             model.load_state_dict(torch.load(path, map_location=self.device))
             model.to(self.device)

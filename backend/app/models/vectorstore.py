@@ -15,8 +15,8 @@ class SyncRequest(BaseModel):
 
 
 class SyncResponse(BaseModel):
-    status: str
-    collection: CollectionName
+    collections_synced: list[str]
+    collections_failed: list[str]
 
 
 class StoreTextRequest(BaseModel):
