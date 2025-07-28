@@ -7,7 +7,7 @@ from qdrant_client import QdrantClient
 from qdrant_client.http.models import models
 
 from backend.app.config import QDRANT_URL, QDRANT_VECTOR_SIZE, backend_logger
-from backend.app.models.vectorstore import CollectionName
+from backend.app.models.chat import AgentResponse
 from backend.app.services.embed.clipembedder import CLIPEmbedder
 from backend.app.services.embed.embedder import get_embeddings
 from backend.app.services.utils import extract_file_info, generate_uuid
@@ -52,8 +52,7 @@ def handle_sync_collection(collection: str) -> list[str] | None:
     return added_ids
 
 
-def search(query: str) -> list[Document]:
-    collection: str = CollectionName.test.value
+def search(query: str, collection: str) -> list[Document]:
     if not qdrant.collection_exists(collection):
         backend_logger.error(f"Collection '{collection}' does not exist.")
         return []
@@ -136,32 +135,16 @@ async def retrieve_relevant_documents(
 
 
 @tool
-def vector_search(query: str, collection_name: str) -> tuple[list[str], list[str]]:
+def vector_search(query: str, collection_name: str) -> list[Document]:
     """
     Perform a vector similarity search against a set of documents.
     The query should contain the semantic meaning of original query.
     collection_name can be "Products" or "Employees"
     Returns top 5 most relevant context documents and their sources.
     """
-    embedding = get_embeddings(text=query).text_embedding
-    points = qdrant.search(
-        collection_name=collection_name,
-        query_vector=embedding,
-        limit=5,
-        with_payload=True,
-    )
-    docs = []
-    sources = []
-    for point in points:
-        docs.append(point.payload["text"])
-        sources.append(
-            f"{collection_name} ID: {point.id}, Date: {point.payload['date']}, Time: {point.payload['time']}"
-        )
-    return docs, sources
-
-
-# docs, source = vector_search(query="Most expensive product", collection_name=CollectionName.products.value)
-# print(docs)
+    backend_logger.info("Executing 'vector_search' tool")
+    documents: list[Document] = search(query, collection_name)
+    return documents
 
 
 @tool
@@ -175,13 +158,13 @@ def gen_embedding(text: str) -> list:
 
 
 @tool
-def final_answer(answer: str, sources: list[str], tools_used: list[str]) -> dict:
+def final_answer(answer: str, sources: list[str], tools_used: list[str]):
     """Use this tool to provide a final answer to the user.
     The answer should be in natural language as this will be provided
     to the user directly. The tools_used must include a list of tool
     names that were used within the `scratchpad`.
     """
-    return {"answer": answer, "sources": sources, "tools_used": tools_used}
+    return AgentResponse(answer=answer, sources=sources, tools_used=tools_used)
 
 
 tools = [final_answer, vector_search]

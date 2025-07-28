@@ -1,5 +1,3 @@
-import json
-
 from langchain_core.messages import BaseMessage, ToolMessage
 from langchain_core.prompts import (
     ChatPromptTemplate,
@@ -11,6 +9,7 @@ from langchain_core.runnables.base import RunnableSerializable
 from langchain_ollama import ChatOllama
 
 from backend.app.config import OLLAMA_BASE_URL, OLLAMA_CHAT_MODEL, backend_logger
+from backend.app.models.chat import AgentResponse
 from backend.app.services.vectorstore import tools
 
 ollama = ChatOllama(
@@ -52,7 +51,7 @@ class CustomAgentExecutor:
             | ollama.bind_tools(tools, tool_choice="any")
         )
 
-    def invoke(self, query: str) -> str:
+    def invoke(self, query: str) -> AgentResponse:
         backend_logger.info("Invoking custom agent executor")
         count = 0
         agent_scratchpad = []
@@ -65,30 +64,31 @@ class CustomAgentExecutor:
                     "agent_scratchpad": agent_scratchpad,
                 }
             )
-            backend_logger.trace(f"Tool call: {tool_call}")
+            backend_logger.trace(f"Reasoning: {tool_call.content}")
+
             # add initial tool call to scratchpad
             agent_scratchpad.append(tool_call)
+
             # otherwise we execute the tool and add it's output to the agent scratchpad
             tool_name = tool_call.tool_calls[0]["name"]
             tool_args = tool_call.tool_calls[0]["args"]
             tool_call_id = tool_call.tool_calls[0]["id"]
             tool_out = name2tool[tool_name](**tool_args)
+
             # add the tool output to the agent scratchpad
             tool_exec = ToolMessage(content=f"{tool_out}", tool_call_id=tool_call_id)
             agent_scratchpad.append(tool_exec)
-            # add a print so we can see intermediate steps
-            backend_logger.trace(f"Iteration {count + 1}: {tool_name}({tool_args})")
+
+            backend_logger.debug(f"Iteration {count + 1}: {tool_name}({tool_args})")
             count += 1
             # if the tool call is the final answer tool, we stop
             if tool_name == "final_answer":
                 break
         # add the final output to the chat history
-        final_answer = tool_out["answer"]
+        # final_answer = tool_out.answer
         # self.chat_history.extend(
         #     [HumanMessage(content=query), AIMessage(content=final_answer)]
         # )
         # return the final answer in dict form
-        backend_logger.trace(
-            f"Agent execution completed with response: {json.dumps(tool_out)}"
-        )
-        return json.dumps(tool_out)
+        backend_logger.success("Agent execution completed successfully")
+        return tool_out

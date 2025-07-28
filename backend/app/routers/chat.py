@@ -13,7 +13,7 @@ async def ask_chat(payload: ChatRequest) -> ChatResponse:
     Optionally runs a query processor before retrieval.
     """
     try:
-        result = await handle_chat_request(
+        result: ChatResponse = await handle_chat_request(
             user_query=payload.user_query,
             use_query_processor=payload.use_query_processor,
         )
