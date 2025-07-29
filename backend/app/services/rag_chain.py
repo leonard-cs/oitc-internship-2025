@@ -1,14 +1,10 @@
 from fastapi import HTTPException
-from langchain_core.prompts import (
-    ChatPromptTemplate,
-    HumanMessagePromptTemplate,
-    SystemMessagePromptTemplate,
-)
 from langchain_ollama import ChatOllama
 
 from backend.app.config import OLLAMA_BASE_URL, OLLAMA_CHAT_MODEL, backend_logger
 from backend.app.models.chat import AgentResponse, LLMResponse
 from backend.app.services.custom_agent_executor import CustomAgentExecutor
+from backend.app.prompts.prompts import get_rag_prompt
 
 ollama = ChatOllama(
     model=OLLAMA_CHAT_MODEL,
@@ -18,20 +14,7 @@ ollama = ChatOllama(
 
 
 async def generate_answer_from_docs(query: str, docs: list[str]) -> LLMResponse:
-    system_prompt = """You are a helpful assistant that answers questions based on the provided context.
-    Your responses should be concise and directly address the user's query.
-    If the context does not contain enough information to answer the question, respond with "I don't know."
-
-    Context: 
-    {context}
-    """
-
-    prompt_template = ChatPromptTemplate.from_messages(
-        [
-            SystemMessagePromptTemplate.from_template(system_prompt),
-            HumanMessagePromptTemplate.from_template("{query}"),
-        ]
-    )
+    prompt_template = get_rag_prompt()
 
     structured_ollama = ollama.with_structured_output(LLMResponse)
 
