@@ -2,7 +2,6 @@ from fastapi import APIRouter, Query
 
 from backend.app.config import backend_logger
 from backend.app.models.vectorstore import (
-    AllIdResponse,
     CollectionName,
     SyncRequest,
     SyncResponse,
