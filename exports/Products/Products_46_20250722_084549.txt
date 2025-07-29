@@ -1,1 +1,0 @@
-Product 'Spegesild' (ID 46) is supplied by supplier #21 under category #8. Each unit contains '4 - 450 g glasses' and costs $12.00. There are 95 in stock, 0 on order, and the reorder level is 0. It is currently available.

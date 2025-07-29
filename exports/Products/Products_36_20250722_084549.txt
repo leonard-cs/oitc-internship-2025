@@ -1,1 +1,0 @@
-Product 'Inlagd Sill' (ID 36) is supplied by supplier #17 under category #8. Each unit contains '24 - 250 g  jars' and costs $19.00. There are 112 in stock, 0 on order, and the reorder level is 20. It is currently available.

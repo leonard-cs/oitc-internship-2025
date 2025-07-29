@@ -1,1 +1,0 @@
-Product 'Gorgonzola Telino' (ID 31) is supplied by supplier #14 under category #4. Each unit contains '12 - 100 g pkgs' and costs $12.50. There are 0 in stock, 70 on order, and the reorder level is 20. It is currently available.

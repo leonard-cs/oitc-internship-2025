@@ -1,1 +1,0 @@
-Product 'Rogede sild' (ID 45) is supplied by supplier #21 under category #8. Each unit contains '1k pkg.' and costs $9.50. There are 5 in stock, 70 on order, and the reorder level is 15. It is currently available.

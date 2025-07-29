@@ -1,1 +1,0 @@
-Product 'Maxilaku' (ID 49) is supplied by supplier #23 under category #3. Each unit contains '24 - 50 g pkgs.' and costs $20.00. There are 10 in stock, 60 on order, and the reorder level is 15. It is currently available.

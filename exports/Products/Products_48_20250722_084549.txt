@@ -1,1 +1,0 @@
-Product 'Chocolade' (ID 48) is supplied by supplier #22 under category #3. Each unit contains '10 pkgs.' and costs $12.75. There are 15 in stock, 70 on order, and the reorder level is 25. It is currently available.

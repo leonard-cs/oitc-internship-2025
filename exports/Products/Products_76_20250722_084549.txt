@@ -1,1 +1,0 @@
-Product 'Lakkalikoori' (ID 76) is supplied by supplier #23 under category #1. Each unit contains '500 ml' and costs $18.00. There are 57 in stock, 0 on order, and the reorder level is 20. It is currently available.

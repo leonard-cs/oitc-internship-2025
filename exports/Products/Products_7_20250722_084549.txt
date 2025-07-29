@@ -1,1 +1,0 @@
-Product 'Uncle Bob's Organic Dried Pears' (ID 7) is supplied by supplier #3 under category #7. Each unit contains '12 - 1 lb pkgs.' and costs $30.00. There are 15 in stock, 0 on order, and the reorder level is 10. It is currently available.

@@ -1,1 +1,0 @@
-Product 'Ipoh Coffee' (ID 43) is supplied by supplier #20 under category #1. Each unit contains '16 - 500 g tins' and costs $46.00. There are 17 in stock, 10 on order, and the reorder level is 25. It is currently available.

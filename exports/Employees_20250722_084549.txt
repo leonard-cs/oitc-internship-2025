@@ -1,9 +1,0 @@
-Ms. Nancy Davolio is a Sales Representative based in Seattle, USA. Born on 1948-12-08, hired on 1992-05-01. Reports to Employee ID 2.
-Dr. Andrew Fuller is a Vice President, Sales based in Tacoma, USA. Born on 1952-02-19, hired on 1992-08-14. Reports to Employee ID No one.
-Ms. Janet Leverling is a Sales Representative based in Kirkland, USA. Born on 1963-08-30, hired on 1992-04-01. Reports to Employee ID 2.
-Mrs. Margaret Peacock is a Sales Representative based in Redmond, USA. Born on 1937-09-19, hired on 1993-05-03. Reports to Employee ID 2.
-Mr. Steven Buchanan is a Sales Manager based in London, UK. Born on 1955-03-04, hired on 1993-10-17. Reports to Employee ID 2.
-Mr. Michael Suyama is a Sales Representative based in London, UK. Born on 1963-07-02, hired on 1993-10-17. Reports to Employee ID 5.
-Mr. Robert King is a Sales Representative based in London, UK. Born on 1960-05-29, hired on 1994-01-02. Reports to Employee ID 5.
-Ms. Laura Callahan is a Inside Sales Coordinator based in Seattle, USA. Born on 1958-01-09, hired on 1994-03-05. Reports to Employee ID 2.
-Ms. Anne Dodsworth is a Sales Representative based in London, UK. Born on 1966-01-27, hired on 1994-11-15. Reports to Employee ID 5.

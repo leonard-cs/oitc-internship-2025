@@ -1,1 +1,0 @@
-Product 'Gumbar Gummibarchen' (ID 26) is supplied by supplier #11 under category #3. Each unit contains '100 - 250 g bags' and costs $31.23. There are 15 in stock, 0 on order, and the reorder level is 0. It is currently available.

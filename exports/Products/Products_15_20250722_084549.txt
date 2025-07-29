@@ -1,1 +1,0 @@
-Product 'Genen Shouyu' (ID 15) is supplied by supplier #6 under category #2. Each unit contains '24 - 250 ml bottles' and costs $15.50. There are 39 in stock, 0 on order, and the reorder level is 5. It is currently available.

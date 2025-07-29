@@ -1,1 +1,0 @@
-Product 'Filo Mix' (ID 52) is supplied by supplier #24 under category #5. Each unit contains '16 - 2 kg boxes' and costs $7.00. There are 38 in stock, 0 on order, and the reorder level is 25. It is currently available.

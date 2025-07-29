@@ -1,1 +1,0 @@
-Product 'Boston Crab Meat' (ID 40) is supplied by supplier #19 under category #8. Each unit contains '24 - 4 oz tins' and costs $18.40. There are 123 in stock, 0 on order, and the reorder level is 30. It is currently available.

@@ -1,1 +1,0 @@
-Product 'Gula Malacca' (ID 44) is supplied by supplier #20 under category #2. Each unit contains '20 - 2 kg bags' and costs $19.45. There are 27 in stock, 0 on order, and the reorder level is 15. It is currently available.

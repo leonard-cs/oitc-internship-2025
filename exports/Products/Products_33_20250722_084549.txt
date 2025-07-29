@@ -1,1 +1,0 @@
-Product 'Geitost' (ID 33) is supplied by supplier #15 under category #4. Each unit contains '500 g' and costs $2.50. There are 112 in stock, 0 on order, and the reorder level is 20. It is currently available.

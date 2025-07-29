@@ -1,1 +1,0 @@
-Product 'Zaanse koeken' (ID 47) is supplied by supplier #22 under category #3. Each unit contains '10 - 4 oz boxes' and costs $9.50. There are 36 in stock, 0 on order, and the reorder level is 0. It is currently available.

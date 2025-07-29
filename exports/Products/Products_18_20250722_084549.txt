@@ -1,1 +1,0 @@
-Product 'Carnarvon Tigers' (ID 18) is supplied by supplier #7 under category #8. Each unit contains '16 kg pkg.' and costs $62.50. There are 42 in stock, 0 on order, and the reorder level is 0. It is currently available.

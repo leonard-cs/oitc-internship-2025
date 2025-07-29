@@ -1,1 +1,0 @@
-Product 'Escargots de Bourgogne' (ID 58) is supplied by supplier #27 under category #8. Each unit contains '24 pieces' and costs $13.25. There are 62 in stock, 0 on order, and the reorder level is 20. It is currently available.

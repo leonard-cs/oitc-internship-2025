@@ -1,1 +1,0 @@
-Product 'Pate chinois' (ID 55) is supplied by supplier #25 under category #6. Each unit contains '24 boxes x 2 pies' and costs $24.00. There are 115 in stock, 0 on order, and the reorder level is 20. It is currently available.

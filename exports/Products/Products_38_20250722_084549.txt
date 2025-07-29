@@ -1,1 +1,0 @@
-Product 'Cote de Blaye' (ID 38) is supplied by supplier #18 under category #1. Each unit contains '12 - 75 cl bottles' and costs $263.50. There are 17 in stock, 0 on order, and the reorder level is 15. It is currently available.

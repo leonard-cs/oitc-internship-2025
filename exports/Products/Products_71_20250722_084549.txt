@@ -1,1 +1,0 @@
-Product 'Flotemysost' (ID 71) is supplied by supplier #15 under category #4. Each unit contains '10 - 500 g pkgs.' and costs $21.50. There are 26 in stock, 0 on order, and the reorder level is 0. It is currently available.

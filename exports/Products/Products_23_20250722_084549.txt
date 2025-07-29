@@ -1,1 +1,0 @@
-Product 'Tunnbrod' (ID 23) is supplied by supplier #9 under category #5. Each unit contains '12 - 250 g pkgs.' and costs $9.00. There are 61 in stock, 0 on order, and the reorder level is 25. It is currently available.

@@ -1,1 +1,0 @@
-Product 'Manjimup Dried Apples' (ID 51) is supplied by supplier #24 under category #7. Each unit contains '50 - 300 g pkgs.' and costs $53.00. There are 20 in stock, 0 on order, and the reorder level is 10. It is currently available.

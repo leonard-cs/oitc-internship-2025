@@ -1,1 +1,0 @@
-Product 'Tofu' (ID 14) is supplied by supplier #6 under category #7. Each unit contains '40 - 100 g pkgs.' and costs $23.25. There are 35 in stock, 0 on order, and the reorder level is 0. It is currently available.

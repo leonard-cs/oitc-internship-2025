@@ -1,1 +1,0 @@
-Product 'Sir Rodney's Scones' (ID 21) is supplied by supplier #8 under category #3. Each unit contains '24 pkgs. x 4 pieces' and costs $10.00. There are 3 in stock, 40 on order, and the reorder level is 5. It is currently available.
