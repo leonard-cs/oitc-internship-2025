@@ -16,5 +16,6 @@ qdrant_client
 pytest
 langchain-ollama
 langchain-qdrant
+langchain-community
 
 loguru

@@ -7,8 +7,8 @@ import pyodbc
 from dotenv import load_dotenv
 
 load_dotenv(dotenv_path=Path("./playground/.env"))
-MSSQL_SERVER = os.getenv("MSSQL_SERVER")
-MSSQL_DATABASE = os.getenv("MSSQL_DATABASE")
+MSSQL_SERVER = os.getenv("MSSQL_SERVER", "localhost\SQLEXPRESS")
+MSSQL_DATABASE = os.getenv("MSSQL_DATABASE", "northwind")
 
 EXPORT_DIR = "exports"
 TIME = datetime.now().strftime("%Y%m%d_%H%M%S")
