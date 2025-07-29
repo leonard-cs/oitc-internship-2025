@@ -1,14 +1,13 @@
-from fastapi import APIRouter
+from fastapi import APIRouter, Query
 
 from backend.app.config import backend_logger
 from backend.app.models.vectorstore import (
-    AllIdRequest,
     AllIdResponse,
     CollectionName,
     SyncRequest,
     SyncResponse,
 )
-from backend.app.services.vectorstore import get_all_ids, handle_sync_collection
+from backend.app.services.vectorstore import get_all_records, handle_sync_collection
 
 router = APIRouter()
 
@@ -56,11 +55,23 @@ async def sync_collection(payload: SyncRequest) -> SyncResponse:
         return SyncResponse(collections_synced=[], collections_failed=[collection])
 
 
-@router.get("/all_ids", response_model=list[AllIdResponse])
-async def all_ids(payload: AllIdRequest) -> list[AllIdResponse]:
-    backend_logger.info(
-        f"Retrieving all IDs from collection: {payload.collection.value}"
-    )
-    return get_all_ids(
-        collection_name=payload.collection.value, with_payload=payload.with_payload
+@router.get(
+    "/collection-ids",
+    response_model=list[dict],
+    tags=["Vector Store"],
+    summary="Get all IDs from a vector collection",
+)
+async def get_collection_ids(
+    collection: CollectionName = Query(
+        ..., description="Collection to retrieve IDs from"
+    ),
+    with_payload: bool = Query(False, description="Include payload data for each ID"),
+) -> list[dict]:
+    """
+    Retrieve all IDs (and optionally payloads) from a specified vector store collection.
+    """
+    backend_logger.info(f"Retrieving all IDs from collection: {collection.value}")
+    return get_all_records(
+        collection_name=collection.value,
+        with_payload=with_payload,
     )

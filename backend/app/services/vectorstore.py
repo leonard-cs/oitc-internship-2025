@@ -77,12 +77,12 @@ def _create_collection(collection_name: str):
         backend_logger.info(f"Collection '{collection_name}' already exists.")
 
 
-def get_all_ids(
-    collection_name: str, with_payload: bool, limit: int = 10000
+def get_all_records(
+    collection_name: str, with_payload: bool = True, limit: int = 10000
 ) -> list[dict[str, any]]:
-    all_entries = []
+    all_records = []
     offset = None
-
+    qdrant = QdrantClient(url=QDRANT_URL)
     while True:
         scroll_result = qdrant.scroll(
             collection_name=collection_name,
@@ -92,27 +92,27 @@ def get_all_ids(
             offset=offset,
         )
 
-        points = scroll_result[0]
-        if not points:
+        records = scroll_result[0]
+        if not records:
             break
 
-        for point in points:
+        for record in records:
             if with_payload:
                 entry = {
-                    "id": str(point.id),
-                    "date": point.payload["date"],
-                    "time": point.payload["time"],
+                    "id": str(record.id),
+                    "payload": record.payload.get("page_content", ""),
+                    "metadata": record.payload.get("metadata", {}),
                 }
             else:
-                entry = {"id": str(point.id)}
-            all_entries.append(entry)
+                entry = {"id": str(record.id)}
+            all_records.append(entry)
 
         offset = scroll_result[1]
 
-        if offset is None or len(all_entries) >= limit:
+        if offset is None or len(all_records) >= limit:
             break
-
-    return all_entries
+    backend_logger.info(f"#Records: {len(all_records)}.")
+    return all_records
 
 
 async def retrieve_relevant_documents(
