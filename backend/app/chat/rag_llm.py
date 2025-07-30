@@ -138,7 +138,7 @@ async def execute_sql_query(
                 f"Regenerating SQL query (attempt {current_attempt + 1})..."
             )
             sql_query = await _regenerate_sql_query_with_error(
-                user_question, table_info, sql_query, str(e)
+                user_question, table_info, str(e)
             )
             current_attempt += 1
 
