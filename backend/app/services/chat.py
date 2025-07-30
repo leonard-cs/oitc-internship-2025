@@ -3,7 +3,11 @@ from backend.app.models.chat import AgentResponse, ChatResponse, LLMResponse
 from backend.app.models.query_process import QueryProcessorResponse
 from backend.app.models.vectorstore import CollectionName
 from backend.app.services.query_processor import process_query
-from backend.app.services.rag_chain import generate_answer, generate_answer_from_docs
+from backend.app.services.rag_chain import (
+    generate_answer,
+    generate_answer_from_docs,
+    generate_answer_from_sql,
+)
 from backend.app.services.vectorstore import search
 
 
@@ -23,11 +27,23 @@ async def handle_chat_request(
     llm_response: LLMResponse = await generate_answer_from_docs(
         query=user_query, docs=documents
     )
-    backend_logger.debug(llm_response)
+    backend_logger.debug(f"LLM response: {llm_response}")
     return ChatResponse(
         answer=llm_response.answer,
         semantic_query=semantic_query,
         sources=llm_response.sources,
+        tools_used=["vector_search"],
+    )
+
+
+async def handle_chat_request_sql(user_query: str) -> ChatResponse:
+    backend_logger.info("Received chat request for SQL")
+    llm_response: LLMResponse = await generate_answer_from_sql(user_query)
+    return ChatResponse(
+        answer=llm_response.answer,
+        semantic_query=user_query,
+        sources=llm_response.sources,
+        tools_used=[{"type": "sql", "query": llm_response.log}],
     )
 
 

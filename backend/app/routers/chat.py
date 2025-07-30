@@ -1,7 +1,11 @@
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, HTTPException, Query
 
 from backend.app.models.chat import ChatRequest, ChatResponse
-from backend.app.services.chat import handle_chat_request, handle_chat_request_agent
+from backend.app.services.chat import (
+    handle_chat_request,
+    handle_chat_request_agent,
+    handle_chat_request_sql,
+)
 
 router = APIRouter()
 
@@ -17,6 +21,20 @@ async def ask_chat(payload: ChatRequest) -> ChatResponse:
             user_query=payload.user_query,
             use_query_processor=payload.use_query_processor,
         )
+        return result
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@router.post("/ask-sql", response_model=ChatResponse, tags=["Chats"])
+async def ask_chat_sql(
+    query: str = Query(..., description="User query"),
+) -> ChatResponse:
+    """
+    Process a user query through the SQL RAG chatbot pipeline.
+    """
+    try:
+        result: ChatResponse = await handle_chat_request_sql(user_query=query)
         return result
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))

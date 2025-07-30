@@ -6,5 +6,5 @@ client = TestClient(app)
 
 
 def test_health_ping():
-    response = client.get("/api/health/ping")
+    response = client.get("/health/ping")
     assert response.status_code == 200
