@@ -8,20 +8,15 @@ from backend.app.config import (
     OLLAMA_CHAT_MODEL,
     backend_logger,
 )
-from backend.app.models.chat import (
-    AgentResponse,
-    FinalResponse,
-    LLMResponse,
-    SQLResponse,
-    WhichTableResponse,
-)
-from backend.app.prompts.prompts import (
-    get_rag_prompt,
-    get_sql_query_prompt,
-    get_sql_response_prompt,
-    get_which_table_prompt,
-)
+from backend.app.models.chat import AgentResponse, LLMResponse
+from backend.app.prompts.prompts import get_rag_prompt
 from backend.app.services.custom_agent_executor import CustomAgentExecutor
+from backend.app.services.rag_llm import (
+    execute_sql_query,
+    generate_final_response,
+    generate_sql_query,
+    get_relevant_tables,
+)
 
 ollama = ChatOllama(
     model=OLLAMA_CHAT_MODEL,
@@ -52,74 +47,30 @@ async def generate_answer_from_docs(query: str, docs: list[str]) -> LLMResponse:
 
 
 async def generate_answer_from_sql(user_question: str):
-    db = SQLDatabase.from_uri(MSSQL_CONNECTION_STRING)
+    """Generate answer from SQL database with proper error handling."""
+    relevant_tables = True
+    regenerate_sql_query = True
+    try:
+        db = SQLDatabase.from_uri(MSSQL_CONNECTION_STRING)
+        table_list = db.get_usable_table_names()
+        if relevant_tables:
+            table_names = await get_relevant_tables(user_question, table_list)
+        else:
+            table_names = table_list
+        table_info = db.get_table_info(table_names)
 
-    table_list = [
-        "Categories",
-        "Customers",
-        "EmployeeTerritories",
-        "Employees",
-        "Order Details",
-        "Orders",
-        "Products",
-        "Region",
-        "Shippers",
-        "Suppliers",
-        "Territories",
-    ]
+        sql_query = await generate_sql_query(user_question, table_info)
+        query_results = await execute_sql_query(
+            db, sql_query, user_question, table_info, regenerate_sql_query
+        )
+        final_response = await generate_final_response(user_question, query_results)
 
-    which_table_ollama = ollama.with_structured_output(WhichTableResponse)
-    which_table_pipeline = (
-        {
-            "user_question": lambda x: x["user_question"],
-            "table_list": lambda x: x["table_list"],
-        }
-        | get_which_table_prompt()
-        | which_table_ollama
-    )
-    backend_logger.info("Generating which table response...")
-    which_table_response: WhichTableResponse = which_table_pipeline.invoke(
-        {"user_question": user_question, "table_list": table_list}
-    )
-    table_names = which_table_response.table_names
-    backend_logger.debug(f"Table names: {table_names}")
+        return LLMResponse(answer=final_response, sources=table_names, log=sql_query)
 
-    table_info = db.get_table_info(table_names)
-    sql_ollama = ollama.with_structured_output(SQLResponse)
-    sql_query_pipeline = (
-        {
-            "user_question": lambda x: x["user_question"],
-            "table_info": lambda x: x["table_info"],
-        }
-        | get_sql_query_prompt()
-        | sql_ollama
-    )
-    backend_logger.info("Generating SQL query response...")
-    sql_response: SQLResponse = sql_query_pipeline.invoke(
-        {"user_question": user_question, "table_info": table_info}
-    )
-    sql_query = sql_response.sql_query
-    backend_logger.debug(f"SQL query: {sql_query}")
-
-    query_results = db.run_no_throw(sql_query)
-    print(f"Query results:\n{query_results}")
-
-    final_response_ollama = ollama.with_structured_output(FinalResponse)
-    final_response_pipeline = (
-        {
-            "user_question": lambda x: x["user_question"],
-            "query_results": lambda x: x["query_results"],
-        }
-        | get_sql_response_prompt()
-        | final_response_ollama
-    )
-    backend_logger.info("Generating final response...")
-    final_response: FinalResponse = final_response_pipeline.invoke(
-        {"user_question": user_question, "query_results": query_results}
-    )
-    llm_results = final_response.response
-    backend_logger.debug(f"LLM results: {llm_results}")
-    return LLMResponse(answer=llm_results, sources=table_names)
+    except Exception as e:
+        error_msg = f"Error in SQL answer generation: {str(e)}"
+        backend_logger.error(error_msg)
+        raise HTTPException(status_code=500, detail=error_msg)
 
 
 async def generate_answer(query: str) -> AgentResponse:

@@ -27,22 +27,23 @@ async def handle_chat_request(
     llm_response: LLMResponse = await generate_answer_from_docs(
         query=user_query, docs=documents
     )
-    backend_logger.debug(llm_response)
+    backend_logger.debug(f"LLM response: {llm_response}")
     return ChatResponse(
         answer=llm_response.answer,
         semantic_query=semantic_query,
         sources=llm_response.sources,
+        tools_used=["vector_search"],
     )
 
 
 async def handle_chat_request_sql(user_query: str) -> ChatResponse:
     backend_logger.info("Received chat request for SQL")
-    llm_response = await generate_answer_from_sql(user_query)
+    llm_response: LLMResponse = await generate_answer_from_sql(user_query)
     return ChatResponse(
         answer=llm_response.answer,
         semantic_query=user_query,
         sources=llm_response.sources,
-        tools_used=["sql"],
+        tools_used=[{"type": "sql", "query": llm_response.log}],
     )
 
 
