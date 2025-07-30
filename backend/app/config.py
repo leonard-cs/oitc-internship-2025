@@ -31,3 +31,8 @@ QDRANT_URL = os.getenv("QDRANT_URL", default="")
 QDRANT_VECTOR_SIZE: int = int(os.getenv("QDRANT_VECTOR_SIZE", default=0))
 
 EMBEDDING_MODEL_PATH = "weights/ViT-B-32.pt"
+
+MSSQL_CONNECTION_STRING = (
+    "mssql+pyodbc://localhost\\SQLEXPRESS/northwind"
+    "?driver=ODBC+Driver+17+for+SQL+Server&Trusted_Connection=yes"
+)
