@@ -8,10 +8,9 @@ from backend.app.config import (
     OLLAMA_CHAT_MODEL,
     backend_logger,
 )
-from backend.app.models.chat import AgentResponse, LLMResponse
+from backend.app.chat.models import LLMResponse
 from backend.app.prompts.prompts import get_rag_prompt
-from backend.app.services.custom_agent_executor import CustomAgentExecutor
-from backend.app.services.rag_llm import (
+from backend.app.chat.rag_llm import (
     execute_sql_query,
     generate_final_response,
     generate_sql_query,
@@ -71,14 +70,3 @@ async def generate_answer_from_sql(user_question: str):
         error_msg = f"Error in SQL answer generation: {str(e)}"
         backend_logger.error(error_msg)
         raise HTTPException(status_code=500, detail=error_msg)
-
-
-async def generate_answer(query: str) -> AgentResponse:
-    agent = CustomAgentExecutor()
-    try:
-        response: AgentResponse = agent.invoke(query=query)
-        return response
-    except Exception as e:
-        msg = f"Error occurred while generating answer: {e}"
-        backend_logger.error(msg)
-        raise HTTPException(status_code=500, detail=msg)

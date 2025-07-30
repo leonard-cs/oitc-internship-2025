@@ -8,7 +8,7 @@ from langchain_core.runnables import RunnablePassthrough
 from langchain_ollama import ChatOllama
 
 from backend.app.config import OLLAMA_BASE_URL, OLLAMA_CHAT_MODEL, backend_logger
-from backend.app.models.query_process import QueryProcessorResponse
+from backend.app.chat.models import QueryProcessorResponse
 
 ollama = ChatOllama(
     model=OLLAMA_CHAT_MODEL,

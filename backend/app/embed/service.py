@@ -4,8 +4,7 @@ import open_clip
 import torch
 from PIL import Image
 
-from backend.app.config import backend_logger
-from backend.app.models.embed import EmbedderResponse
+from backend.app.embed.models import EmbedderResponse
 
 model = None
 preprocess = None

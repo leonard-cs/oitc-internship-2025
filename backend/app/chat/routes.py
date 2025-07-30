@@ -1,16 +1,13 @@
 from fastapi import APIRouter, HTTPException, Query
 
-from backend.app.models.chat import ChatRequest, ChatResponse
-from backend.app.services.chat import (
-    handle_chat_request,
-    handle_chat_request_agent,
-    handle_chat_request_sql,
-)
+from backend.app.agent.service import handle_chat_request_agent
+from backend.app.chat.models import ChatRequest, ChatResponse
+from backend.app.chat.service import handle_chat_request, handle_chat_request_sql
 
 router = APIRouter()
 
 
-@router.post("/ask", response_model=ChatResponse, tags=["Chats"])
+@router.post("/ask", response_model=ChatResponse)
 async def ask_chat(payload: ChatRequest) -> ChatResponse:
     """
     Process a user query through the full RAG chatbot pipeline.
@@ -26,7 +23,7 @@ async def ask_chat(payload: ChatRequest) -> ChatResponse:
         raise HTTPException(status_code=500, detail=str(e))
 
 
-@router.post("/ask-sql", response_model=ChatResponse, tags=["Chats"])
+@router.post("/ask-sql", response_model=ChatResponse)
 async def ask_chat_sql(
     query: str = Query(..., description="User query"),
 ) -> ChatResponse:
@@ -40,7 +37,7 @@ async def ask_chat_sql(
         raise HTTPException(status_code=500, detail=str(e))
 
 
-@router.post("/ask_agent", tags=["Chats"])
+@router.post("/ask_agent")
 async def ask_chat_agent(payload: ChatRequest):
     """
     Process a user query through the agent RAG chatbot pipeline.

@@ -1,11 +1,6 @@
 from fastapi import FastAPI
-
-from backend.app.routers import chat, embed, health, vectorstore
+from backend.app.api.v1.api import api_router
 
 app = FastAPI()
 
-
-app.include_router(health.router, prefix="/health")
-app.include_router(chat.router, prefix="/chat")
-app.include_router(embed.router, prefix="/embed")
-app.include_router(vectorstore.router, prefix="/vectorstore")
+app.include_router(api_router, prefix="/api/v1")

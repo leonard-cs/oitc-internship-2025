@@ -5,14 +5,14 @@ from typing import Optional
 from fastapi import APIRouter, File, Form, UploadFile
 from fastapi.responses import JSONResponse
 
-from backend.app.models.embed import EmbedderResponse
-from backend.app.services.embed.clipembedder import CLIPEmbedder
-from backend.app.services.embed.embedder import get_embeddings
+from backend.app.embed.models import EmbedderResponse
+from backend.app.embed.clipembedder import CLIPEmbedder
+from backend.app.embed.service import get_embeddings
 
 router = APIRouter()
 
 
-@router.post("/embed", tags=["Embed"])
+@router.post("/embed")
 async def embed_image_text(
     image: Optional[UploadFile] = File(default=None),
     text: Optional[str] = Form(default=None),
@@ -26,7 +26,7 @@ async def embed_image_text(
 #     response = requests.post("http://localhost:8000/embed", files={"image": f}, data={"text": "a photo of a cat"})
 
 
-@router.post("/embed-image", tags=["Embed"])
+@router.post("/embed-image")
 async def embed_image(file: UploadFile = File(...)) -> list[float]:
     image_path = _file_preprocess(file)
     embedder = CLIPEmbedder()

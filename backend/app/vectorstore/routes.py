@@ -1,17 +1,17 @@
 from fastapi import APIRouter, Query
 
 from backend.app.config import backend_logger
-from backend.app.models.vectorstore import (
+from backend.app.vectorstore.models import (
     CollectionName,
     SyncRequest,
     SyncResponse,
 )
-from backend.app.services.vectorstore import get_all_records, handle_sync_collection
+from backend.app.vectorstore.service import get_all_records, handle_sync_collection
 
 router = APIRouter()
 
 
-@router.post("/sync-all", response_model=SyncResponse, tags=["Vector Store"])
+@router.post("/sync-all", response_model=SyncResponse)
 async def sync_all_collections() -> SyncResponse:
     """
     Upload all collections from the database to the vector store.
@@ -39,7 +39,7 @@ async def sync_all_collections() -> SyncResponse:
     )
 
 
-@router.post("/sync-collection", response_model=SyncResponse, tags=["Vector Store"])
+@router.post("/sync-collection", response_model=SyncResponse)
 async def sync_collection(payload: SyncRequest) -> SyncResponse:
     """
     Synchronize a single collection from the database to the vector store.

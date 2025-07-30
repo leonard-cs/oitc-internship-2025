@@ -7,7 +7,7 @@ from backend.app.config import (
     OLLAMA_CHAT_MODEL,
     backend_logger,
 )
-from backend.app.models.chat import (
+from backend.app.chat.models import (
     FinalResponse,
     RelevantTablesResponse,
     SQLResponse,
