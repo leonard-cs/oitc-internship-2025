@@ -2,9 +2,9 @@ name: FastAPI Test
 
 on:
   push:
-    branches: [ "master" ]
+    branches: [ "master", "feat/backend" ]
   pull_request:
-    branches: [ "master" ]
+    branches: [ "master", "feat/backend" ]
 
 permissions:
   contents: read
@@ -41,5 +41,7 @@ jobs:
         # exit-zero treats all errors as warnings. The GitHub editor is 127 chars wide
         flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
     - name: Test with pytest
+      env:
+        APP_ENV: ci
       run: |
         python -m pytest
