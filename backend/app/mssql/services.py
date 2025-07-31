@@ -1,3 +1,5 @@
+from langchain_community.utilities import SQLDatabase
+
 from backend.app.config import backend_logger
 
 
@@ -11,3 +13,8 @@ def fetch_table_info(db, table_names: list[str]) -> str:
     table_info = db.get_table_info(table_names)
     backend_logger.trace(f"Table info:\n{table_info}")
     return table_info
+
+def execute_sql(db, sql_query: str) -> str:
+    if isinstance(db, SQLDatabase):
+        return db.run_no_throw(sql_query)
+    return "Database connection failed"

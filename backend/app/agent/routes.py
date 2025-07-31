@@ -1,7 +1,7 @@
 from fastapi import APIRouter, HTTPException
 
-from backend.app.chat.models import ChatRequest
 from backend.app.agent.service import handle_chat_request_agent
+from backend.app.chat.models import ChatRequest
 
 router = APIRouter()
 

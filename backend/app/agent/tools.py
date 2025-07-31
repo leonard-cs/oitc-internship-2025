@@ -4,6 +4,8 @@ from langchain_core.tools import tool
 from backend.app.agent.models import AgentResponse
 from backend.app.config import backend_logger
 from backend.app.embed.service import get_embeddings
+from backend.app.mssql.dependencies import get_db
+from backend.app.mssql.services import execute_sql, fetch_table_info, fetch_table_names
 from backend.app.vectorstore.service import search
 
 
@@ -31,6 +33,27 @@ def gen_embedding(text: str) -> list:
 
 
 @tool
+def get_table_info(table_names: list[str]) -> str:
+    """
+    Get the information of the table.
+    Return the information of the table.
+    """
+    db = get_db()
+    return fetch_table_info(db, table_names)
+    # return fetch_table_info(db, fetch_table_names(db))
+
+
+@tool
+def execute_sql_tool(sql_query: str) -> str:
+    """
+    Execute a SQL query against the database.
+    Return the result of the query.
+    """
+    db = get_db()
+    return execute_sql(db, sql_query)
+
+
+@tool
 def final_answer(answer: str, sources: list[str], tools_used: list[str]):
     """Use this tool to provide a final answer to the user.
     The answer should be in natural language as this will be provided
@@ -40,4 +63,4 @@ def final_answer(answer: str, sources: list[str], tools_used: list[str]):
     return AgentResponse(answer=answer, sources=sources, tools_used=tools_used)
 
 
-tools = [final_answer, vector_search]
+tools = [final_answer, vector_search, get_table_info, execute_sql_tool]

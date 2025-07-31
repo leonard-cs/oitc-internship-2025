@@ -104,13 +104,13 @@ async def _regenerate_sql_query_with_error(
 
 async def execute_sql_query(
     db: SQLDatabase, sql_query: str, user_question: str, table_info: str, retry: bool
-) -> str:
+) -> tuple[str, str]:
     """Execute SQL query and return results."""
     sql_query = sql_query
     if not retry:
         query_results = db.run_no_throw(sql_query)
         backend_logger.trace(f"Query results:\n{query_results}")
-        return query_results
+        return query_results, sql_query
 
     max_attempts = 3
     current_attempt = 1
@@ -119,7 +119,7 @@ async def execute_sql_query(
         try:
             query_results = db.run(sql_query)
             backend_logger.trace(f"Query results:\n{query_results}")
-            return query_results
+            return query_results, sql_query
         except Exception as e:
             error_str = str(e)
             backend_logger.warning(
@@ -131,7 +131,7 @@ async def execute_sql_query(
                     f"SQL execution failed after {max_attempts} attempts:\n{error_str}"
                 )
                 backend_logger.error(error_msg)
-                return error_msg
+                return error_msg, sql_query
 
             # Regenerate SQL query with error context
             backend_logger.info(
