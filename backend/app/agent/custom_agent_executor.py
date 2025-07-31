@@ -10,7 +10,7 @@ from langchain_ollama import ChatOllama
 
 from backend.app.agent.models import AgentResponse
 from backend.app.config import OLLAMA_BASE_URL, OLLAMA_CHAT_MODEL, backend_logger
-from backend.app.vectorstore.service import tools
+from backend.app.agent.tools import tools
 
 ollama = ChatOllama(
     model=OLLAMA_CHAT_MODEL,
