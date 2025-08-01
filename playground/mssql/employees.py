@@ -71,17 +71,18 @@ def export_employee_photo_s(table_name: str):
     cursor = conn.cursor()
     cursor.execute("SELECT EmployeeID, Photo FROM Employees")
 
-    folder_path = os.path.join(EXPORT_DIR, f"{table_name}_photos")
+    folder_name = f"{table_name}-photos"
+    folder_path = os.path.join(EXPORT_DIR, folder_name)
     os.makedirs(folder_path, exist_ok=True)
 
     for emp_id, photo in cursor.fetchall():
         # Strip the OLE header (78 bytes) if present
         photo_data = photo[78:]
 
-        filename = f"{table_name}_{emp_id}_{TIME}.jpg"
+        filename = f"{folder_name}_{emp_id}_{TIME}.jpg"
         file_path = os.path.join(folder_path, filename)
 
-        delete_file(path=folder_path, prefix=f"{table_name}_{emp_id}_", sufix=".jpg")
+        delete_file(path=folder_path, prefix=f"{folder_name}_{emp_id}_", sufix=".jpg")
 
         with open(file_path, "wb") as f:
             f.write(photo_data)

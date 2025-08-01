@@ -6,6 +6,7 @@ from pydantic import BaseModel
 class CollectionName(str, Enum):
     products = "Products"
     employees = "Employees"
+    employees_photos = "Employees-photos"
     test = "Test"
 
 

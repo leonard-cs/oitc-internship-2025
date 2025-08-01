@@ -47,16 +47,24 @@ class CLIPEmbedder(Embeddings):
             raise RuntimeError(f"Failed to load CLIP model from {path}: {e}")
 
     def _handle_encode(self, input: str) -> list[float]:
-        if input.lower().endswith((".png", ".jpg", ".jpeg")):
-            if not os.path.exists(input):
-                backend_logger.error(f"Image file not found: {input}")
+        input = input.strip()
+
+        # Split by whitespace and take the last part as the path
+        possible_path = input.split()[-1]
+        if possible_path.lower().endswith((".png", ".jpg", ".jpeg")):
+            if not os.path.exists(possible_path):
+                backend_logger.error(f"Image file not found: {possible_path}")
                 return []
-            return self._encode_image(input)
+            return self._encode_image_path(possible_path)
         else:
             return self._encode_text(input)
 
-    def _encode_image(self, image_path: str) -> list[float]:
+    def _encode_image_path(self, image_path: str) -> list[float]:
         image = self.preprocess(Image.open(image_path)).unsqueeze(0)
+        return self._encode_image(image)
+
+    def _encode_image(self, image: Image.Image) -> list[float]:
+        image = self.preprocess(image).unsqueeze(0)
         with torch.no_grad():
             embedding = self.model.encode_image(image)
             embedding /= embedding.norm(p=2, dim=-1, keepdim=True)

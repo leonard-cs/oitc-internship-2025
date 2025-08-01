@@ -6,7 +6,11 @@ from backend.app.vectorstore.models import (
     SyncRequest,
     SyncResponse,
 )
-from backend.app.vectorstore.service import get_all_records, handle_sync_collection
+from backend.app.vectorstore.service import (
+    get_all_records,
+    handle_sync_collection,
+    handle_sync_image_collection,
+)
 
 router = APIRouter()
 
@@ -32,6 +36,14 @@ async def sync_all_collections() -> SyncResponse:
             collections_synced.append(collection)
         else:
             collections_failed.append(collection)
+
+    image_collections: list[tuple[str, str]] = [
+        (CollectionName.employees_photos.value, CollectionName.employees.value),
+    ]
+
+    for photos_collection, text_collection in image_collections:
+        if handle_sync_image_collection(photos_collection, text_collection):
+            collections_synced.append(photos_collection)
 
     return SyncResponse(
         collections_synced=collections_synced,

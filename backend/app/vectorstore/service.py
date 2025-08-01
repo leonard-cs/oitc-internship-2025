@@ -49,6 +49,62 @@ def handle_sync_collection(collection: str) -> list[str] | None:
     return added_ids
 
 
+def handle_sync_image_collection(
+    photos_collection: str, text_collection: str
+) -> list[str] | None:
+    image_export_path = Path(f"exports/{photos_collection}")
+    image_files = sorted(image_export_path.glob(f"{photos_collection}_*.jpg"))
+    if not image_files:
+        backend_logger.error(
+            f"No export image files found for collection: '{photos_collection}'"
+        )
+        return
+
+    text_export_path = Path(f"exports/{text_collection}")
+    text_files = sorted(text_export_path.glob(f"{text_collection}_*.txt"))
+    if not text_files:
+        backend_logger.error(
+            f"No export text files found for collection: '{text_collection}'"
+        )
+        return
+
+    if len(image_files) != len(text_files):
+        backend_logger.error(
+            f"Number of image files ({len(image_files)}) does not match number of text files ({len(text_files)}) for collection: '{photos_collection}'"
+        )
+        return
+
+    _create_collection(photos_collection)
+    vector_store = QdrantVectorStore(
+        client=qdrant,
+        collection_name=photos_collection,
+        embedding=CLIPEmbedder(),
+    )
+
+    documents: list[Document] = []
+    ids: list[str] = []
+
+    for image_path, text_path in zip(image_files, text_files):
+        id_str, date, time = extract_file_info(text_path.name)
+        with text_path.open("r", encoding="utf-8") as f:
+            text = f.read()
+            metadata = {
+                "id": id_str,
+                "date": date,
+                "time": time,
+            }
+            documents.append(
+                Document(page_content=f"{text}\n\n{image_path}", metadata=metadata)
+            )
+            ids.append(generate_uuid(id_str))
+    added_ids = vector_store.add_documents(
+        documents=documents,
+        ids=ids,
+    )
+    backend_logger.success(f"{photos_collection}: {len(added_ids)} entries synced.")
+    return added_ids
+
+
 def search(query: str, collection: str) -> list[Document]:
     if not qdrant.collection_exists(collection):
         backend_logger.error(f"Collection '{collection}' does not exist.")
