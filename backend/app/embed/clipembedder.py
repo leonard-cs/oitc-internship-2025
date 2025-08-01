@@ -60,7 +60,7 @@ class CLIPEmbedder(Embeddings):
             return self._encode_text(input)
 
     def _encode_image_path(self, image_path: str) -> list[float]:
-        image = self.preprocess(Image.open(image_path)).unsqueeze(0)
+        image = Image.open(image_path)
         return self._encode_image(image)
 
     def _encode_image(self, image: Image.Image) -> list[float]:

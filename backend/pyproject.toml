@@ -13,3 +13,8 @@ dependencies = [
     "open-clip-torch>=3.0.0",
     "pyodbc>=5.2.0",
 ]
+
+[dependency-groups]
+dev = [
+    "pytest>=8.4.1",
+]

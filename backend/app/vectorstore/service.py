@@ -13,7 +13,7 @@ qdrant = QdrantClient(url=QDRANT_URL)
 
 
 def handle_sync_collection(collection: str) -> list[str] | None:
-    export_path = Path(f"exports/{collection}")
+    export_path = Path(f"../exports/{collection}")
     files = sorted(export_path.glob(f"{collection}_*.txt"))
 
     if not files:
@@ -52,7 +52,7 @@ def handle_sync_collection(collection: str) -> list[str] | None:
 def handle_sync_image_collection(
     photos_collection: str, text_collection: str
 ) -> list[str] | None:
-    image_export_path = Path(f"exports/{photos_collection}")
+    image_export_path = Path(f"../exports/{photos_collection}")
     image_files = sorted(image_export_path.glob(f"{photos_collection}_*.jpg"))
     if not image_files:
         backend_logger.error(
@@ -60,7 +60,7 @@ def handle_sync_image_collection(
         )
         return
 
-    text_export_path = Path(f"exports/{text_collection}")
+    text_export_path = Path(f"../exports/{text_collection}")
     text_files = sorted(text_export_path.glob(f"{text_collection}_*.txt"))
     if not text_files:
         backend_logger.error(
