@@ -1,0 +1,15 @@
+[project]
+name = "backend"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = [
+    "fastapi[standard]>=0.116.1",
+    "langchain-community>=0.3.27",
+    "langchain-ollama>=0.3.6",
+    "langchain-qdrant>=0.2.0",
+    "loguru>=0.7.3",
+    "open-clip-torch>=3.0.0",
+    "pyodbc>=5.2.0",
+]

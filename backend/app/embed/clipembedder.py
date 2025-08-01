@@ -5,7 +5,7 @@ import torch
 from langchain_core.embeddings.embeddings import Embeddings
 from PIL import Image
 
-from backend.app.config import EMBEDDING_MODEL_PATH, backend_logger
+from app.config import EMBEDDING_MODEL_PATH, backend_logger
 
 
 class CLIPEmbedder(Embeddings):

@@ -3,8 +3,8 @@ import os
 from fastapi import FastAPI
 from fastapi.testclient import TestClient
 
-from backend.app.config import backend_logger
-from backend.app.mssql.routes import get_db, router
+from app.config import backend_logger
+from app.mssql.routes import get_db, router
 
 app = FastAPI()
 app.include_router(router)

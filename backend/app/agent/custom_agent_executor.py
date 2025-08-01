@@ -8,9 +8,9 @@ from langchain_core.prompts import (
 from langchain_core.runnables.base import RunnableSerializable
 from langchain_ollama import ChatOllama
 
-from backend.app.agent.models import AgentResponse
-from backend.app.config import OLLAMA_BASE_URL, OLLAMA_CHAT_MODEL, backend_logger
-from backend.app.agent.tools import tools
+from app.agent.models import AgentResponse
+from app.config import OLLAMA_BASE_URL, OLLAMA_CHAT_MODEL, backend_logger
+from app.agent.tools import tools
 
 ollama = ChatOllama(
     model=OLLAMA_CHAT_MODEL,

@@ -1,12 +1,12 @@
 from langchain_core.documents import Document
 from langchain_core.tools import tool
 
-from backend.app.agent.models import AgentResponse
-from backend.app.config import backend_logger
-from backend.app.embed.service import get_embeddings
-from backend.app.mssql.dependencies import get_db
-from backend.app.mssql.services import execute_sql, fetch_table_info, fetch_table_names
-from backend.app.vectorstore.service import search
+from app.agent.models import AgentResponse
+from app.config import backend_logger
+from app.embed.service import get_embeddings
+from app.mssql.dependencies import get_db
+from app.mssql.services import execute_sql, fetch_table_info, fetch_table_names
+from app.vectorstore.service import search
 
 
 @tool

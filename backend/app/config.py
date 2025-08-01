@@ -8,7 +8,7 @@ logger.remove()
 logger.add(sys.stderr, level="TRACE")
 backend_logger = logger.bind(name="backend")
 
-env_path = Path(".env")
+env_path = Path("../.env")
 if os.path.exists(env_path):
     from dotenv import load_dotenv
 

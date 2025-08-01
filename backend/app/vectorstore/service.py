@@ -5,9 +5,9 @@ from langchain_qdrant import QdrantVectorStore
 from qdrant_client import QdrantClient
 from qdrant_client.http.models import models
 
-from backend.app.config import QDRANT_URL, QDRANT_VECTOR_SIZE, backend_logger
-from backend.app.embed.clipembedder import CLIPEmbedder
-from backend.app.vectorstore.utils import extract_file_info, generate_uuid
+from app.config import QDRANT_URL, QDRANT_VECTOR_SIZE, backend_logger
+from app.embed.clipembedder import CLIPEmbedder
+from app.vectorstore.utils import extract_file_info, generate_uuid
 
 qdrant = QdrantClient(url=QDRANT_URL)
 

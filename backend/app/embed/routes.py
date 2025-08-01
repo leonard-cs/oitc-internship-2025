@@ -5,9 +5,9 @@ from typing import Optional
 from fastapi import APIRouter, File, Form, UploadFile
 from fastapi.responses import JSONResponse
 
-from backend.app.embed.models import EmbedderResponse
-from backend.app.embed.clipembedder import CLIPEmbedder
-from backend.app.embed.service import get_embeddings
+from app.embed.models import EmbedderResponse
+from app.embed.clipembedder import CLIPEmbedder
+from app.embed.service import get_embeddings
 
 router = APIRouter()
 

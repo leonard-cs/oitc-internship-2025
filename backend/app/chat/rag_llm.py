@@ -2,17 +2,17 @@ from fastapi import HTTPException
 from langchain_community.utilities import SQLDatabase
 from langchain_ollama import ChatOllama
 
-from backend.app.config import (
+from app.config import (
     OLLAMA_BASE_URL,
     OLLAMA_CHAT_MODEL,
     backend_logger,
 )
-from backend.app.chat.models import (
+from app.chat.models import (
     FinalResponse,
     RelevantTablesResponse,
     SQLResponse,
 )
-from backend.app.prompts.prompts import (
+from app.prompts.prompts import (
     get_regenerate_sql_query_prompt,
     get_relevant_tables_prompt,
     get_sql_query_prompt,

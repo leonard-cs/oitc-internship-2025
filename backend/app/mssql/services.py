@@ -1,6 +1,6 @@
 from langchain_community.utilities import SQLDatabase
 
-from backend.app.config import backend_logger
+from app.config import backend_logger
 
 
 def fetch_table_names(db) -> list[str]:

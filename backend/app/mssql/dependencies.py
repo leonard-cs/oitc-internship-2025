@@ -3,7 +3,7 @@ from functools import lru_cache
 
 from langchain_community.utilities import SQLDatabase
 
-from backend.app.config import MSSQL_CONNECTION_STRING
+from app.config import MSSQL_CONNECTION_STRING
 
 
 class MockSQLDatabase:

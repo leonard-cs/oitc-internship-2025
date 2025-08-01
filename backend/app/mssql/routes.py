@@ -1,8 +1,8 @@
 from fastapi import APIRouter, Depends, Query
 from langchain_community.utilities import SQLDatabase
 
-from backend.app.mssql.dependencies import get_db
-from backend.app.mssql.services import fetch_table_info, fetch_table_names
+from app.mssql.dependencies import get_db
+from app.mssql.services import fetch_table_info, fetch_table_names
 
 router = APIRouter()
 

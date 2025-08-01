@@ -1,12 +1,12 @@
 from fastapi import APIRouter, Query
 
-from backend.app.config import backend_logger
-from backend.app.vectorstore.models import (
+from app.config import backend_logger
+from app.vectorstore.models import (
     CollectionName,
     SyncRequest,
     SyncResponse,
 )
-from backend.app.vectorstore.service import (
+from app.vectorstore.service import (
     get_all_records,
     handle_sync_collection,
     handle_sync_image_collection,

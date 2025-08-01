@@ -1,13 +1,14 @@
-from backend.app.config import backend_logger
-from backend.app.chat.models import ChatResponse, LLMResponse
-from backend.app.chat.models import QueryProcessorResponse
-from backend.app.vectorstore.models import CollectionName
-from backend.app.chat.query_processor import process_query
-from backend.app.chat.rag_chain import (
+from fastapi import HTTPException, UploadFile
+from app.config import backend_logger
+from app.chat.models import ChatResponse, LLMResponse
+from app.chat.models import QueryProcessorResponse
+from app.vectorstore.models import CollectionName
+from app.chat.query_processor import process_query
+from app.chat.rag_chain import (
     generate_answer_from_docs,
     generate_answer_from_sql,
 )
-from backend.app.vectorstore.service import search
+from app.vectorstore.service import search
 
 
 async def handle_chat_request(
@@ -44,3 +45,10 @@ async def handle_chat_request_sql(user_query: str) -> ChatResponse:
         sources=llm_response.sources,
         tools_used=[{"type": "sql", "query": llm_response.log}],
     )
+
+async def handle_chat_request_image(user_query: str, image: UploadFile) -> ChatResponse:
+    if not user_query or not image:
+        raise HTTPException(status_code=400, detail="User query and image are required")
+    backend_logger.info("Received chat request for image")
+    
+    pass

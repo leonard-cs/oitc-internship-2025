@@ -1,11 +1,11 @@
 from fastapi import APIRouter
 
-from backend.app.agent.routes import router as agent_router
-from backend.app.chat.routes import router as chat_router
-from backend.app.embed.routes import router as embed_router
-from backend.app.health.routes import router as health_router
-from backend.app.mssql.routes import router as mssql_router
-from backend.app.vectorstore.routes import router as vectorstore_router
+from app.agent.routes import router as agent_router
+from app.chat.routes import router as chat_router
+from app.embed.routes import router as embed_router
+from app.health.routes import router as health_router
+from app.mssql.routes import router as mssql_router
+from app.vectorstore.routes import router as vectorstore_router
 
 api_router = APIRouter()
 

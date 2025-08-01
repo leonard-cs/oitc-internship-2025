@@ -1,8 +1,8 @@
 from fastapi import HTTPException
-from backend.app.agent.custom_agent_executor import CustomAgentExecutor
-from backend.app.agent.models import AgentResponse
-from backend.app.chat.models import ChatResponse
-from backend.app.config import backend_logger
+from app.agent.custom_agent_executor import CustomAgentExecutor
+from app.agent.models import AgentResponse
+from app.chat.models import ChatResponse
+from app.config import backend_logger
 
 
 async def handle_chat_request_agent(
