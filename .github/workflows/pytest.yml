@@ -31,3 +31,4 @@ jobs:
       env:
         APP_ENV: ci
       run: uv run python -m pytest
+      working-directory: backend
