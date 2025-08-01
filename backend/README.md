@@ -2,6 +2,7 @@
 ```bash
 backend/
 ├── app/
+│   ├── Dockerfile
 │   ├── main.py
 │   ├── config.py                       # Application configuration
 │   │

@@ -53,6 +53,22 @@ services:
       # - anythingllm
       # - qdrant
 
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: backend
+    ports:
+      - "8080:80"
+    env_file:
+      - .env
+    depends_on:
+      - qdrant
+      - ollama
+    volumes:
+      - ./backend:/app
+      - backend_venv:/app/.venv
+
   ollama:
     build:
       context: ./ollama
@@ -97,3 +113,4 @@ volumes:
   pgadmin_data:
   ollama_data:
   qdrant_storage:
+  backend_venv:

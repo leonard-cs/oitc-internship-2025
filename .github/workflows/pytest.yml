@@ -20,7 +20,6 @@ jobs:
     - name: Set up Python with uv and enable cache
       uses: astral-sh/setup-uv@v6
       with:
-        python-version-file: "backend/pyproject.toml"
         enable-cache: true
       
     - name: Install the project
