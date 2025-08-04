@@ -1,14 +1,10 @@
-from fastapi import HTTPException, UploadFile
-from app.config import backend_logger
-from app.chat.models import ChatResponse, LLMResponse
-from app.chat.models import QueryProcessorResponse
-from app.vectorstore.models import CollectionName
+from app.chat.models import ChatResponse, LLMResponse, QueryProcessorResponse
 from app.chat.query_processor import process_query
-from app.chat.rag_chain import (
-    generate_answer_from_docs,
-    generate_answer_from_sql,
-)
-from app.vectorstore.service import search
+from app.chat.rag_chain import generate_answer_from_docs, generate_answer_from_sql
+from app.config import backend_logger
+from app.vectorstore.models import CollectionName
+from app.vectorstore.service import search, search_image
+from fastapi import HTTPException, UploadFile
 
 
 async def handle_chat_request(
@@ -46,9 +42,22 @@ async def handle_chat_request_sql(user_query: str) -> ChatResponse:
         tools_used=[{"type": "sql", "query": llm_response.log}],
     )
 
+
 async def handle_chat_request_image(user_query: str, image: UploadFile) -> ChatResponse:
     if not user_query or not image:
         raise HTTPException(status_code=400, detail="User query and image are required")
     backend_logger.info("Received chat request for image")
-    
-    pass
+
+    documents = search_image(image, CollectionName.employees_photos.value)
+    backend_logger.debug(documents)
+
+    llm_response: LLMResponse = await generate_answer_from_docs(
+        query=user_query, docs=documents
+    )
+    backend_logger.debug(f"LLM response: {llm_response}")
+    return ChatResponse(
+        answer=llm_response.answer,
+        semantic_query=user_query,
+        sources=llm_response.sources,
+        tools_used=["image_search"],
+    )

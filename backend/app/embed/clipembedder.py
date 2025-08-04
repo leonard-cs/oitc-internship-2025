@@ -61,9 +61,9 @@ class CLIPEmbedder(Embeddings):
 
     def _encode_image_path(self, image_path: str) -> list[float]:
         image = Image.open(image_path)
-        return self._encode_image(image)
+        return self.encode_image(image)
 
-    def _encode_image(self, image: Image.Image) -> list[float]:
+    def encode_image(self, image: Image.Image) -> list[float]:
         image = self.preprocess(image).unsqueeze(0)
         with torch.no_grad():
             embedding = self.model.encode_image(image)

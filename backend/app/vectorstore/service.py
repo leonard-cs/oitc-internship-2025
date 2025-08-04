@@ -1,13 +1,15 @@
+import io
 from pathlib import Path
-
-from langchain_core.documents import Document
-from langchain_qdrant import QdrantVectorStore
-from qdrant_client import QdrantClient
-from qdrant_client.http.models import models
 
 from app.config import QDRANT_URL, QDRANT_VECTOR_SIZE, backend_logger
 from app.embed.clipembedder import CLIPEmbedder
 from app.vectorstore.utils import extract_file_info, generate_uuid
+from fastapi import UploadFile
+from langchain_core.documents import Document
+from langchain_qdrant import QdrantVectorStore
+from PIL import Image
+from qdrant_client import QdrantClient
+from qdrant_client.http.models import models
 
 qdrant = QdrantClient(url=QDRANT_URL)
 
@@ -115,6 +117,43 @@ def search(query: str, collection: str) -> list[Document]:
         embedding=CLIPEmbedder(),
     )
     return vector_store.similarity_search(query=query, k=4, filter=None)
+
+
+def search_image(image: UploadFile, collection: str) -> list[Document]:
+    if not qdrant.collection_exists(collection):
+        backend_logger.error(f"Collection '{collection}' does not exist.")
+        return []
+    backend_logger.info(f"Searching for image in collection: '{collection}'")
+
+    # Convert UploadFile to PIL.Image
+    image_bytes = image.file.read()
+    pil_image = Image.open(io.BytesIO(image_bytes)).convert("RGB")
+
+    embedding = CLIPEmbedder().encode_image(pil_image)
+    results: list[Document] = embedding_search(embedding, collection)
+    return results
+
+
+def embedding_search(
+    embedding: list, collection: str, limit: int = 1
+) -> list[Document]:
+    backend_logger.trace(f"Searching for embedding in collection: '{collection}'")
+    points = qdrant.search(
+        collection_name=collection,
+        query_vector=embedding,
+        limit=limit,
+        with_payload=True,
+    )
+    documents = []
+    for point in points:
+        documents.append(
+            Document(
+                page_content=point.payload.get("page_content", ""),
+                metadata=point.payload.get("metadata", {}),
+            )
+        )
+    backend_logger.trace(f"Documents: {documents}")
+    return documents
 
 
 def _create_collection(collection_name: str):
