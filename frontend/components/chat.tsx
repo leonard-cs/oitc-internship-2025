@@ -67,28 +67,36 @@ export function Chat() {
     }
   };
 
-  const submitForm = async () => {
-    if (!input.trim()) return;
+  const submitForm = async (messageContent?: string) => {
+    const content = messageContent || input;
+    if (!content.trim()) return;
 
     const userMessage: MyMessage = {
       id: Date.now().toString(),
       role: "user",
-      content: input.trim(),
+      content: content.trim(),
     };
     const newMessages = [...messages, userMessage];
     setMessages(newMessages);
-    setInput("");
-    setIsLoading(true);
 
+    // Only clear input if we're using the input field
+    if (!messageContent) {
+      setInput("");
+    }
+
+    setIsLoading(true);
     abortControllerRef.current = new AbortController();
 
     try {
-      const response = await fetch("http://localhost:8000/api/v1/agent/ask_agent", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ user_query: userMessage.content }),
-        signal: abortControllerRef.current.signal,
-      });
+      const response = await fetch(
+        "http://localhost:8000/api/v1/agent/ask_agent",
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ user_query: userMessage.content }),
+          signal: abortControllerRef.current.signal,
+        }
+      );
 
       if (!response.ok) {
         throw new Error(`Error: ${response.statusText}`);

@@ -24,7 +24,7 @@ interface ChatInputProps {
   input: string;
   handleInput: (e: React.ChangeEvent<HTMLTextAreaElement>) => void;
   isLoading: boolean;
-  submitForm: () => void;
+  submitForm: (messageContent?: string) => void;
   stop: () => void;
   append: (message: { role: string; content: string }) => void;
   messagesLength: number;
@@ -59,10 +59,7 @@ export function ChatInput({
               <Button
                 variant="ghost"
                 onClick={async () => {
-                  append({
-                    role: "user",
-                    content: suggestedAction.action,
-                  });
+                  submitForm(suggestedAction.action);
                 }}
                 className="text-left border rounded-xl px-4 py-3.5 text-sm flex-1 gap-1 sm:flex-col w-full h-auto justify-start items-start"
               >
