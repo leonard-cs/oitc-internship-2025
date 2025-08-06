@@ -18,7 +18,8 @@ async def handle_chat_request_agent(
         sources=llm_response.sources,
         tools_used=llm_response.tools_used,
     )
-    
+
+
 async def generate_answer(query: str) -> AgentResponse:
     agent = CustomAgentExecutor()
     try:
