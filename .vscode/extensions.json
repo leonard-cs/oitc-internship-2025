@@ -10,5 +10,6 @@
         "zhuangtongfa.material-theme",
         "mhutchie.git-graph",
         "eamodio.gitlens",
+        "esbenp.prettier-vscode",
     ]
 }
