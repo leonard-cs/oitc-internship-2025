@@ -11,14 +11,14 @@ import { PreviewAttachment } from "./preview-attachment";
 
 const suggestedActions = [
   {
-    title: "What is the weather",
-    label: "in San Francisco?",
-    action: "What is the weather in San Francisco?",
+    title: "Can you provide details",
+    label: "about the product Chai?",
+    action: "Can you provide details about the product Chai?",
   },
   {
-    title: "How is python useful",
-    label: "for AI engineers?",
-    action: "How is python useful for AI engineers?",
+    title: "How many orders were",
+    label: "placed in 1996?",
+    action: "How many orders were placed in 1996?",
   },
 ];
 
@@ -113,7 +113,7 @@ export function ChatInput({
 
   return (
     <div className="relative w-full flex flex-col gap-4">
-      {messagesLength === 0 &&
+      {messagesLength <= 2 &&
         attachments.length === 0 &&
         uploadQueue.length === 0 && (
           <div className="grid sm:grid-cols-2 gap-2 w-full">
@@ -128,9 +128,11 @@ export function ChatInput({
               >
                 <Button
                   variant="ghost"
-                  onClick={async () => {
+                  onClick={async (event) => {
+                    event.preventDefault();
                     handleSubmit(suggestedAction.action, []);
                   }}
+                  type="button"
                   className="text-left border rounded-xl px-4 py-3.5 text-sm flex-1 gap-1 sm:flex-col w-full h-auto justify-start items-start"
                 >
                   <span className="font-medium">{suggestedAction.title}</span>
