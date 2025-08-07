@@ -4,7 +4,8 @@ from app.chat.service import (
     handle_chat_request_image,
     handle_chat_request_sql,
 )
-from fastapi import APIRouter, File, HTTPException, Query, UploadFile
+from app.config import backend_logger
+from fastapi import APIRouter, File, Form, HTTPException, Query, UploadFile
 
 router = APIRouter()
 
@@ -39,13 +40,16 @@ async def ask_chat_sql(
         raise HTTPException(status_code=500, detail=str(e))
 
 
-@router.post("/ask-image", response_model=ChatResponse)
-async def ask_chat_image(
-    file: UploadFile = File(...), user_query: str = Query(...)
+@router.post("/image-query", response_model=ChatResponse)
+async def process_image_query(
+    file: UploadFile = File(...), user_query: str = Form(...)
 ) -> ChatResponse:
     """
-    Process a user query through the image RAG chatbot pipeline.
+    Process a user query through the image RAG pipeline.
     """
+    backend_logger.info(
+        f"Image query requested with file={file.filename}, user query={user_query}"
+    )
     try:
         result: ChatResponse = await handle_chat_request_image(
             user_query=user_query, image=file
