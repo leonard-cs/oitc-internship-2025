@@ -93,15 +93,38 @@ export function Chat() {
     abortControllerRef.current = new AbortController();
 
     try {
-      const response = await fetch(
-        "http://localhost:8000/api/v1/agent/ask_agent",
-        {
+      let response;
+      if (attachments && attachments.length > 0) {
+        const formData = new FormData();
+
+        // Fetch the actual file from the URL
+        const responseBlob = await fetch(attachments[0].url);
+        const blob = await responseBlob.blob();
+
+        // Construct a File object (optional: add name and content type)
+        const file = new File([blob], attachments[0].name || "attachment", {
+          type: attachments[0].contentType || blob.type,
+        });
+
+        formData.append("file", file);
+        formData.append("user_query", userMessage.content);
+
+        response = await fetch(
+          "http://localhost:8000/api/v1/chat/image-query",
+          {
+            method: "POST",
+            body: formData,
+            signal: abortControllerRef.current.signal,
+          }
+        );
+      } else {
+        response = await fetch("http://localhost:8000/api/v1/agent/ask_agent", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ user_query: userMessage.content }),
           signal: abortControllerRef.current.signal,
-        }
-      );
+        });
+      }
 
       if (!response.ok) {
         throw new Error(`Error: ${response.statusText}`);
