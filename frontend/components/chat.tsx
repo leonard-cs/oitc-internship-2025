@@ -9,12 +9,13 @@ import { ToolInvocation } from "ai";
 // import { useChat } from "ai/react";
 import { toast } from "sonner";
 import { useState, useRef } from "react";
-import type { Message } from "ai";
+import type { Attachment, Message } from "ai";
 
 export interface MyMessage {
   id: string;
   role: "user" | "assistant" | "system";
   content: string;
+  attachments?: Attachment[];
 }
 
 // Convert MyMessage to AI SDK Message format for PreviewMessage compatibility
@@ -67,7 +68,10 @@ export function Chat() {
     }
   };
 
-  const submitForm = async (messageContent?: string) => {
+  const handleSubmit = async (
+    messageContent?: string,
+    attachments?: Attachment[]
+  ) => {
     const content = messageContent || input;
     if (!content.trim()) return;
 
@@ -75,6 +79,7 @@ export function Chat() {
       id: Date.now().toString(),
       role: "user",
       content: content.trim(),
+      attachments: attachments,
     };
     const newMessages = [...messages, userMessage];
     setMessages(newMessages);
@@ -134,7 +139,7 @@ export function Chat() {
       setInput(message.content);
       // Use setTimeout to ensure input is set before submission
       setTimeout(() => {
-        submitForm();
+        handleSubmit(message.content, []);
       }, 10);
     } else {
       // For non-user messages, just add to messages
@@ -161,6 +166,7 @@ export function Chat() {
             chatId={chatId}
             message={convertToAIMessage(message)}
             isLoading={isLoading && messages.length - 1 === index}
+            attachments={message.attachments}
           />
         ))}
 
@@ -179,7 +185,7 @@ export function Chat() {
           input={input}
           handleInput={handleInput}
           isLoading={isLoading}
-          submitForm={submitForm}
+          handleSubmit={handleSubmit}
           append={append}
           messagesLength={messages.length}
           stop={stop}

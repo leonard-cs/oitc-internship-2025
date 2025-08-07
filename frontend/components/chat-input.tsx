@@ -26,7 +26,7 @@ interface ChatInputProps {
   input: string;
   handleInput: (e: React.ChangeEvent<HTMLTextAreaElement>) => void;
   isLoading: boolean;
-  submitForm: (messageContent?: string) => void;
+  handleSubmit: (messageContent?: string, attachments?: Attachment[]) => void;
   stop: () => void;
   append: (message: { role: string; content: string }) => void;
   messagesLength: number;
@@ -37,7 +37,7 @@ export function ChatInput({
   input,
   handleInput,
   isLoading,
-  submitForm,
+  handleSubmit,
   stop,
   append,
   messagesLength,
@@ -50,6 +50,12 @@ export function ChatInput({
   const [attachments, setAttachments] = useState<Array<Attachment>>([]);
   // Array of file names currently being uploaded
   const [uploadQueue, setUploadQueue] = useState<Array<string>>([]);
+
+  const submitForm = useCallback(() => {
+    handleSubmit(undefined, attachments);
+
+    setAttachments([]);
+  }, [attachments, handleSubmit, setAttachments]);
 
   const uploadFile = async (file: File) => {
     const formData = new FormData();
@@ -123,7 +129,7 @@ export function ChatInput({
                 <Button
                   variant="ghost"
                   onClick={async () => {
-                    submitForm(suggestedAction.action);
+                    handleSubmit(suggestedAction.action, []);
                   }}
                   className="text-left border rounded-xl px-4 py-3.5 text-sm flex-1 gap-1 sm:flex-col w-full h-auto justify-start items-start"
                 >

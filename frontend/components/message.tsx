@@ -1,6 +1,6 @@
 "use client";
 
-import type { Message } from "ai";
+import type { Attachment, Message } from "ai";
 import { motion } from "framer-motion";
 
 import { SparklesIcon } from "./icons";
@@ -11,10 +11,12 @@ import { Weather } from "./weather";
 
 export const PreviewMessage = ({
   message,
+  attachments,
 }: {
   chatId: string;
   message: Message;
   isLoading: boolean;
+  attachments?: Array<Attachment>;
 }) => {
   return (
     <motion.div
@@ -25,7 +27,7 @@ export const PreviewMessage = ({
     >
       <div
         className={cn(
-          "group-data-[role=user]/message:bg-primary group-data-[role=user]/message:text-primary-foreground flex gap-4 group-data-[role=user]/message:px-3 w-full group-data-[role=user]/message:w-fit group-data-[role=user]/message:ml-auto group-data-[role=user]/message:max-w-2xl group-data-[role=user]/message:py-2 rounded-xl",
+          "group-data-[role=user]/message:bg-primary group-data-[role=user]/message:text-primary-foreground flex gap-4 group-data-[role=user]/message:px-3 w-full group-data-[role=user]/message:w-fit group-data-[role=user]/message:ml-auto group-data-[role=user]/message:max-w-2xl group-data-[role=user]/message:py-2 rounded-xl"
         )}
       >
         {message.role === "assistant" && (
@@ -85,6 +87,13 @@ export const PreviewMessage = ({
           )}
         </div>
       </div>
+      {attachments && (
+        <div className="flex flex-row gap-2 mt-2 justify-end">
+          {attachments.map((attachment) => (
+            <PreviewAttachment key={attachment.url} attachment={attachment} />
+          ))}
+        </div>
+      )}
     </motion.div>
   );
 };
@@ -104,7 +113,7 @@ export const ThinkingMessage = () => {
           "flex gap-4 group-data-[role=user]/message:px-3 w-full group-data-[role=user]/message:w-fit group-data-[role=user]/message:ml-auto group-data-[role=user]/message:max-w-2xl group-data-[role=user]/message:py-2 rounded-xl",
           {
             "group-data-[role=user]/message:bg-muted": true,
-          },
+          }
         )}
       >
         <div className="size-8 flex items-center rounded-full justify-center ring-1 shrink-0 ring-border">
