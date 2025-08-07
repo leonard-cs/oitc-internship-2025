@@ -7,6 +7,7 @@ import { toast } from "sonner";
 import { motion } from "framer-motion";
 import { MyMessage } from "./chat";
 import { Attachment } from "ai";
+import { PreviewAttachment } from "./preview-attachment";
 
 const suggestedActions = [
   {
@@ -45,7 +46,9 @@ export function ChatInput({
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
   const fileInputRef = useRef<HTMLInputElement>(null);
+  // Array of successfully uploaded attachments
   const [attachments, setAttachments] = useState<Array<Attachment>>([]);
+  // Array of file names currently being uploaded
   const [uploadQueue, setUploadQueue] = useState<Array<string>>([]);
 
   const uploadFile = async (file: File) => {
@@ -104,30 +107,52 @@ export function ChatInput({
 
   return (
     <div className="relative w-full flex flex-col gap-4">
-      {messagesLength === 0 && (
-        <div className="grid sm:grid-cols-2 gap-2 w-full">
-          {suggestedActions.map((suggestedAction, index) => (
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: 20 }}
-              transition={{ delay: 0.05 * index }}
-              key={`suggested-action-${suggestedAction.title}-${index}`}
-              className={index > 1 ? "hidden sm:block" : "block"}
-            >
-              <Button
-                variant="ghost"
-                onClick={async () => {
-                  submitForm(suggestedAction.action);
-                }}
-                className="text-left border rounded-xl px-4 py-3.5 text-sm flex-1 gap-1 sm:flex-col w-full h-auto justify-start items-start"
+      {messagesLength === 0 &&
+        attachments.length === 0 &&
+        uploadQueue.length === 0 && (
+          <div className="grid sm:grid-cols-2 gap-2 w-full">
+            {suggestedActions.map((suggestedAction, index) => (
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: 20 }}
+                transition={{ delay: 0.05 * index }}
+                key={`suggested-action-${suggestedAction.title}-${index}`}
+                className={index > 1 ? "hidden sm:block" : "block"}
               >
-                <span className="font-medium">{suggestedAction.title}</span>
-                <span className="text-muted-foreground">
-                  {suggestedAction.label}
-                </span>
-              </Button>
-            </motion.div>
+                <Button
+                  variant="ghost"
+                  onClick={async () => {
+                    submitForm(suggestedAction.action);
+                  }}
+                  className="text-left border rounded-xl px-4 py-3.5 text-sm flex-1 gap-1 sm:flex-col w-full h-auto justify-start items-start"
+                >
+                  <span className="font-medium">{suggestedAction.title}</span>
+                  <span className="text-muted-foreground">
+                    {suggestedAction.label}
+                  </span>
+                </Button>
+              </motion.div>
+            ))}
+          </div>
+        )}
+
+      {(attachments.length > 0 || uploadQueue.length > 0) && (
+        <div className="flex flex-row gap-2 overflow-x-scroll">
+          {attachments.map((attachment) => (
+            <PreviewAttachment key={attachment.url} attachment={attachment} />
+          ))}
+
+          {uploadQueue.map((filename) => (
+            <PreviewAttachment
+              key={filename}
+              attachment={{
+                url: "",
+                name: filename,
+                contentType: "",
+              }}
+              isUploading={true}
+            />
           ))}
         </div>
       )}
