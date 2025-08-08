@@ -1,5 +1,3 @@
-from fastapi import APIRouter, Query
-
 from app.config import backend_logger
 from app.vectorstore.models import (
     CollectionName,
@@ -11,6 +9,7 @@ from app.vectorstore.service import (
     handle_sync_collection,
     handle_sync_image_collection,
 )
+from fastapi import APIRouter, Query
 
 router = APIRouter()
 
@@ -46,8 +45,8 @@ async def sync_all_collections() -> SyncResponse:
             collections_synced.append(photos_collection)
 
     return SyncResponse(
-        collections_synced=collections_synced,
-        collections_failed=collections_failed,
+        success=collections_synced,
+        failed=collections_failed,
     )
 
 
@@ -61,9 +60,9 @@ async def sync_collection(payload: SyncRequest) -> SyncResponse:
     """
     collection: str = payload.collection.value
     if handle_sync_collection(collection):
-        return SyncResponse(collections_synced=[collection], collections_failed=[])
+        return SyncResponse(success=[collection], failed=[])
     else:
-        return SyncResponse(collections_synced=[], collections_failed=[collection])
+        return SyncResponse(success=[], failed=[collection])
 
 
 @router.get(

@@ -118,7 +118,13 @@ def get_document_prompt() -> ChatPromptTemplate:
     DOCUMENT_SYSTEM_PROMPT = """
         You are an expert data analyst.
         Your task is to generate a paragraph based on the row from table {table_name}.
-        Find the id: {table_name}ID and store in id field. Do not lose any information from the row.
+        
+        Table info:
+        {table_info}
+        
+        Generate the id based on the primary key of the table. Remove staring zero from the id.
+        Generate compound id if the table has multiple primary keys.
+        Do not lose any information from the row.
         
         Row: {row}
     """

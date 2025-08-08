@@ -15,5 +15,5 @@ class SyncRequest(BaseModel):
 
 
 class SyncResponse(BaseModel):
-    collections_synced: list[str]
-    collections_failed: list[str]
+    success: list[str]
+    failed: list[str]
