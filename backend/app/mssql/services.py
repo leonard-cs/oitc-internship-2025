@@ -1,6 +1,10 @@
+import os
+
+import pyodbc
 from app.config import backend_logger
 from app.llm.ollama import get_ollama
-from app.mssql.models import LLMDocumentResponse, Table
+from app.mssql.models import ImageTable, LLMDocumentResponse, Table
+from app.mssql.utils import delete_file
 from app.prompts.prompts import get_document_prompt
 from app.vectorstore.service import get_qdrant_vector_store
 from app.vectorstore.utils import generate_uuid
@@ -62,6 +66,38 @@ async def sync_table_ai(db: SQLDatabase, table: Table) -> list[str]:
         )
 
     return unique_added_ids
+
+
+async def extract_images(
+    db_connection: pyodbc.Connection, table: ImageTable, export_dir: str = "exports"
+) -> str:
+    cursor = db_connection.cursor()
+    cursor.execute(table.sql)
+
+    folder_name = f"{table.value}-images"
+    folder_path = os.path.join(export_dir, folder_name)
+    os.makedirs(folder_path, exist_ok=True)
+
+    count = 0
+    for id, image in cursor.fetchall():
+        # Strip the OLE header (78 bytes) if present
+        image_data = image[78:]
+
+        filename = f"{folder_name}_{id}.jpg"
+        file_path = os.path.join(folder_path, filename)
+
+        delete_file(path=folder_path, prefix=f"{folder_name}_{id}", sufix=".jpg")
+
+        with open(file_path, "wb") as f:
+            f.write(image_data)
+        count += 1
+    backend_logger.success(f"Exported {count} images")
+    return export_dir
+
+
+async def sync_table_images(table: ImageTable, export_dir: str) -> list[str]:
+    # TODO: Implement this
+    pass
 
 
 def parse_table_info(table_info: str) -> str:

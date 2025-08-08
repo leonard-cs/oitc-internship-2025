@@ -49,6 +49,20 @@ class Table(str, Enum):
             return f"SELECT TOP 50 * FROM [{self.value}]"
 
 
+class ImageTable(str, Enum):
+    employees = "Employees"
+    categories = "Categories"
+
+    @property
+    def sql(self) -> str:
+        if self == ImageTable.employees:
+            return f"SELECT EmployeeID, Photo FROM [{self.value}]"
+        elif self == ImageTable.categories:
+            return f"SELECT CategoryID, Picture FROM [{self.value}]"
+        else:
+            raise ValueError(f"Invalid image table: {self.value}")
+
+
 class LLMDocumentResponse(BaseModel):
     id: int | str = Field(
         ...,
