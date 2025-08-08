@@ -1,4 +1,5 @@
 import io
+from functools import lru_cache
 from pathlib import Path
 
 from app.config import QDRANT_URL, QDRANT_VECTOR_SIZE, backend_logger
@@ -11,7 +12,20 @@ from PIL import Image
 from qdrant_client import QdrantClient
 from qdrant_client.http.models import models
 
-qdrant = QdrantClient(url=QDRANT_URL)
+
+@lru_cache(maxsize=1)
+def get_qdrant_client():
+    return QdrantClient(url=QDRANT_URL)
+
+
+@lru_cache(maxsize=20)
+def get_qdrant_vector_store(collection_name: str):
+    _create_collection(collection_name)
+    return QdrantVectorStore(
+        client=get_qdrant_client(),
+        collection_name=collection_name,
+        embedding=CLIPEmbedder(),
+    )
 
 
 def handle_sync_collection(collection: str) -> list[str] | None:
@@ -22,12 +36,7 @@ def handle_sync_collection(collection: str) -> list[str] | None:
         backend_logger.error(f"No export files found for collection: '{collection}'")
         return
 
-    _create_collection(collection)
-    vector_store = QdrantVectorStore(
-        client=qdrant,
-        collection_name=collection,
-        embedding=CLIPEmbedder(),
-    )
+    vector_store = get_qdrant_vector_store(collection)
 
     documents: list[Document] = []
     ids: list[str] = []
@@ -77,11 +86,7 @@ def handle_sync_image_collection(
         return
 
     _create_collection(photos_collection)
-    vector_store = QdrantVectorStore(
-        client=qdrant,
-        collection_name=photos_collection,
-        embedding=CLIPEmbedder(),
-    )
+    vector_store = get_qdrant_vector_store(photos_collection)
 
     documents: list[Document] = []
     ids: list[str] = []
@@ -108,18 +113,12 @@ def handle_sync_image_collection(
 
 
 def search(query: str, collection: str) -> list[Document]:
-    if not qdrant.collection_exists(collection):
-        backend_logger.error(f"Collection '{collection}' does not exist.")
-        return []
-    vector_store = QdrantVectorStore(
-        client=qdrant,
-        collection_name=collection,
-        embedding=CLIPEmbedder(),
-    )
+    vector_store = get_qdrant_vector_store(collection)
     return vector_store.similarity_search(query=query, k=4, filter=None)
 
 
 def search_image(image: UploadFile, collection: str) -> list[Document]:
+    qdrant = get_qdrant_client()
     if not qdrant.collection_exists(collection):
         backend_logger.error(f"Collection '{collection}' does not exist.")
         return []
@@ -138,6 +137,7 @@ def embedding_search(
     embedding: list, collection: str, limit: int = 1
 ) -> list[Document]:
     backend_logger.trace(f"Searching for embedding in collection: '{collection}'")
+    qdrant = get_qdrant_client()
     points = qdrant.search(
         collection_name=collection,
         query_vector=embedding,
@@ -157,6 +157,7 @@ def embedding_search(
 
 
 def _create_collection(collection_name: str):
+    qdrant = get_qdrant_client()
     if not qdrant.collection_exists(collection_name):
         qdrant.create_collection(
             collection_name=collection_name,
@@ -210,6 +211,7 @@ def get_all_records(
 async def retrieve_relevant_documents(
     embedding: list[float], limit: int = 5
 ) -> tuple[list[str], list[str]]:
+    qdrant = get_qdrant_client()
     points = qdrant.search(
         collection_name="Products",
         query_vector=embedding,

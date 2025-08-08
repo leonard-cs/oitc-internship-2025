@@ -1,8 +1,7 @@
+from app.mssql.dependencies import get_db
+from app.mssql.services import fetch_table_info, fetch_table_names, sync_table_ai
 from fastapi import APIRouter, Depends, Query
 from langchain_community.utilities import SQLDatabase
-
-from app.mssql.dependencies import get_db
-from app.mssql.services import fetch_table_info, fetch_table_names
 
 router = APIRouter()
 
@@ -24,3 +23,11 @@ async def get_table_info(
     Get information about multiple tables.
     """
     return fetch_table_info(db, table_names)
+
+
+@router.post("/ai-sync/{table_name}")
+async def ai_sync(table_name: str, db: SQLDatabase = Depends(get_db)) -> list[str]:
+    """
+    Sync a table from the database to the vector store.
+    """
+    return await sync_table_ai(db, table_name)

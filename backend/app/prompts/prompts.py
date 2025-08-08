@@ -110,7 +110,18 @@ def get_sql_response_prompt() -> ChatPromptTemplate:
         - Keep the answer brief and focused on the user's intent.
     """
     return ChatPromptTemplate.from_messages(
-        [
-            SystemMessagePromptTemplate.from_template(SQL_RESPONSE_SYSTEM_PROMPT),
-        ]
+        [SystemMessagePromptTemplate.from_template(SQL_RESPONSE_SYSTEM_PROMPT)]
+    )
+
+
+def get_document_prompt() -> ChatPromptTemplate:
+    DOCUMENT_SYSTEM_PROMPT = """
+        You are an expert data analyst.
+        Your task is to generate a paragraph based on the row from table {table_name}.
+        Find the id: {table_name}ID and store in id field. Do not lose any information from the row.
+        
+        Row: {row}
+    """
+    return ChatPromptTemplate.from_messages(
+        [SystemMessagePromptTemplate.from_template(DOCUMENT_SYSTEM_PROMPT)]
     )

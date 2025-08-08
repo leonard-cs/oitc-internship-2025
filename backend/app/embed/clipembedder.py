@@ -2,10 +2,9 @@ import os
 
 import open_clip
 import torch
+from app.config import EMBEDDING_MODEL_PATH, backend_logger
 from langchain_core.embeddings.embeddings import Embeddings
 from PIL import Image
-
-from app.config import EMBEDDING_MODEL_PATH, backend_logger
 
 
 class CLIPEmbedder(Embeddings):
@@ -48,6 +47,9 @@ class CLIPEmbedder(Embeddings):
 
     def _handle_encode(self, input: str) -> list[float]:
         input = input.strip()
+        if not input:
+            backend_logger.error("Input is empty")
+            return []
 
         # Split by whitespace and take the last part as the path
         possible_path = input.split()[-1]
