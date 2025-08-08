@@ -6,12 +6,21 @@ from app.vectorstore.models import (
 )
 from app.vectorstore.service import (
     get_all_records,
+    get_vector_store_info,
     handle_sync_collection,
     handle_sync_image_collection,
 )
 from fastapi import APIRouter, Query
 
 router = APIRouter()
+
+
+@router.get("/info")
+async def get_info():
+    """
+    Get information about the vector store.
+    """
+    return await get_vector_store_info()
 
 
 @router.post("/sync-all", response_model=SyncResponse)

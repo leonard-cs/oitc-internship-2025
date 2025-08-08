@@ -35,7 +35,7 @@ class Table(str, Enum):
                     Country,
                     HomePhone,
                     Extension
-                FROM Employees
+                FROM [{self.value}]
             """
         elif self == Table.categories:
             return """
@@ -43,10 +43,10 @@ class Table(str, Enum):
                     CategoryID,
                     CategoryName,
                     Description
-                FROM Categories
+                FROM [{self.value}]
             """
         else:
-            return f"SELECT TOP 3 * FROM [{self.value}]"
+            return f"SELECT TOP 50 * FROM [{self.value}]"
 
 
 class LLMDocumentResponse(BaseModel):

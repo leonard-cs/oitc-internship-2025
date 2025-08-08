@@ -28,6 +28,18 @@ def get_qdrant_vector_store(collection_name: str):
     )
 
 
+async def get_vector_store_info():
+    qdrant = get_qdrant_client()
+    collections_response = qdrant.get_collections()
+    collection_descriptions = collections_response.collections
+    collection_names = [collection.name for collection in collection_descriptions]
+    infos = [
+        {collection_name: qdrant.count(collection_name).count}
+        for collection_name in collection_names
+    ]
+    return infos
+
+
 def handle_sync_collection(collection: str) -> list[str] | None:
     export_path = Path(f"../exports/{collection}")
     files = sorted(export_path.glob(f"{collection}_*.txt"))
