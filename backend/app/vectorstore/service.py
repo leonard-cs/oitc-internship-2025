@@ -4,6 +4,7 @@ from pathlib import Path
 
 from app.config import QDRANT_URL, QDRANT_VECTOR_SIZE, backend_logger
 from app.embed.clipembedder import CLIPEmbedder
+from app.vectorstore.qdrant_vectorstore import MyQdrantVectorStore
 from app.vectorstore.utils import extract_file_info, generate_uuid
 from fastapi import UploadFile
 from langchain_core.documents import Document
@@ -28,16 +29,14 @@ def get_qdrant_vector_store(collection_name: str):
     )
 
 
-async def get_vector_store_info():
-    qdrant = get_qdrant_client()
-    collections_response = qdrant.get_collections()
-    collection_descriptions = collections_response.collections
-    collection_names = [collection.name for collection in collection_descriptions]
-    infos = [
-        {collection_name: qdrant.count(collection_name).count}
-        for collection_name in collection_names
-    ]
-    return infos
+@lru_cache(maxsize=1)
+def get_vectorstore():
+    return MyQdrantVectorStore(url=QDRANT_URL)
+
+
+async def get_vectorstore_info():
+    vectorstore = get_vectorstore()
+    return vectorstore.get_collection_info()
 
 
 def handle_sync_collection(collection: str) -> list[str] | None:

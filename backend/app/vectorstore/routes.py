@@ -6,7 +6,7 @@ from app.vectorstore.models import (
 )
 from app.vectorstore.service import (
     get_all_records,
-    get_vector_store_info,
+    get_vectorstore_info,
     handle_sync_collection,
     handle_sync_image_collection,
 )
@@ -20,7 +20,7 @@ async def get_info():
     """
     Get information about the vector store.
     """
-    return await get_vector_store_info()
+    return await get_vectorstore_info()
 
 
 @router.post("/sync-all", response_model=SyncResponse)
