@@ -16,11 +16,11 @@ class Table(str, Enum):
     suppliers = "Suppliers"
     territories = "Territories"
 
-    @property
-    def sql(self) -> str:
+    def sql(self, limit: int | None = None) -> str:
+        limit_str = f"TOP {limit}" if limit else ""
         if self == Table.employees:
-            return """
-                SELECT
+            return f"""
+                SELECT {limit_str}
                     EmployeeID,
                     LastName,
                     FirstName,
@@ -38,15 +38,15 @@ class Table(str, Enum):
                 FROM [{self.value}]
             """
         elif self == Table.categories:
-            return """
-                SELECT
+            return f"""
+                SELECT {limit_str}
                     CategoryID,
                     CategoryName,
                     Description
                 FROM [{self.value}]
             """
         else:
-            return f"SELECT TOP 50 * FROM [{self.value}]"
+            return f"SELECT {limit_str} * FROM [{self.value}]"
 
 
 class ImageTable(str, Enum):

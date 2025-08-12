@@ -25,6 +25,11 @@ def get_db():
 
 
 @lru_cache(maxsize=1)
+def get_SQLDatabase():
+    return SQLDatabase.from_uri(MSSQL_CONNECTION_STRING)
+
+
+@lru_cache(maxsize=1)
 def get_mssql_pyodbc_connection() -> pyodbc.Connection:
     """Establishes a connection to the SQL Server database."""
     conn: pyodbc.Connection = pyodbc.connect(MSSQL_PYODBC_CONNECTION_STRING)

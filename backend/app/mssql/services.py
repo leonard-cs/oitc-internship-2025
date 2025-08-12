@@ -24,11 +24,13 @@ def execute_sql(db: SQLDatabase, sql_query: str) -> str:
     return db.run_no_throw(sql_query)
 
 
-async def sync_table_ai(db: SQLDatabase, table: Table) -> list[str]:
+async def sync_table_ai(
+    db: SQLDatabase, table: Table, limit: int | None = None
+) -> list[str]:
     table_info = parse_table_info(fetch_table_info(db, [table.value]))
     table_name = table.value
 
-    rows = db.run_no_throw(table.sql, fetch="all", include_columns=True)
+    rows = db.run_no_throw(table.sql(limit=limit), fetch="all", include_columns=True)
     parsed_rows = parse_sql_result_string(rows)
 
     if not parsed_rows:
@@ -36,7 +38,8 @@ async def sync_table_ai(db: SQLDatabase, table: Table) -> list[str]:
         raise Exception(f"No rows found for table {table_name}")
     backend_logger.debug(f"Retrieved {len(parsed_rows)} rows from table {table_name}")
 
-    documents = []
+    document_ids: list[str] = []
+    documents: list[Document] = []
     ids: list[str] = []
 
     for row in parsed_rows:
@@ -48,6 +51,7 @@ async def sync_table_ai(db: SQLDatabase, table: Table) -> list[str]:
             backend_logger.warning("Document generation failed, skipping row")
             continue
 
+        document_ids.append(document_id_string)
         document = Document(page_content=text, metadata={})
         documents.append(document)
         ids.append(generate_uuid(document_id_string))
@@ -56,6 +60,7 @@ async def sync_table_ai(db: SQLDatabase, table: Table) -> list[str]:
     added_ids = vector_store.add_documents(documents=documents, ids=ids)
     unique_added_ids = list(set(added_ids))
 
+    backend_logger.trace(f"Document ids: {document_ids}")
     if len(unique_added_ids) != len(added_ids):
         backend_logger.success(
             f"{len(unique_added_ids)} / {len(added_ids)} documents added to collection {table_name}"
@@ -68,7 +73,7 @@ async def sync_table_ai(db: SQLDatabase, table: Table) -> list[str]:
     return unique_added_ids
 
 
-async def extract_images(
+def extract_images(
     db_connection: pyodbc.Connection, table: ImageTable, export_dir: str = "exports"
 ) -> str:
     cursor = db_connection.cursor()

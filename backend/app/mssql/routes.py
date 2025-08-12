@@ -198,7 +198,7 @@ async def sync_images(
     tables_synced, tables_failed = [], []
     for table in tables:
         try:
-            export_dir = await extract_images(db_connection, table)
+            export_dir = extract_images(db_connection, table)
             ids = await sync_table_images(table, export_dir)
             if not ids:
                 tables_failed.append(table.value)
