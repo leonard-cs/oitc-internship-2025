@@ -2,6 +2,7 @@ import os
 from typing import override
 
 # see: https://github.com/mlfoundations/open_clip
+from PIL.ImageFile import ImageFile
 import open_clip
 import torch
 from app.config import EMBEDDING_MODEL_PATH, backend_logger
@@ -69,7 +70,7 @@ class CLIPEmbedder(Embeddings):
         image = Image.open(image_path)
         return self.encode_image(image)
 
-    def encode_image(self, image: Image.Image) -> list[float]:
+    def encode_image(self, image: ImageFile) -> list[float]:
         image = self.preprocess(image).unsqueeze(0)
         with torch.no_grad():
             embedding = self.model.encode_image(image)

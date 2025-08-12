@@ -5,6 +5,7 @@ import torch
 from app.embed.clipembedder import CLIPEmbedder
 from fastapi import UploadFile
 from PIL import Image
+from PIL.ImageFile import ImageFile
 
 model = None
 preprocess = None
@@ -17,7 +18,7 @@ def handle_text_embed(text: str) -> list[float]:
 
 async def handle_image_embed(file: UploadFile) -> list[float]:
     contents = await file.read()
-    image: Image.Image = Image.open(io.BytesIO(contents)).convert("RGB")
+    image: ImageFile = Image.open(io.BytesIO(contents)).convert("RGB")
     return CLIPEmbedder().encode_image(image)
 
 
