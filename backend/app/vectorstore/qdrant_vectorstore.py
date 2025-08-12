@@ -1,7 +1,7 @@
 from abc import ABC, abstractmethod
 
 from qdrant_client import QdrantClient
-from qdrant_client.http.models import models
+from qdrant_client.models import Distance, PointStruct, VectorParams
 
 
 class VectorStore(ABC):
@@ -26,9 +26,7 @@ class MyQdrantVectorStore(VectorStore):
     def create_collection(self, collection_name: str, vector_size: int) -> bool:
         return self.client.create_collection(
             collection_name=collection_name,
-            vectors_config=models.VectorParams(
-                size=vector_size, distance=models.Distance.COSINE
-            ),
+            vectors_config=VectorParams(size=vector_size, distance=Distance.COSINE),
         )
 
     def get_collections(self) -> list[str]:
@@ -52,3 +50,41 @@ class MyQdrantVectorStore(VectorStore):
             {collection: {"points": self.client.count(collection).count}}
             for collection in self.get_collections()
         ]
+
+    def upload_collection(
+        self,
+        collection_name: str,
+        vectors: list[list[float]],
+        payload: list[dict[str, any]],
+        ids: list[str],
+    ) -> None:
+        """Upload vectors and payload to the collection.
+        This method will perform automatic batching of the data.
+        If you need to perform a single update, use `upsert` method.
+        """
+        self.client.upload_collection(
+            collection_name=collection_name, vectors=vectors, payload=payload, ids=ids
+        )
+        self.client.upsert(
+            collection_name=collection_name,
+            vectors=vectors,
+            payload=payload,
+            ids=ids,
+        )
+
+    def upsert(
+        self,
+        collection_name: str,
+        vector: list[float],
+        payload: dict[str, any],
+        id: str,
+    ) -> None:
+        """
+        Update or insert a new point into the collection.
+
+        If point with given ID already exists - it will be overwritten.
+        """
+        self.client.upsert(
+            collection_name=collection_name,
+            points=[PointStruct(id=id, vector=vector, payload=payload)],
+        )
