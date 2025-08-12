@@ -182,6 +182,9 @@ def get_all_records(
     all_records = []
     offset = None
     qdrant = QdrantClient(url=QDRANT_URL)
+    if not qdrant.collection_exists(collection_name):
+        raise ValueError(f"Collection '{collection_name}' does not exist.")
+
     while True:
         scroll_result = qdrant.scroll(
             collection_name=collection_name,
@@ -199,7 +202,7 @@ def get_all_records(
             if with_payload:
                 entry = {
                     "id": str(record.id),
-                    "payload": record.payload.get("page_content", ""),
+                    "page_content": record.payload.get("page_content", ""),
                     "metadata": record.payload.get("metadata", {}),
                 }
             else:

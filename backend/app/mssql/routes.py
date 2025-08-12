@@ -81,6 +81,9 @@ async def ai_sync(
     tables: list[Table] = Query(
         ..., description="List of database tables to synchronize to the vector store"
     ),
+    limit: int | None = Query(
+        None, description="Limit the number of rows to synchronize"
+    ),
     db: SQLDatabase = Depends(get_db),
 ) -> SyncResponse:
     """
@@ -108,7 +111,7 @@ async def ai_sync(
     tables_synced, tables_failed = [], []
     for table in tables:
         try:
-            ids = await sync_table_ai(db, table)
+            ids = await sync_table_ai(db, table, limit)
             if not ids:
                 tables_failed.append(table.value)
             else:

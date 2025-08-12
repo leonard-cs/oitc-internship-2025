@@ -1,7 +1,8 @@
 from abc import ABC, abstractmethod
-
+import uuid
 from qdrant_client import QdrantClient
 from qdrant_client.models import Distance, PointStruct, VectorParams
+from app.config import QDRANT_URL
 
 
 class VectorStore(ABC):
@@ -23,11 +24,17 @@ class MyQdrantVectorStore(VectorStore):
         self.url = url
         self.client = QdrantClient(url=url)
 
+    def collection_exists(self, collection_name: str) -> bool:
+        return self.client.collection_exists(collection_name)
+
     def create_collection(self, collection_name: str, vector_size: int) -> bool:
-        return self.client.create_collection(
-            collection_name=collection_name,
-            vectors_config=VectorParams(size=vector_size, distance=Distance.COSINE),
-        )
+        if not self.collection_exists(collection_name):
+            return self.client.create_collection(
+                collection_name=collection_name,
+                vectors_config=VectorParams(size=vector_size, distance=Distance.COSINE),
+            )
+        else:
+            return True
 
     def get_collections(self) -> list[str]:
         """Get list name of all existing collections
@@ -55,36 +62,60 @@ class MyQdrantVectorStore(VectorStore):
         self,
         collection_name: str,
         vectors: list[list[float]],
-        payload: list[dict[str, any]],
-        ids: list[str],
+        page_contents: list[str],
+        metadata: list[dict[str, any]],
+        ids: list[str] | None = None,
     ) -> None:
         """Upload vectors and payload to the collection.
         This method will perform automatic batching of the data.
         If you need to perform a single update, use `upsert` method.
         """
+        payload = [
+            {"page_content": page_content, "metadata": metadata}
+            for page_content, metadata in zip(page_contents, metadata)
+        ]
+        self.create_collection(collection_name, len(vectors[0]))
         self.client.upload_collection(
             collection_name=collection_name, vectors=vectors, payload=payload, ids=ids
-        )
-        self.client.upsert(
-            collection_name=collection_name,
-            vectors=vectors,
-            payload=payload,
-            ids=ids,
         )
 
     def upsert(
         self,
         collection_name: str,
         vector: list[float],
-        payload: dict[str, any],
-        id: str,
+        page_content: str,
+        metadata: dict[str, any],
+        id: str | None = str(uuid.uuid4()),
     ) -> None:
         """
         Update or insert a new point into the collection.
 
         If point with given ID already exists - it will be overwritten.
         """
+        self.create_collection(collection_name, len(vector))
         self.client.upsert(
             collection_name=collection_name,
-            points=[PointStruct(id=id, vector=vector, payload=payload)],
+            points=[
+                PointStruct(
+                    id=id,
+                    vector=vector,
+                    payload={"page_content": page_content, "metadata": metadata},
+                )
+            ],
         )
+
+
+if __name__ == "__main__":
+    vectorstore = MyQdrantVectorStore(url=QDRANT_URL)
+    vectorstore.upload_collection(
+        collection_name="Test",
+        vectors=[[1, 2, 3]],
+        page_contents=["test"],
+        metadata=[{"test": "test"}],
+    )
+    vectorstore.upsert(
+        collection_name="Test",
+        vector=[1, 2, 3],
+        page_content="test",
+        metadata={"test": "test"},
+    )

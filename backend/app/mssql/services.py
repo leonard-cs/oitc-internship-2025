@@ -30,7 +30,7 @@ async def sync_table_ai(
     table_info = parse_table_info(fetch_table_info(db, [table.value]))
     table_name = table.value
 
-    rows = db.run_no_throw(table.sql(limit=limit), fetch="all", include_columns=True)
+    rows = db.run_no_throw(table.sql(limit=3), fetch="all", include_columns=True)
     parsed_rows = parse_sql_result_string(rows)
 
     if not parsed_rows:
@@ -158,8 +158,8 @@ async def generate_text_and_id(
         backend_logger.error("No id or text found in the response")
         backend_logger.trace(f"Response: {response}")
         return None
-    # backend_logger.trace(f"Response: {response}")
+    backend_logger.trace(f"Response: {response}")
     document_id_string = f"{table_name}_{response.id}"
-    # backend_logger.success(f"Document generated successfully, id: {document_id_string}")
+    backend_logger.success(f"Document generated successfully, id: {document_id_string}")
 
     return document_id_string, response.text

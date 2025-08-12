@@ -10,7 +10,7 @@ from app.vectorstore.service import (
     handle_sync_collection,
     handle_sync_image_collection,
 )
-from fastapi import APIRouter, Query
+from fastapi import APIRouter, HTTPException, Query
 
 router = APIRouter()
 
@@ -169,7 +169,11 @@ async def get_collection_ids(
         list[dict]: A list of dictionaries.
     """
     backend_logger.info(f"Retrieving all IDs from collection: {collection.value}")
-    return get_all_records(
-        collection_name=collection.value,
-        with_payload=with_payload,
-    )
+    try:
+        return get_all_records(
+            collection_name=collection.value,
+            with_payload=with_payload,
+        )
+    except Exception as e:
+        backend_logger.error(f"Error retrieving all IDs from collection: {e}")
+        raise HTTPException(status_code=500, detail=str(e))

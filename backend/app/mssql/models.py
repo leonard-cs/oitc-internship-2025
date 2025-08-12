@@ -5,8 +5,6 @@ from pydantic import BaseModel, Field
 
 class Table(str, Enum):
     products = "Products"
-    employees = "Employees"
-    categories = "Categories"
     customers = "Customers"
     employee_territories = "EmployeeTerritories"
     order_details = "Order Details"
@@ -17,6 +15,15 @@ class Table(str, Enum):
     territories = "Territories"
 
     def sql(self, limit: int | None = None) -> str:
+        limit_str = f"TOP {limit}" if limit else ""
+        return f"SELECT {limit_str} * FROM [{self.value}]"
+
+
+class ImageTable(str, Enum):
+    employees = "Employees"
+    categories = "Categories"
+
+    def sql_text(self, limit: int | None = None) -> str:
         limit_str = f"TOP {limit}" if limit else ""
         if self == Table.employees:
             return f"""
@@ -46,19 +53,14 @@ class Table(str, Enum):
                 FROM [{self.value}]
             """
         else:
-            return f"SELECT {limit_str} * FROM [{self.value}]"
+            raise ValueError(f"Invalid image table: {self.value}")
 
-
-class ImageTable(str, Enum):
-    employees = "Employees"
-    categories = "Categories"
-
-    @property
-    def sql(self) -> str:
+    def sql_image(self, limit: int | None = None) -> str:
+        limit_str = f"TOP {limit}" if limit else ""
         if self == ImageTable.employees:
-            return f"SELECT EmployeeID, Photo FROM [{self.value}]"
+            return f"SELECT {limit_str} EmployeeID, Photo FROM [{self.value}]"
         elif self == ImageTable.categories:
-            return f"SELECT CategoryID, Picture FROM [{self.value}]"
+            return f"SELECT {limit_str} CategoryID, Picture FROM [{self.value}]"
         else:
             raise ValueError(f"Invalid image table: {self.value}")
 
