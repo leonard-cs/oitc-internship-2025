@@ -3,7 +3,10 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from app.api.v1.api import api_router
 
-app = FastAPI(title="RAG chat bot API", description="API for the RAG chat bot")
+app = FastAPI(
+    title="RAG Agent",
+    description="🚀 Advanced Retrieval-Augmented Generation (RAG) API Platform",
+)
 
 app.add_middleware(
     CORSMiddleware,
