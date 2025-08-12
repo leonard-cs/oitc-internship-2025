@@ -1,40 +1,30 @@
-from typing import Optional
-
-from app.embed.models import EmbedderResponse
-from app.embed.service import get_embeddings, handle_image_embed
+from app.embed.service import handle_image_embed, handle_text_embed
 from fastapi import APIRouter, File, Form, HTTPException, UploadFile
-from fastapi.responses import JSONResponse
 
 router = APIRouter()
 
 
-@router.post("/embed", summary="Generate embeddings for image and/or text")
+@router.post("/embed-text", summary="Generate embeddings for text")
 async def embed_image_text(
-    image: Optional[UploadFile] = File(default=None, description="Image file to embed"),
-    text: Optional[str] = Form(default=None, description="Text to embed"),
-):
+    text: str = Form(..., description="Text to embed"),
+) -> list[float]:
     """
-    Generate CLIP embeddings for image and/or text inputs.
+    Generate CLIP embeddings for text inputs.
 
     This endpoint accepts either an image file, text string, or both and returns:
-    - Image embedding (512-dimensional vector)
     - Text embedding (512-dimensional vector)
     - Cosine similarity between image and text (if both provided)
 
     Args:
-        image: Optional image file (JPEG, PNG, etc.)
         text: Optional text string to embed
 
     Returns:
         EmbedderResponse containing embeddings and similarity score
     """
-    image_bytes = await image.read() if image else None
-    result: EmbedderResponse = get_embeddings(image_bytes, text)
-    return JSONResponse(content=result.model_dump())
-
-
-# with open("your_image.jpg", "rb") as f:
-#     response = requests.post("http://localhost:8000/embed", files={"image": f}, data={"text": "a photo of a cat"})
+    try:
+        return await handle_text_embed(text)
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
 
 
 @router.post("/embed-image", summary="Generate embedding for image")

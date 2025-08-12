@@ -1,15 +1,14 @@
-import io
 from functools import lru_cache
 from pathlib import Path
 
 from app.config import QDRANT_URL, QDRANT_VECTOR_SIZE, backend_logger
 from app.embed.clipembedder import CLIPEmbedder
+from app.embed.service import handle_image_embed
 from app.vectorstore.qdrant_vectorstore import MyQdrantVectorStore
 from app.vectorstore.utils import extract_file_info, generate_uuid
 from fastapi import UploadFile
 from langchain_core.documents import Document
 from langchain_qdrant import QdrantVectorStore
-from PIL import Image
 from qdrant_client import QdrantClient
 from qdrant_client.http.models import models
 
@@ -128,19 +127,15 @@ def search(query: str, collection: str) -> list[Document]:
     return vector_store.similarity_search(query=query, k=4, filter=None)
 
 
-def search_image(image: UploadFile, collection: str) -> list[Document]:
+async def search_image(file: UploadFile, collection: str) -> list[Document]:
     qdrant = get_qdrant_client()
     if not qdrant.collection_exists(collection):
         backend_logger.error(f"Collection '{collection}' does not exist.")
         return []
     backend_logger.info(f"Searching for image in collection: '{collection}'")
 
-    # Convert UploadFile to PIL.Image
-    image_bytes = image.file.read()
-    pil_image = Image.open(io.BytesIO(image_bytes)).convert("RGB")
-
-    embedding = CLIPEmbedder().encode_image(pil_image)
-    results: list[Document] = embedding_search(embedding, collection)
+    image_embedding = await handle_image_embed(file)
+    results: list[Document] = embedding_search(image_embedding, collection)
     return results
 
 

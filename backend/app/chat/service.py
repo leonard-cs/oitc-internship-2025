@@ -48,7 +48,7 @@ async def handle_chat_request_image(user_query: str, image: UploadFile) -> ChatR
         raise HTTPException(status_code=400, detail="User query and image are required")
     backend_logger.info("Received chat request for image")
 
-    documents = search_image(image, CollectionName.employees_photos.value)
+    documents = await search_image(file=image, collection=CollectionName.employees_photos.value)
     backend_logger.debug(documents)
 
     llm_response: LLMResponse = await generate_answer_from_docs(

@@ -63,7 +63,7 @@ class CLIPEmbedder(Embeddings):
                 return []
             return self._encode_image_path(possible_path)
         else:
-            return self._encode_text(input)
+            return self.encode_text(input)
 
     def _encode_image_path(self, image_path: str) -> list[float]:
         image = Image.open(image_path)
@@ -76,7 +76,7 @@ class CLIPEmbedder(Embeddings):
             embedding /= embedding.norm(dim=-1, keepdim=True)
         return embedding.squeeze(0).cpu().tolist()
 
-    def _encode_text(self, text: str) -> list[float]:
+    def encode_text(self, text: str) -> list[float]:
         tokens = self.tokenizer([text])
         with torch.no_grad():
             embedding = self.model.encode_text(tokens.to(self.device))

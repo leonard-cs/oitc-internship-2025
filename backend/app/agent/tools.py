@@ -1,12 +1,11 @@
-from langchain_core.documents import Document
-from langchain_core.tools import tool
-
 from app.agent.models import AgentResponse
 from app.config import backend_logger
-from app.embed.service import get_embeddings
+from app.embed.clipembedder import CLIPEmbedder
 from app.mssql.dependencies import get_db
-from app.mssql.services import execute_sql, fetch_table_info, fetch_table_names
+from app.mssql.services import execute_sql, fetch_table_info
 from app.vectorstore.service import search
+from langchain_core.documents import Document
+from langchain_core.tools import tool
 
 
 @tool
@@ -28,8 +27,7 @@ def gen_embedding(text: str) -> list:
     Generate an embedding of a text.
     Return embeddings
     """
-    result = get_embeddings(text=text)
-    return result.text_embedding
+    return CLIPEmbedder().encode_text(text)
 
 
 @tool
