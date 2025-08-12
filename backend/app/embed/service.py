@@ -2,13 +2,20 @@ import io
 
 import open_clip
 import torch
-from PIL import Image
-
+from app.embed.clipembedder import CLIPEmbedder
 from app.embed.models import EmbedderResponse
+from fastapi import UploadFile
+from PIL import Image
 
 model = None
 preprocess = None
 tokenizer = None
+
+
+async def handle_image_embed(file: UploadFile) -> list[float]:
+    contents = await file.read()
+    image: Image.Image = Image.open(io.BytesIO(contents)).convert("RGB")
+    return CLIPEmbedder().encode_image(image)
 
 
 def load_model():

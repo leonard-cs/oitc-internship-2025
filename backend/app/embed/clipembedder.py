@@ -1,5 +1,7 @@
 import os
+from typing import override
 
+# see: https://github.com/mlfoundations/open_clip
 import open_clip
 import torch
 from app.config import EMBEDDING_MODEL_PATH, backend_logger
@@ -17,9 +19,11 @@ class CLIPEmbedder(Embeddings):
             EMBEDDING_MODEL_PATH
         )
 
+    @override
     def embed_query(self, text: str) -> list[float]:
         return self._handle_encode(text)
 
+    @override
     def embed_documents(self, texts) -> list[list[float]]:
         return [self._handle_encode(text) for text in texts]
 
@@ -69,12 +73,12 @@ class CLIPEmbedder(Embeddings):
         image = self.preprocess(image).unsqueeze(0)
         with torch.no_grad():
             embedding = self.model.encode_image(image)
-            embedding /= embedding.norm(p=2, dim=-1, keepdim=True)
+            embedding /= embedding.norm(dim=-1, keepdim=True)
         return embedding.squeeze(0).cpu().tolist()
 
     def _encode_text(self, text: str) -> list[float]:
         tokens = self.tokenizer([text])
         with torch.no_grad():
             embedding = self.model.encode_text(tokens.to(self.device))
-            embedding /= embedding.norm(p=2, dim=-1, keepdim=True)
+            embedding /= embedding.norm(dim=-1, keepdim=True)
         return embedding.squeeze(0).cpu().tolist()

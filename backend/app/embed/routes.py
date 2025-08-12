@@ -1,11 +1,8 @@
-import os
-import shutil
 from typing import Optional
 
-from app.embed.clipembedder import CLIPEmbedder
 from app.embed.models import EmbedderResponse
-from app.embed.service import get_embeddings
-from fastapi import APIRouter, File, Form, UploadFile
+from app.embed.service import get_embeddings, handle_image_embed
+from fastapi import APIRouter, File, Form, HTTPException, UploadFile
 from fastapi.responses import JSONResponse
 
 router = APIRouter()
@@ -40,14 +37,14 @@ async def embed_image_text(
 #     response = requests.post("http://localhost:8000/embed", files={"image": f}, data={"text": "a photo of a cat"})
 
 
-@router.post("/embed-image", summary="Generate embedding for image only")
+@router.post("/embed-image", summary="Generate embedding for image")
 async def embed_image(
     file: UploadFile = File(..., description="Image file to embed"),
 ) -> list[float]:
     """
     Generate CLIP embedding for a single image file.
 
-    This endpoint accepts an image file and returns only the image embedding
+    This endpoint accepts an image file and returns the image embedding
     as a 512-dimensional vector. This is a simpler alternative to the /embed
     endpoint when you only need image embeddings without text processing.
 
@@ -56,33 +53,11 @@ async def embed_image(
 
     Returns:
         List of 512 float values representing the image embedding
-
-    Note:
-        The image is temporarily saved to disk during processing and
-        automatically cleaned up after embedding generation.
     """
-    image_path = _file_preprocess(file)
-    embedder = CLIPEmbedder()
-    embedding = embedder.embed_query(image_path)
-    os.remove(image_path)
-    return embedding
+    if not file.content_type.startswith("image/"):
+        raise HTTPException(status_code=400, detail="Invalid image type")
 
-
-def _file_preprocess(file: UploadFile = File(...)) -> str:
-    """
-    Preprocess uploaded file by saving it temporarily to disk.
-
-    Args:
-        file: The uploaded file from FastAPI
-
-    Returns:
-        str: Path to the temporary file on disk
-
-    Note:
-        The caller is responsible for cleaning up the temporary file
-        after processing is complete.
-    """
-    image_path = f"temp_{file.filename}"
-    with open(image_path, "wb") as buffer:
-        shutil.copyfileobj(file.file, buffer)
-    return image_path
+    try:
+        return await handle_image_embed(file)
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
