@@ -40,10 +40,10 @@ def get_table_names() -> list[str]:
 
 
 @tool
-def get_table_info(table_names: list[Table]) -> str:
+def get_table_schema(table_names: list[Table]) -> str:
     """
-    Get the information of the table.
-    Return the information of the table.
+    Get the schema of the table.
+    Return the schema of the table.
     """
     db = get_db()
     return fetch_table_info(db, table_names)
@@ -70,4 +70,4 @@ def final_answer(answer: str, sources: list[str], tools_used: list[str]):
     return AgentResponse(answer=answer, sources=sources, tools_used=tools_used)
 
 
-tools = [final_answer, vector_search, get_table_names, get_table_info, execute_sql_tool]
+tools = [final_answer, vector_search, get_table_names, get_table_schema, execute_sql_tool]

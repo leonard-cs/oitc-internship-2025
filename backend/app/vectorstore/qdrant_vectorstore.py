@@ -1,8 +1,9 @@
-from abc import ABC, abstractmethod
 import uuid
-from qdrant_client import QdrantClient
-from qdrant_client.models import Distance, PointStruct, VectorParams
-from app.config import QDRANT_URL
+from abc import ABC, abstractmethod
+
+from app.config import QDRANT_URL, backend_logger
+from qdrant_client import AsyncQdrantClient
+from qdrant_client.models import Distance, PayloadSchemaType, PointStruct, VectorParams
 
 
 class VectorStore(ABC):
@@ -22,43 +23,51 @@ class VectorStore(ABC):
 class MyQdrantVectorStore(VectorStore):
     def __init__(self, url: str):
         self.url = url
-        self.client = QdrantClient(url=url)
+        self.client = AsyncQdrantClient(url=url)
 
-    def collection_exists(self, collection_name: str) -> bool:
-        return self.client.collection_exists(collection_name)
+    async def collection_exists(self, collection_name: str) -> bool:
+        return await self.client.collection_exists(collection_name)
 
-    def create_collection(self, collection_name: str, vector_size: int) -> bool:
-        if not self.collection_exists(collection_name):
-            return self.client.create_collection(
+    async def create_payload_index(self, collection_name: str):
+        result = await self.client.create_payload_index(
+            collection_name=collection_name,
+            field_name="myid",
+            field_schema=PayloadSchemaType.TEXT,
+        )
+        backend_logger.info(f"Payload index created: {result}")
+
+    async def create_collection(self, collection_name: str, vector_size: int) -> bool:
+        if not await self.collection_exists(collection_name):
+            return await self.client.create_collection(
                 collection_name=collection_name,
                 vectors_config=VectorParams(size=vector_size, distance=Distance.COSINE),
             )
         else:
             return True
 
-    def get_collections(self) -> list[str]:
+    async def get_collections(self) -> list[str]:
         """Get list name of all existing collections
 
         Returns:
             List of the collections
         """
-        collections_response = self.client.get_collections()
+        collections_response = await self.client.get_collections()
         collection_descriptions = collections_response.collections
         collection_names = [collection.name for collection in collection_descriptions]
         return collection_names
 
-    def get_collection_info(self) -> list[dict[str, dict[str, any]]]:
+    async def get_collection_info(self) -> list[dict[str, dict[str, any]]]:
         """Get list information for all existing collections
 
         Returns:
             List of the dictionaries with collection name and metadata
         """
         return [
-            {collection: {"points": self.client.count(collection).count}}
-            for collection in self.get_collections()
+            {collection: {"points": (await self.client.count(collection)).count}}
+            for collection in await self.get_collections()
         ]
 
-    def upload_collection(
+    async def upload_collection(
         self,
         collection_name: str,
         vectors: list[list[float]],
@@ -70,16 +79,24 @@ class MyQdrantVectorStore(VectorStore):
         This method will perform automatic batching of the data.
         If you need to perform a single update, use `upsert` method.
         """
+        backend_logger.info(
+            f"Uploading collection {collection_name} with {len(vectors)} vectors"
+        )
         payload = [
-            {"page_content": page_content, "metadata": metadata}
-            for page_content, metadata in zip(page_contents, metadata)
+            {
+                "id": m.get("source"),
+                "page_content": page_content,
+                "metadata": m,
+            }
+            for page_content, m in zip(page_contents, metadata)
         ]
-        self.create_collection(collection_name, len(vectors[0]))
+        result = await self.create_collection(collection_name, len(vectors[0]))
+        backend_logger.info(f"Collection created: {result}")
         self.client.upload_collection(
             collection_name=collection_name, vectors=vectors, payload=payload, ids=ids
         )
 
-    def upsert(
+    async def upsert(
         self,
         collection_name: str,
         vector: list[float],
@@ -92,30 +109,41 @@ class MyQdrantVectorStore(VectorStore):
 
         If point with given ID already exists - it will be overwritten.
         """
-        self.create_collection(collection_name, len(vector))
-        self.client.upsert(
+        await self.create_collection(collection_name, len(vector))
+        await self.client.upsert(
             collection_name=collection_name,
             points=[
                 PointStruct(
                     id=id,
                     vector=vector,
-                    payload={"page_content": page_content, "metadata": metadata},
+                    payload={
+                        "id": metadata.get("source"),
+                        "page_content": page_content,
+                        "metadata": metadata,
+                    },
                 )
             ],
         )
 
 
 if __name__ == "__main__":
+    import asyncio
+
     vectorstore = MyQdrantVectorStore(url=QDRANT_URL)
-    vectorstore.upload_collection(
-        collection_name="Test",
-        vectors=[[1, 2, 3]],
-        page_contents=["test"],
-        metadata=[{"test": "test"}],
-    )
-    vectorstore.upsert(
-        collection_name="Test",
-        vector=[1, 2, 3],
-        page_content="test",
-        metadata={"test": "test"},
-    )
+    asyncio.run(vectorstore.create_payload_index("Products"))
+    # asyncio.run(
+    #     vectorstore.upload_collection(
+    #         collection_name="Test",
+    #         vectors=[[1, 2, 3]],
+    #         page_contents=["test"],
+    #         metadata=[{"test": "test"}],
+    #     )
+    # )
+    # asyncio.run(
+    #     vectorstore.upsert(
+    #         collection_name="Test",
+    #         vector=[1, 2, 3],
+    #         page_content="test",
+    #         metadata={"test": "test"},
+    #     )
+    # )

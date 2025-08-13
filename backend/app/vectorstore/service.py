@@ -1,11 +1,9 @@
 from functools import lru_cache
-from pathlib import Path
 
 from app.config import QDRANT_URL, QDRANT_VECTOR_SIZE, backend_logger
 from app.embed.clipembedder import CLIPEmbedder
 from app.embed.service import handle_image_embed
 from app.vectorstore.qdrant_vectorstore import MyQdrantVectorStore
-from app.vectorstore.utils import extract_file_info, generate_uuid
 from fastapi import UploadFile
 from langchain_core.documents import Document
 from langchain_qdrant import QdrantVectorStore
@@ -35,91 +33,7 @@ def get_vectorstore():
 
 async def get_vectorstore_info():
     vectorstore = get_vectorstore()
-    return vectorstore.get_collection_info()
-
-
-def handle_sync_collection(collection: str) -> list[str] | None:
-    export_path = Path(f"../exports/{collection}")
-    files = sorted(export_path.glob(f"{collection}_*.txt"))
-
-    if not files:
-        backend_logger.error(f"No export files found for collection: '{collection}'")
-        return
-
-    vector_store = get_qdrant_vector_store(collection)
-
-    documents: list[Document] = []
-    ids: list[str] = []
-
-    for file_path in files:
-        id_str, date, time = extract_file_info(file_path.name)
-        with file_path.open("r", encoding="utf-8") as f:
-            text = f.read()
-            metadata = {
-                "id": id_str,
-                "date": date,
-                "time": time,
-            }
-            documents.append(Document(page_content=text, metadata=metadata))
-            ids.append(generate_uuid(id_str))
-    added_ids = vector_store.add_documents(
-        documents=documents,
-        ids=ids,
-    )
-    backend_logger.success(f"{collection}: {len(added_ids)} entries synced.")
-    return added_ids
-
-
-def handle_sync_image_collection(
-    photos_collection: str, text_collection: str
-) -> list[str] | None:
-    image_export_path = Path(f"../exports/{photos_collection}")
-    image_files = sorted(image_export_path.glob(f"{photos_collection}_*.jpg"))
-    if not image_files:
-        backend_logger.error(
-            f"No export image files found for collection: '{photos_collection}'"
-        )
-        return
-
-    text_export_path = Path(f"../exports/{text_collection}")
-    text_files = sorted(text_export_path.glob(f"{text_collection}_*.txt"))
-    if not text_files:
-        backend_logger.error(
-            f"No export text files found for collection: '{text_collection}'"
-        )
-        return
-
-    if len(image_files) != len(text_files):
-        backend_logger.error(
-            f"Number of image files ({len(image_files)}) does not match number of text files ({len(text_files)}) for collection: '{photos_collection}'"
-        )
-        return
-
-    _create_collection(photos_collection)
-    vector_store = get_qdrant_vector_store(photos_collection)
-
-    documents: list[Document] = []
-    ids: list[str] = []
-
-    for image_path, text_path in zip(image_files, text_files):
-        id_str, date, time = extract_file_info(text_path.name)
-        with text_path.open("r", encoding="utf-8") as f:
-            text = f.read()
-            metadata = {
-                "id": id_str,
-                "date": date,
-                "time": time,
-            }
-            documents.append(
-                Document(page_content=f"{text}\n\n{image_path}", metadata=metadata)
-            )
-            ids.append(generate_uuid(id_str))
-    added_ids = vector_store.add_documents(
-        documents=documents,
-        ids=ids,
-    )
-    backend_logger.success(f"{photos_collection}: {len(added_ids)} entries synced.")
-    return added_ids
+    return await vectorstore.get_collection_info()
 
 
 def search(query: str, collection: str) -> list[Document]:
@@ -180,39 +94,28 @@ def get_all_records(
     collection_name: str, with_payload: bool = True, limit: int = 10000
 ) -> list[dict[str, any]]:
     all_records = []
-    offset = None
     qdrant = QdrantClient(url=QDRANT_URL)
     if not qdrant.collection_exists(collection_name):
         raise ValueError(f"Collection '{collection_name}' does not exist.")
 
-    while True:
-        scroll_result = qdrant.scroll(
-            collection_name=collection_name,
-            with_payload=with_payload,
-            with_vectors=False,
-            limit=256,
-            offset=offset,
-        )
+    scroll_result = qdrant.scroll(
+        collection_name=collection_name, with_payload=with_payload
+    )
 
-        records = scroll_result[0]
-        if not records:
-            break
+    records = scroll_result[0]
+    if not records:
+        raise ValueError(f"No records found in collection '{collection_name}'.")
 
-        for record in records:
-            if with_payload:
-                entry = {
-                    "id": str(record.id),
-                    "page_content": record.payload.get("page_content", ""),
-                    "metadata": record.payload.get("metadata", {}),
-                }
-            else:
-                entry = {"id": str(record.id)}
-            all_records.append(entry)
+    for record in records:
+        if with_payload:
+            entry = {
+                "page_content": record.payload.get("page_content", ""),
+                "metadata": record.payload.get("metadata", {}),
+            }
+        else:
+            entry = {"id": str(record.id)}
+        all_records.append(entry)
 
-        offset = scroll_result[1]
-
-        if offset is None or len(all_records) >= limit:
-            break
     backend_logger.info(f"#Records: {len(all_records)}.")
     return all_records
 

@@ -9,10 +9,9 @@ from app.llm.ollama import get_ollama
 from app.mssql.models import ImageTable, LLMDocumentResponse, Table
 from app.mssql.utils import delete_file
 from app.prompts.prompts import get_document_prompt
-from app.vectorstore.service import get_qdrant_vector_store, get_vectorstore
+from app.vectorstore.service import get_vectorstore
 from app.vectorstore.utils import generate_uuid
 from langchain_community.utilities import SQLDatabase
-from langchain_core.documents import Document
 from PIL import Image
 from PIL.ImageFile import ImageFile
 
@@ -44,8 +43,10 @@ async def sync_table_ai(
     backend_logger.debug(f"Retrieved {len(parsed_rows)} rows from table {table_name}")
 
     document_ids: list[str] = []
-    documents: list[Document] = []
+    contents: list[str] = []
     ids: list[str] = []
+    metadata: list[dict[str, any]] = []
+    embeddings: list[list[float]] = []
 
     for row in parsed_rows:
         id, text = await generate_text_and_id(table_name, row, table_info)
@@ -56,28 +57,22 @@ async def sync_table_ai(
 
         document_id = f"{table_name}_{id}"
         document_ids.append(document_id)
-        document = Document(
-            page_content=text,
-            metadata={"id": document_id, "created_at": str(datetime.now())},
-        )
-        documents.append(document)
+        contents.append(text)
+        embeddings.append(CLIPEmbedder().encode_text(text))
+        metadata.append({"source": document_id, "created_at": str(datetime.now())})
         ids.append(generate_uuid(document_id))
 
-    vector_store = get_qdrant_vector_store(table_name)
-    added_ids = vector_store.add_documents(documents=documents, ids=ids)
-    unique_added_ids = list(set(added_ids))
+    vectorstore = get_vectorstore()
+    await vectorstore.upload_collection(
+        collection_name=table_name,
+        vectors=embeddings,
+        page_contents=contents,
+        metadata=metadata,
+        ids=ids,
+    )
 
     backend_logger.trace(f"Document ids: {document_ids}")
-    if len(unique_added_ids) != len(added_ids):
-        backend_logger.success(
-            f"{len(unique_added_ids)} / {len(added_ids)} documents added to collection {table_name}"
-        )
-    else:
-        backend_logger.success(
-            f"All {len(added_ids)} documents added to collection {table_name}"
-        )
-
-    return unique_added_ids
+    return ids
 
 
 def extract_images(
@@ -157,7 +152,7 @@ async def sync_table_images(
         document_id = f"{table_name}_image_{id}"
         document_ids.append(document_id)
         contents.append(text)
-        metadata.append({"id": document_id, "created_at": str(datetime.now())})
+        metadata.append({"source": document_id, "created_at": str(datetime.now())})
         ids.append(generate_uuid(document_id))
 
     vectorstore = get_vectorstore()
