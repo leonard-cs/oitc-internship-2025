@@ -1,6 +1,6 @@
 from app.agent.service import handle_chat_request_agent
-from app.chat.models import ChatRequest, ChatResponse
-from fastapi import APIRouter, HTTPException
+from app.chat.models import ChatResponse
+from fastapi import APIRouter, Query
 
 router = APIRouter()
 
@@ -11,7 +11,11 @@ router = APIRouter()
     summary="Process Query through Agent RAG Pipeline",
     description="Process user queries through an intelligent agent-based Retrieval-Augmented Generation system with tool utilization capabilities",
 )
-async def ask_chat_agent(payload: ChatRequest):
+async def ask_chat_agent(
+    query: str = Query(
+        ..., description="The user's question, request, or conversation input"
+    ),
+):
     """
     Process a user query through the intelligent agent RAG chatbot pipeline.
 
@@ -26,16 +30,5 @@ async def ask_chat_agent(payload: ChatRequest):
             - answer (str): Comprehensive response utilizing agent capabilities
             - sources (list[str]): List of source document references used
             - tools_used (list, optional): Tools and reasoning chains utilized
-
-    Raises:
-        HTTPException: 500 status code if agent processing fails, tool access is denied,
-                      or if there are issues with the underlying AI models
     """
-    try:
-        result = await handle_chat_request_agent(
-            user_query=payload.user_query,
-            use_query_processor=payload.use_query_processor,
-        )
-        return result
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
+    return await handle_chat_request_agent(user_query=query)

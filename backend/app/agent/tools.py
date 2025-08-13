@@ -2,6 +2,7 @@ from app.agent.models import AgentResponse
 from app.config import backend_logger
 from app.embed.clipembedder import CLIPEmbedder
 from app.mssql.dependencies import get_db
+from app.mssql.models import Table
 from app.mssql.services import execute_sql, fetch_table_info
 from app.vectorstore.service import search
 from langchain_core.documents import Document
@@ -13,7 +14,6 @@ def vector_search(query: str, collection_name: str) -> list[Document]:
     """
     Perform a vector similarity search against a set of documents.
     The query should contain the semantic meaning of original query.
-    collection_name can be "Products" or "Employees"
     Returns top 5 most relevant context documents and their sources.
     """
     backend_logger.info("Executing 'vector_search' tool")
@@ -31,7 +31,16 @@ def gen_embedding(text: str) -> list:
 
 
 @tool
-def get_table_info(table_names: list[str]) -> str:
+def get_table_names() -> list[str]:
+    """
+    Get the names of the tables.
+    Return the names of the tables.
+    """
+    return [table.value for table in Table]
+
+
+@tool
+def get_table_info(table_names: list[Table]) -> str:
     """
     Get the information of the table.
     Return the information of the table.
@@ -61,4 +70,4 @@ def final_answer(answer: str, sources: list[str], tools_used: list[str]):
     return AgentResponse(answer=answer, sources=sources, tools_used=tools_used)
 
 
-tools = [final_answer, vector_search, get_table_info, execute_sql_tool]
+tools = [final_answer, vector_search, get_table_names, get_table_info, execute_sql_tool]
