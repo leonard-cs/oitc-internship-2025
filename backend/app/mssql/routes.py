@@ -3,7 +3,6 @@ from app.config import backend_logger
 from app.mssql.dependencies import get_db, get_mssql_pyodbc_connection
 from app.mssql.models import ImageTable, Table
 from app.mssql.services import (
-    extract_images,
     fetch_table_info,
     fetch_table_names,
     sync_table_ai,
@@ -57,15 +56,15 @@ async def get_table_info(
 
     Args:
         tables (list[Table]): List of table enum values specifying which tables
-                             to retrieve information for. Must be valid table names
-                             from the Table enum (e.g., Table.employees, Table.products).
+                            to retrieve information for. Must be valid table names
+                            from the Table enum (e.g., Table.employees, Table.products).
         db (SQLDatabase): Database connection dependency providing access to the
-                         MSSQL database. Automatically injected by FastAPI.
+                        MSSQL database. Automatically injected by FastAPI.
 
     Returns:
         str: Formatted string containing detailed schema information for all
-             requested tables, including column definitions, data types, and constraints.
-             The format is human-readable and suitable for documentation or analysis.
+            requested tables, including column definitions, data types, and constraints.
+            The format is human-readable and suitable for documentation or analysis.
     """
     table_names = [table.value for table in tables]
     return fetch_table_info(db, table_names)
@@ -98,10 +97,10 @@ async def ai_sync(
 
     Args:
         tables (list[Table]): List of table enum values to synchronize.
-                             Each table will be processed independently and
-                             can succeed or fail individually.
+                            Each table will be processed independently and
+                            can succeed or fail individually.
         db (SQLDatabase): Database connection dependency providing access to
-                         the source MSSQL database. Automatically injected.
+                        the source MSSQL database. Automatically injected.
 
     Returns:
         SyncResponse: Response object containing:
@@ -112,10 +111,10 @@ async def ai_sync(
     for table in tables:
         try:
             ids = await sync_table_ai(db, table, limit)
-            if not ids:
-                tables_failed.append(table.value)
-            else:
+            if ids:
                 tables_synced.append(table.value)
+            else:
+                tables_failed.append(table.value)
         except Exception as e:
             backend_logger.error(f"Error syncing table {table.value}: {e}")
             tables_failed.append(table.value)
@@ -154,10 +153,10 @@ async def ai_sync_all(
     for table in Table:
         try:
             ids = await sync_table_ai(db, table)
-            if not ids:
-                tables_failed.append(table.value)
-            else:
+            if ids:
                 tables_synced.append(table.value)
+            else:
+                tables_failed.append(table.value)
         except Exception as e:
             backend_logger.error(f"Error syncing table {table.value}: {e}")
             tables_failed.append(table.value)
@@ -178,6 +177,7 @@ async def sync_images(
         ..., description="List of image tables to extract and synchronize"
     ),
     db_connection: pyodbc.Connection = Depends(get_mssql_pyodbc_connection),
+    db: SQLDatabase = Depends(get_db),
 ) -> SyncResponse:
     """
     Extract and synchronize image data from database tables to the vector store using AI.
@@ -187,11 +187,11 @@ async def sync_images(
 
     Args:
         tables (list[ImageTable]): List of image table enum values containing
-                                  image data to synchronize. Each table should
-                                  contain image columns (BLOB, VARBINARY, etc.).
+                                image data to synchronize. Each table should
+                                contain image columns (BLOB, VARBINARY, etc.).
         db_connection (pyodbc.Connection): Direct MSSQL database connection for
-                                          binary data extraction. Automatically
-                                          injected by FastAPI dependency.
+                                        binary data extraction. Automatically
+                                        injected by FastAPI dependency.
 
     Returns:
         SyncResponse: Response object containing:
@@ -201,12 +201,11 @@ async def sync_images(
     tables_synced, tables_failed = [], []
     for table in tables:
         try:
-            export_dir = extract_images(db_connection, table)
-            ids = await sync_table_images(table, export_dir)
-            if not ids:
-                tables_failed.append(table.value)
-            else:
+            ids = await sync_table_images(db_connection, db, table)
+            if ids:
                 tables_synced.append(table.value)
+            else:
+                tables_failed.append(table.value)
         except Exception as e:
             backend_logger.error(f"Error syncing table {table.value}: {e}")
             tables_failed.append(table.value)

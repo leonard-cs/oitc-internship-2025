@@ -5,6 +5,8 @@ from pydantic import BaseModel, Field
 
 class Table(str, Enum):
     products = "Products"
+    employees = "Employees"
+    categories = "Categories"
     customers = "Customers"
     employee_territories = "EmployeeTerritories"
     order_details = "Order Details"
@@ -15,15 +17,6 @@ class Table(str, Enum):
     territories = "Territories"
 
     def sql(self, limit: int | None = None) -> str:
-        limit_str = f"TOP {limit}" if limit else ""
-        return f"SELECT {limit_str} * FROM [{self.value}]"
-
-
-class ImageTable(str, Enum):
-    employees = "Employees"
-    categories = "Categories"
-
-    def sql_text(self, limit: int | None = None) -> str:
         limit_str = f"TOP {limit}" if limit else ""
         if self == Table.employees:
             return f"""
@@ -53,7 +46,12 @@ class ImageTable(str, Enum):
                 FROM [{self.value}]
             """
         else:
-            raise ValueError(f"Invalid image table: {self.value}")
+            return f"SELECT {limit_str} * FROM [{self.value}]"
+
+
+class ImageTable(str, Enum):
+    employees = "Employees"
+    categories = "Categories"
 
     def sql_image(self, limit: int | None = None) -> str:
         limit_str = f"TOP {limit}" if limit else ""
