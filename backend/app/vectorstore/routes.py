@@ -12,6 +12,8 @@ from app.vectorstore.service import (
 )
 from fastapi import APIRouter, HTTPException, Query
 
+from app.mssql.models import Table
+
 router = APIRouter()
 
 
@@ -146,7 +148,7 @@ async def sync_collection(payload: SyncRequest) -> SyncResponse:
     description="Retrieve all document IDs and optionally their payload data from a specified vector store collection for inspection and debugging purposes.",
 )
 async def get_collection_ids(
-    collection: CollectionName = Query(
+    table: Table = Query(
         ..., description="Collection to retrieve IDs from"
     ),
     with_payload: bool = Query(False, description="Include payload data for each ID"),
@@ -168,12 +170,12 @@ async def get_collection_ids(
     Returns:
         list[dict]: A list of dictionaries.
     """
-    backend_logger.info(f"Retrieving all IDs from collection: {collection.value}")
+    backend_logger.info(f"Retrieving all IDs from collection: {table.value}")
     try:
         return get_all_records(
-            collection_name=collection.value,
+            collection_name=table.value,
             with_payload=with_payload,
         )
     except Exception as e:
-        backend_logger.error(f"Error retrieving all IDs from collection: {e}")
+        backend_logger.error(f"Error retrieving from collection '{table.value}':\n{e}")
         raise HTTPException(status_code=500, detail=str(e))

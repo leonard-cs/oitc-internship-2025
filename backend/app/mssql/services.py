@@ -54,10 +54,14 @@ async def sync_table_ai(
             backend_logger.warning("Document generation failed, skipping row")
             continue
 
-        document_ids.append(f"{table_name}_{id}")
-        document = Document(page_content=text, metadata={})
+        document_id = f"{table_name}_{id}"
+        document_ids.append(document_id)
+        document = Document(
+            page_content=text,
+            metadata={"id": document_id, "created_at": str(datetime.now())},
+        )
         documents.append(document)
-        ids.append(generate_uuid(id))
+        ids.append(generate_uuid(document_id))
 
     vector_store = get_qdrant_vector_store(table_name)
     added_ids = vector_store.add_documents(documents=documents, ids=ids)
@@ -153,7 +157,7 @@ async def sync_table_images(
         document_id = f"{table_name}_image_{id}"
         document_ids.append(document_id)
         contents.append(text)
-        metadata.append({"created_at": str(datetime.now())})
+        metadata.append({"id": document_id, "created_at": str(datetime.now())})
         ids.append(generate_uuid(document_id))
 
     vectorstore = get_vectorstore()

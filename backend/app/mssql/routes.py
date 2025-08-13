@@ -131,6 +131,9 @@ async def ai_sync(
     description="Synchronize all available database tables to the vector store using AI processing for comprehensive semantic search capabilities across the entire database",
 )
 async def ai_sync_all(
+    limit: int | None = Query(
+        None, description="Limit the number of rows to synchronize"
+    ),
     db: SQLDatabase = Depends(get_db),
 ) -> SyncResponse:
     """
@@ -152,7 +155,7 @@ async def ai_sync_all(
     tables_synced, tables_failed = [], []
     for table in Table:
         try:
-            ids = await sync_table_ai(db, table)
+            ids = await sync_table_ai(db, table, limit)
             if ids:
                 tables_synced.append(table.value)
             else:
