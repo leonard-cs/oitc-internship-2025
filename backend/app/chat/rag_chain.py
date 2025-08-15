@@ -5,28 +5,17 @@ from app.chat.rag_llm import (
     generate_sql_query,
     get_relevant_tables,
 )
-from app.config import (
-    MSSQL_CONNECTION_STRING,
-    OLLAMA_BASE_URL,
-    OLLAMA_CHAT_MODEL,
-    backend_logger,
-)
+from app.config import MSSQL_CONNECTION_STRING, backend_logger
+from app.llm.ollama import get_ollama
 from app.prompts.prompts import get_rag_prompt
 from fastapi import HTTPException
 from langchain_community.utilities import SQLDatabase
-from langchain_ollama import ChatOllama
-
-ollama = ChatOllama(
-    model=OLLAMA_CHAT_MODEL,
-    base_url=OLLAMA_BASE_URL,
-    temperature=0.0,
-)
 
 
 async def generate_answer_from_docs(query: str, docs: list[str]) -> LLMResponse:
     prompt_template = get_rag_prompt()
 
-    structured_ollama = ollama.with_structured_output(LLMResponse)
+    structured_ollama = get_ollama().with_structured_output(LLMResponse)
 
     pipelines = (
         {"query": lambda x: x["query"], "context": lambda x: x["context"]}

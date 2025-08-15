@@ -1,3 +1,6 @@
+from app.chat.models import QueryProcessorResponse
+from app.config import backend_logger
+from app.llm.ollama import get_ollama
 from langchain_core.prompts import (
     ChatPromptTemplate,
     FewShotChatMessagePromptTemplate,
@@ -5,16 +8,8 @@ from langchain_core.prompts import (
     SystemMessagePromptTemplate,
 )
 from langchain_core.runnables import RunnablePassthrough
-from langchain_ollama import ChatOllama
 
-from app.config import OLLAMA_BASE_URL, OLLAMA_CHAT_MODEL, backend_logger
-from app.chat.models import QueryProcessorResponse
-
-ollama = ChatOllama(
-    model=OLLAMA_CHAT_MODEL,
-    base_url=OLLAMA_BASE_URL,
-    temperature=0.0,
-)
+ollama = get_ollama()
 structured_ollama = ollama.with_structured_output(QueryProcessorResponse)
 
 system_prompt = SystemMessagePromptTemplate.from_template("""

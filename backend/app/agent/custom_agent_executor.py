@@ -1,7 +1,8 @@
 from app.agent.models import AgentResponse
 from app.agent.tools import tools
 from app.agent.utils import remove_thinking_tags
-from app.config import OLLAMA_BASE_URL, OLLAMA_CHAT_MODEL, backend_logger
+from app.config import backend_logger
+from app.llm.ollama import get_ollama
 from langchain_core.messages import BaseMessage, ToolMessage
 from langchain_core.prompts import (
     ChatPromptTemplate,
@@ -10,13 +11,6 @@ from langchain_core.prompts import (
     SystemMessagePromptTemplate,
 )
 from langchain_core.runnables.base import RunnableSerializable
-from langchain_ollama import ChatOllama
-
-ollama = ChatOllama(
-    model=OLLAMA_CHAT_MODEL,
-    base_url=OLLAMA_BASE_URL,
-    temperature=0.0,
-)
 
 system_prompt = """You are a helpful assistant that answers questions.
     When answering, use one of the tools provided. After using a tool the tool output will be provided in the 'scratchpad' below.
@@ -48,7 +42,7 @@ class CustomAgentExecutor:
                 "agent_scratchpad": lambda x: x.get("agent_scratchpad", []),
             }
             | prompt_template
-            | ollama.bind_tools(tools, tool_choice="any")
+            | get_ollama().bind_tools(tools, tool_choice="any")
         )
 
     def invoke(self, query: str) -> AgentResponse:

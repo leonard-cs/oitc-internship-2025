@@ -1,34 +1,23 @@
-from fastapi import HTTPException
-from langchain_community.utilities import SQLDatabase
-from langchain_ollama import ChatOllama
-
-from app.config import (
-    OLLAMA_BASE_URL,
-    OLLAMA_CHAT_MODEL,
-    backend_logger,
-)
 from app.chat.models import (
     FinalResponse,
     RelevantTablesResponse,
     SQLResponse,
 )
+from app.config import backend_logger
+from app.llm.ollama import get_ollama
 from app.prompts.prompts import (
     get_regenerate_sql_query_prompt,
     get_relevant_tables_prompt,
     get_sql_query_prompt,
     get_sql_response_prompt,
 )
-
-ollama = ChatOllama(
-    model=OLLAMA_CHAT_MODEL,
-    base_url=OLLAMA_BASE_URL,
-    temperature=0.0,
-)
+from fastapi import HTTPException
+from langchain_community.utilities import SQLDatabase
 
 
 async def get_relevant_tables(user_question: str, table_list: list[str]) -> list[str]:
     """Get relevant table names based on the user question."""
-    table_ollama = ollama.with_structured_output(RelevantTablesResponse)
+    table_ollama = get_ollama().with_structured_output(RelevantTablesResponse)
     table_pipeline = (
         {
             "user_question": lambda x: x["user_question"],
@@ -49,7 +38,7 @@ async def get_relevant_tables(user_question: str, table_list: list[str]) -> list
 
 async def generate_sql_query(user_question: str, table_info: str) -> str:
     try:
-        sql_ollama = ollama.with_structured_output(SQLResponse)
+        sql_ollama = get_ollama().with_structured_output(SQLResponse)
         sql_query_pipeline = (
             {
                 "user_question": lambda x: x["user_question"],
@@ -76,7 +65,7 @@ async def _regenerate_sql_query_with_error(
 ) -> str:
     """Regenerate SQL query with error context from previous failed attempt."""
     try:
-        sql_ollama = ollama.with_structured_output(SQLResponse)
+        sql_ollama = get_ollama().with_structured_output(SQLResponse)
         sql_query_pipeline = (
             {
                 "user_question": lambda x: x["user_question"],
@@ -145,7 +134,7 @@ async def execute_sql_query(
 
 async def generate_final_response(user_question: str, query_results: str) -> str:
     """Generate final response from query results."""
-    final_response_ollama = ollama.with_structured_output(FinalResponse)
+    final_response_ollama = get_ollama().with_structured_output(FinalResponse)
     final_response_pipeline = (
         {
             "user_question": lambda x: x["user_question"],
