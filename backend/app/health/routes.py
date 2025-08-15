@@ -26,3 +26,6 @@ async def ping():
         }
     """
     return JSONResponse(content={"status": "ok", "message": "pong 🏓"})
+
+
+# TODO: Add health check for ollama, qdrant and mssql

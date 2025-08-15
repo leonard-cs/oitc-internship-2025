@@ -18,7 +18,6 @@ def get_qdrant_client():
 
 @lru_cache(maxsize=20)
 def get_qdrant_vector_store(collection_name: str):
-    _create_collection(collection_name)
     return QdrantVectorStore(
         client=get_qdrant_client(),
         collection_name=collection_name,

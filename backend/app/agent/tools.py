@@ -4,7 +4,7 @@ from app.embed.clipembedder import get_clip_embedder
 from app.mssql.dependencies import get_db
 from app.mssql.models import Table
 from app.mssql.services import execute_sql, fetch_table_info
-from app.vectorstore.service import search
+from app.vectorstore.service import get_vectorstore, search
 from langchain_core.documents import Document
 from langchain_core.tools import tool
 
@@ -17,6 +17,11 @@ def vector_search(query: str, collection_name: str) -> list[Document]:
     Returns top 5 most relevant context documents and their sources.
     """
     backend_logger.info("Executing 'vector_search' tool")
+    
+    qdrant = get_vectorstore()
+    if not qdrant.collection_exists(collection_name):
+        return f"Collection {collection_name} does not exist.\nAvailable collections: {qdrant.get_collections()}"
+    
     documents: list[Document] = search(query, collection_name)
     return documents
 

@@ -97,7 +97,7 @@ async def execute_sql_query(
     """Execute SQL query and return results."""
     sql_query = sql_query
     if not retry:
-        query_results = db.run_no_throw(sql_query)
+        query_results = db.run_no_throw(sql_query, fetch="all", include_columns=True)
         backend_logger.trace(f"Query results:\n{query_results}")
         return query_results, sql_query
 

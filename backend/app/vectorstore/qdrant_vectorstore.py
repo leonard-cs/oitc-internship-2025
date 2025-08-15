@@ -126,23 +126,17 @@ class MyQdrantVectorStore(VectorStore):
 
 
 if __name__ == "__main__":
-    import asyncio
-
     vectorstore = MyQdrantVectorStore(url=QDRANT_URL)
-    asyncio.run(vectorstore.create_payload_index("Products"))
-    # asyncio.run(
-    #     vectorstore.upload_collection(
-    #         collection_name="Test",
-    #         vectors=[[1, 2, 3]],
-    #         page_contents=["test"],
-    #         metadata=[{"test": "test"}],
-    #     )
-    # )
-    # asyncio.run(
-    #     vectorstore.upsert(
-    #         collection_name="Test",
-    #         vector=[1, 2, 3],
-    #         page_content="test",
-    #         metadata={"test": "test"},
-    #     )
-    # )
+    vectorstore.upload_collection(
+        collection_name="Test",
+        vectors=[[1, 2, 3]],
+        page_contents=["test"],
+        metadata=[{"test": "test"}],
+    )
+
+    vectorstore.upsert(
+        collection_name="Test",
+        vector=[1, 2, 3],
+        page_content="test",
+        metadata={"test": "test"},
+    )

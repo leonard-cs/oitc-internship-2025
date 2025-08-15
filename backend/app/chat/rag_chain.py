@@ -35,7 +35,7 @@ async def generate_answer_from_docs(query: str, docs: list[str]) -> LLMResponse:
 
 async def generate_answer_from_sql(user_question: str):
     """Generate answer from SQL database with proper error handling."""
-    relevant_tables = False
+    relevant_tables = True
     regenerate_sql_query = True
     try:
         db = SQLDatabase.from_uri(MSSQL_CONNECTION_STRING)
@@ -45,6 +45,7 @@ async def generate_answer_from_sql(user_question: str):
         else:
             table_names = table_list
         table_info = db.get_table_info(table_names)
+        backend_logger.trace(f"Table info: {table_info}")
 
         sql_query = await generate_sql_query(user_question, table_info)
         query_results, sql_query = await execute_sql_query(
