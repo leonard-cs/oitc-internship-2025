@@ -68,7 +68,7 @@ async def sync_table_ai(
             )
 
     vectorstore = get_vectorstore()
-    await vectorstore.upload_collection(
+    vectorstore.upload_collection(
         collection_name=table_name,
         vectors=embeddings,
         page_contents=contents,
@@ -164,7 +164,7 @@ async def sync_table_images(
             )
 
     vectorstore = get_vectorstore()
-    await vectorstore.upload_collection(
+    vectorstore.upload_collection(
         collection_name=table_name,
         vectors=image_embeddings,
         page_contents=contents,

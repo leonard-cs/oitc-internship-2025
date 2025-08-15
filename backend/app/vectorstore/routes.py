@@ -12,7 +12,7 @@ router = APIRouter()
     summary="Get vector store information",
     description="Retrieve comprehensive information about the vector store including collections, statistics, and configuration details.",
 )
-async def get_info():
+def get_info():
     """
     Get comprehensive information about the vector store.
 
@@ -26,7 +26,7 @@ async def get_info():
             - Configuration details
             - Connection status
     """
-    return await get_vectorstore_info()
+    return get_vectorstore_info()
 
 
 @router.get(

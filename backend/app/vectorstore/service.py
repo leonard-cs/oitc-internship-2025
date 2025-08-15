@@ -31,9 +31,9 @@ def get_vectorstore():
     return MyQdrantVectorStore(url=QDRANT_URL)
 
 
-async def get_vectorstore_info():
+def get_vectorstore_info():
     vectorstore = get_vectorstore()
-    return await vectorstore.get_collection_info()
+    return vectorstore.get_collection_info()
 
 
 def search(query: str, collection: str) -> list[Document]:
