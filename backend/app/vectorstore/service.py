@@ -1,7 +1,7 @@
 from functools import lru_cache
 
 from app.config import QDRANT_URL, QDRANT_VECTOR_SIZE, backend_logger
-from app.embed.clipembedder import CLIPEmbedder
+from app.embed.clipembedder import get_clip_embedder
 from app.embed.service import handle_image_embed
 from app.vectorstore.qdrant_vectorstore import MyQdrantVectorStore
 from fastapi import UploadFile
@@ -22,7 +22,7 @@ def get_qdrant_vector_store(collection_name: str):
     return QdrantVectorStore(
         client=get_qdrant_client(),
         collection_name=collection_name,
-        embedding=CLIPEmbedder(),
+        embedding=get_clip_embedder(),
     )
 
 

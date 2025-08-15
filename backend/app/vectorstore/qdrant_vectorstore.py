@@ -90,8 +90,7 @@ class MyQdrantVectorStore(VectorStore):
             }
             for page_content, m in zip(page_contents, metadata)
         ]
-        result = await self.create_collection(collection_name, len(vectors[0]))
-        backend_logger.info(f"Collection created: {result}")
+        await self.create_collection(collection_name, len(vectors[0]))
         self.client.upload_collection(
             collection_name=collection_name, vectors=vectors, payload=payload, ids=ids
         )

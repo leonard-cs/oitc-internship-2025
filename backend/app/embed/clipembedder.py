@@ -1,13 +1,14 @@
 import os
+from functools import lru_cache
 from typing import override
 
 # see: https://github.com/mlfoundations/open_clip
-from PIL.ImageFile import ImageFile
 import open_clip
 import torch
 from app.config import EMBEDDING_MODEL_PATH, backend_logger
 from langchain_core.embeddings.embeddings import Embeddings
 from PIL import Image
+from PIL.ImageFile import ImageFile
 
 
 class CLIPEmbedder(Embeddings):
@@ -40,7 +41,7 @@ class CLIPEmbedder(Embeddings):
         """
         try:
             model, _, preprocess = open_clip.create_model_and_transforms(
-                model_name="ViT-B-32", pretrained="openai"
+                model_name="ViT-B-32", pretrained=None, force_quick_gelu=True
             )
             model.load_state_dict(torch.load(path, map_location=self.device))
             model.to(self.device)
@@ -83,3 +84,8 @@ class CLIPEmbedder(Embeddings):
             embedding = self.model.encode_text(tokens.to(self.device))
             embedding /= embedding.norm(dim=-1, keepdim=True)
         return embedding.squeeze(0).cpu().tolist()
+
+
+@lru_cache(maxsize=1)
+def get_clip_embedder() -> CLIPEmbedder:
+    return CLIPEmbedder()

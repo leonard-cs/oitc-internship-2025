@@ -45,7 +45,7 @@ class Table(str, Enum):
                     Description
                 FROM [{self.value}]
             """
-        elif self == Table.order_details:
+        elif self == Table.order_details or self == Table.orders:
             limit_str = f"TOP {limit}" if limit else "TOP 50"
             return f"SELECT {limit_str} * FROM [{self.value}]"
         else:

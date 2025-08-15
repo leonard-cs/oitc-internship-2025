@@ -1,6 +1,6 @@
 from app.agent.models import AgentResponse
 from app.config import backend_logger
-from app.embed.clipembedder import CLIPEmbedder
+from app.embed.clipembedder import get_clip_embedder
 from app.mssql.dependencies import get_db
 from app.mssql.models import Table
 from app.mssql.services import execute_sql, fetch_table_info
@@ -27,7 +27,7 @@ def gen_embedding(text: str) -> list:
     Generate an embedding of a text.
     Return embeddings
     """
-    return CLIPEmbedder().encode_text(text)
+    return get_clip_embedder().encode_text(text)
 
 
 @tool
@@ -70,4 +70,10 @@ def final_answer(answer: str, sources: list[str], tools_used: list[str]):
     return AgentResponse(answer=answer, sources=sources, tools_used=tools_used)
 
 
-tools = [final_answer, vector_search, get_table_names, get_table_schema, execute_sql_tool]
+tools = [
+    final_answer,
+    vector_search,
+    get_table_names,
+    get_table_schema,
+    execute_sql_tool,
+]

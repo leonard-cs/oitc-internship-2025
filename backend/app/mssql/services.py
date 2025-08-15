@@ -4,7 +4,7 @@ from datetime import datetime
 
 import pyodbc
 from app.config import backend_logger
-from app.embed.clipembedder import CLIPEmbedder
+from app.embed.clipembedder import get_clip_embedder
 from app.llm.ollama import get_ollama
 from app.mssql.models import ImageTable, LLMDocumentResponse, Table
 from app.mssql.utils import delete_file
@@ -48,7 +48,7 @@ async def sync_table_ai(
     metadata: list[dict[str, any]] = []
     embeddings: list[list[float]] = []
 
-    for row in parsed_rows:
+    for count, row in enumerate(parsed_rows):
         id, text = await generate_text_and_id(table_name, row, table_info)
 
         if not id or not text:
@@ -58,9 +58,14 @@ async def sync_table_ai(
         document_id = f"{table_name}_{id}"
         document_ids.append(document_id)
         contents.append(text)
-        embeddings.append(CLIPEmbedder().encode_text(text))
+        embeddings.append(get_clip_embedder().encode_text(text))
         metadata.append({"source": document_id, "created_at": str(datetime.now())})
         ids.append(generate_uuid(document_id))
+
+        if (count + 1) % 5 == 0 or count + 1 == len(parsed_rows):
+            backend_logger.info(
+                f"Processed {count + 1}/{len(parsed_rows)} rows in {table_name}"
+            )
 
     vectorstore = get_vectorstore()
     await vectorstore.upload_collection(
@@ -117,18 +122,16 @@ async def sync_table_images(
         try:
             image: ImageFile = Image.open(io.BytesIO(image_data))
             image.load()  # Load the image to make sure it's not lazy-loaded
-            image_embeddings.append(CLIPEmbedder().encode_image(image))
+            image_embeddings.append(get_clip_embedder().encode_image(image))
 
         except Exception as e:
             backend_logger.warning(f"Failed to process image ID {id}: {e}")
     backend_logger.success(f"{len(image_embeddings)} images processed")
 
     full_table = Table(image_table.value)
-    backend_logger.trace(f"New table: {full_table}")
 
     table_info = parse_table_info(fetch_table_info(db, [full_table.value]))
     table_name = full_table.value
-    backend_logger.trace(f"Table info: {table_info}")
 
     rows = db.run_no_throw(full_table.sql(), fetch="all", include_columns=True)
     parsed_rows = parse_sql_result_string(rows)
@@ -142,7 +145,7 @@ async def sync_table_images(
     contents: list[str] = []
     ids: list[str] = []
     metadata: list[dict[str, any]] = []
-    for row in parsed_rows:
+    for count, row in enumerate(parsed_rows):
         id, text = await generate_text_and_id(table_name, row, table_info)
 
         if not id or not text:
@@ -155,8 +158,13 @@ async def sync_table_images(
         metadata.append({"source": document_id, "created_at": str(datetime.now())})
         ids.append(generate_uuid(document_id))
 
+        if (count + 1) % 5 == 0 or count + 1 == len(parsed_rows):
+            backend_logger.info(
+                f"Processed {count + 1}/{len(parsed_rows)} rows in {table_name}"
+            )
+
     vectorstore = get_vectorstore()
-    vectorstore.upload_collection(
+    await vectorstore.upload_collection(
         collection_name=table_name,
         vectors=image_embeddings,
         page_contents=contents,
@@ -221,9 +229,9 @@ async def generate_text_and_id(
         backend_logger.error("No id or text found in the response")
         backend_logger.trace(f"Response: {response}")
         return None
-    backend_logger.trace(f"Response: {response}")
-    backend_logger.success(
-        f"Document generated successfully, table: {table_name}, id: {response.id}"
-    )
+    # backend_logger.trace(f"Response: {response}")
+    # backend_logger.success(
+    #     f"Document generated successfully, table: {table_name}, id: {response.id}"
+    # )
 
     return response.id, response.text
