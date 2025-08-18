@@ -1,22 +1,14 @@
 from app.agent.custom_agent_executor import CustomAgentExecutor
 from app.agent.models import AgentResponse
 from app.chat.models import ChatResponse
-from app.config import backend_logger
-from fastapi import HTTPException
 
 
 async def handle_chat_request_agent(user_query: str) -> ChatResponse:
-    backend_logger.info("Received chat request for agent")
-    try:
-        agent = CustomAgentExecutor()
-        response: AgentResponse = agent.invoke(query=user_query)
-        return ChatResponse(
-            semantic_query=user_query,
-            answer=response.answer,
-            sources=response.sources,
-            tools_used=response.tools_used,
-        )
-    except Exception as e:
-        msg = f"Error when invoking agent: {e}"
-        backend_logger.error(msg)
-        raise HTTPException(status_code=500, detail=msg)
+    agent = CustomAgentExecutor()
+    response: AgentResponse = agent.invoke(query=user_query)
+    return ChatResponse(
+        semantic_query=user_query,
+        answer=response.answer,
+        sources=response.sources,
+        tools_used=response.tools_used,
+    )

@@ -1,6 +1,7 @@
 from app.agent.service import handle_chat_request_agent
 from app.chat.models import ChatResponse
-from fastapi import APIRouter, Query
+from app.config import backend_logger
+from fastapi import APIRouter, HTTPException, Query
 
 router = APIRouter()
 
@@ -31,4 +32,9 @@ async def ask_chat_agent(
             - sources (list[str]): List of source document references used
             - tools_used (list, optional): Tools and reasoning chains utilized
     """
-    return await handle_chat_request_agent(user_query=query)
+    backend_logger.info("Received chat request for agent")
+    try:
+        return await handle_chat_request_agent(user_query=query)
+    except Exception as e:
+        backend_logger.error(f"Error when invoking agent: {e}")
+        raise HTTPException(status_code=500, detail=str(e))

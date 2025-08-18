@@ -24,10 +24,6 @@ def fetch_table_info(db: SQLDatabase, table_names: list[str]) -> str:
     return db.get_table_info(table_names)
 
 
-def execute_sql(db: SQLDatabase, sql_query: str) -> str:
-    return db.run_no_throw(sql_query)
-
-
 async def sync_table_ai(
     db: SQLDatabase, table: Table, limit: int | None = None
 ) -> list[str]:
