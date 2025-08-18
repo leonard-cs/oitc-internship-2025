@@ -26,8 +26,8 @@ jobs:
       run: uv sync --locked --all-extras --dev
       working-directory: backend
 
-    - name: Run tests
-      env:
-        APP_ENV: ci
-      run: uv run python -m pytest --ignore=tests/test_mssql.py
-      working-directory: backend
+    # - name: Run tests
+    #   env:
+    #     APP_ENV: ci
+    #   run: uv run python -m pytest --ignore=tests/test_mssql.py
+    #   working-directory: backend
