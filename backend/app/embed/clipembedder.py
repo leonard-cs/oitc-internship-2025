@@ -1,11 +1,14 @@
 import os
+from functools import lru_cache
+from typing import override
 
+# see: https://github.com/mlfoundations/open_clip
 import open_clip
 import torch
+from app.config import EMBEDDING_MODEL_PATH, backend_logger
 from langchain_core.embeddings.embeddings import Embeddings
 from PIL import Image
-
-from app.config import EMBEDDING_MODEL_PATH, backend_logger
+from PIL.ImageFile import ImageFile
 
 
 class CLIPEmbedder(Embeddings):
@@ -18,9 +21,11 @@ class CLIPEmbedder(Embeddings):
             EMBEDDING_MODEL_PATH
         )
 
+    @override
     def embed_query(self, text: str) -> list[float]:
         return self._handle_encode(text)
 
+    @override
     def embed_documents(self, texts) -> list[list[float]]:
         return [self._handle_encode(text) for text in texts]
 
@@ -36,7 +41,7 @@ class CLIPEmbedder(Embeddings):
         """
         try:
             model, _, preprocess = open_clip.create_model_and_transforms(
-                model_name="ViT-B-32", pretrained="openai"
+                model_name="ViT-B-32", pretrained=None, force_quick_gelu=True
             )
             model.load_state_dict(torch.load(path, map_location=self.device))
             model.to(self.device)
@@ -48,6 +53,9 @@ class CLIPEmbedder(Embeddings):
 
     def _handle_encode(self, input: str) -> list[float]:
         input = input.strip()
+        if not input:
+            backend_logger.error("Input is empty")
+            return []
 
         # Split by whitespace and take the last part as the path
         possible_path = input.split()[-1]
@@ -57,22 +65,27 @@ class CLIPEmbedder(Embeddings):
                 return []
             return self._encode_image_path(possible_path)
         else:
-            return self._encode_text(input)
+            return self.encode_text(input)
 
     def _encode_image_path(self, image_path: str) -> list[float]:
         image = Image.open(image_path)
         return self.encode_image(image)
 
-    def encode_image(self, image: Image.Image) -> list[float]:
+    def encode_image(self, image: ImageFile) -> list[float]:
         image = self.preprocess(image).unsqueeze(0)
         with torch.no_grad():
             embedding = self.model.encode_image(image)
-            embedding /= embedding.norm(p=2, dim=-1, keepdim=True)
+            embedding /= embedding.norm(dim=-1, keepdim=True)
         return embedding.squeeze(0).cpu().tolist()
 
-    def _encode_text(self, text: str) -> list[float]:
+    def encode_text(self, text: str) -> list[float]:
         tokens = self.tokenizer([text])
         with torch.no_grad():
             embedding = self.model.encode_text(tokens.to(self.device))
-            embedding /= embedding.norm(p=2, dim=-1, keepdim=True)
+            embedding /= embedding.norm(dim=-1, keepdim=True)
         return embedding.squeeze(0).cpu().tolist()
+
+
+@lru_cache(maxsize=1)
+def get_clip_embedder() -> CLIPEmbedder:
+    return CLIPEmbedder()

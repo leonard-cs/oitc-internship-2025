@@ -10,10 +10,6 @@ class CollectionName(str, Enum):
     test = "Test"
 
 
-class SyncRequest(BaseModel):
-    collection: CollectionName
-
-
 class SyncResponse(BaseModel):
-    collections_synced: list[str]
-    collections_failed: list[str]
+    success: list[str]
+    failed: list[str]

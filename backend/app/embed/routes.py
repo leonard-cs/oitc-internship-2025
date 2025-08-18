@@ -1,42 +1,53 @@
-import os
-import shutil
-from typing import Optional
-
-from fastapi import APIRouter, File, Form, UploadFile
-from fastapi.responses import JSONResponse
-
-from app.embed.models import EmbedderResponse
-from app.embed.clipembedder import CLIPEmbedder
-from app.embed.service import get_embeddings
+from app.embed.service import handle_image_embed, handle_text_embed
+from fastapi import APIRouter, File, Form, HTTPException, UploadFile
 
 router = APIRouter()
 
 
-@router.post("/embed")
+@router.post("/embed-text", summary="Generate embeddings for text")
 async def embed_image_text(
-    image: Optional[UploadFile] = File(default=None),
-    text: Optional[str] = Form(default=None),
-):
-    image_bytes = await image.read() if image else None
-    result: EmbedderResponse = get_embeddings(image_bytes, text)
-    return JSONResponse(content=result.model_dump())
+    text: str = Form(..., description="Text to embed"),
+) -> list[float]:
+    """
+    Generate CLIP embeddings for text inputs.
+
+    This endpoint accepts either an image file, text string, or both and returns:
+    - Text embedding (512-dimensional vector)
+    - Cosine similarity between image and text (if both provided)
+
+    Args:
+        text: Optional text string to embed
+
+    Returns:
+        EmbedderResponse containing embeddings and similarity score
+    """
+    try:
+        return await handle_text_embed(text)
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
 
 
-# with open("your_image.jpg", "rb") as f:
-#     response = requests.post("http://localhost:8000/embed", files={"image": f}, data={"text": "a photo of a cat"})
+@router.post("/embed-image", summary="Generate embedding for image")
+async def embed_image(
+    file: UploadFile = File(..., description="Image file to embed"),
+) -> list[float]:
+    """
+    Generate CLIP embedding for a single image file.
 
+    This endpoint accepts an image file and returns the image embedding
+    as a 512-dimensional vector. This is a simpler alternative to the /embed
+    endpoint when you only need image embeddings without text processing.
 
-@router.post("/embed-image")
-async def embed_image(file: UploadFile = File(...)) -> list[float]:
-    image_path = _file_preprocess(file)
-    embedder = CLIPEmbedder()
-    embedding = embedder.embed_query(image_path)
-    os.remove(image_path)
-    return embedding
+    Args:
+        file: Image file (JPEG, PNG, etc.) - required
 
+    Returns:
+        List of 512 float values representing the image embedding
+    """
+    if not file.content_type.startswith("image/"):
+        raise HTTPException(status_code=400, detail="Invalid image type")
 
-def _file_preprocess(file: UploadFile = File(...)) -> str:
-    image_path = f"temp_{file.filename}"
-    with open(image_path, "wb") as buffer:
-        shutil.copyfileobj(file.file, buffer)
-    return image_path
+    try:
+        return await handle_image_embed(file)
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))

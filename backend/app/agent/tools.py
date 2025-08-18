@@ -1,12 +1,11 @@
-from langchain_core.documents import Document
-from langchain_core.tools import tool
-
 from app.agent.models import AgentResponse
 from app.config import backend_logger
-from app.embed.service import get_embeddings
 from app.mssql.dependencies import get_db
-from app.mssql.services import execute_sql, fetch_table_info, fetch_table_names
-from app.vectorstore.service import search
+from app.mssql.models import Table
+from app.mssql.services import execute_sql, fetch_table_info
+from app.vectorstore.service import get_vectorstore, search
+from langchain_core.documents import Document
+from langchain_core.tools import tool
 
 
 @tool
@@ -14,29 +13,32 @@ def vector_search(query: str, collection_name: str) -> list[Document]:
     """
     Perform a vector similarity search against a set of documents.
     The query should contain the semantic meaning of original query.
-    collection_name can be "Products" or "Employees"
     Returns top 5 most relevant context documents and their sources.
     """
     backend_logger.info("Executing 'vector_search' tool")
+
+    qdrant = get_vectorstore()
+    if not qdrant.collection_exists(collection_name):
+        return f"Collection {collection_name} does not exist.\nAvailable collections: {qdrant.get_collections()}"
+
     documents: list[Document] = search(query, collection_name)
     return documents
 
 
 @tool
-def gen_embedding(text: str) -> list:
+def get_table_names() -> list[str]:
     """
-    Generate an embedding of a text.
-    Return embeddings
+    Get the names of the tables.
+    Return the names of the tables.
     """
-    result = get_embeddings(text=text)
-    return result.text_embedding
+    return [table.value for table in Table]
 
 
 @tool
-def get_table_info(table_names: list[str]) -> str:
+def get_table_schema(table_names: list[Table]) -> str:
     """
-    Get the information of the table.
-    Return the information of the table.
+    Get the schema of the table.
+    Return the schema of the table.
     """
     db = get_db()
     return fetch_table_info(db, table_names)
@@ -63,4 +65,10 @@ def final_answer(answer: str, sources: list[str], tools_used: list[str]):
     return AgentResponse(answer=answer, sources=sources, tools_used=tools_used)
 
 
-tools = [final_answer, vector_search, get_table_info, execute_sql_tool]
+tools = [
+    final_answer,
+    vector_search,
+    get_table_names,
+    get_table_schema,
+    execute_sql_tool,
+]

@@ -1,7 +1,8 @@
 from app.agent.models import AgentResponse
 from app.agent.tools import tools
 from app.agent.utils import remove_thinking_tags
-from app.config import OLLAMA_BASE_URL, OLLAMA_CHAT_MODEL, backend_logger
+from app.config import backend_logger
+from app.llm.ollama import get_ollama
 from langchain_core.messages import BaseMessage, ToolMessage
 from langchain_core.prompts import (
     ChatPromptTemplate,
@@ -10,13 +11,6 @@ from langchain_core.prompts import (
     SystemMessagePromptTemplate,
 )
 from langchain_core.runnables.base import RunnableSerializable
-from langchain_ollama import ChatOllama
-
-ollama = ChatOllama(
-    model=OLLAMA_CHAT_MODEL,
-    base_url=OLLAMA_BASE_URL,
-    temperature=0.0,
-)
 
 system_prompt = """You are a helpful assistant that answers questions.
     When answering, use one of the tools provided. After using a tool the tool output will be provided in the 'scratchpad' below.
@@ -48,12 +42,12 @@ class CustomAgentExecutor:
                 "agent_scratchpad": lambda x: x.get("agent_scratchpad", []),
             }
             | prompt_template
-            | ollama.bind_tools(tools, tool_choice="any")
+            | get_ollama().bind_tools(tools, tool_choice="any")
         )
 
     def invoke(self, query: str) -> AgentResponse:
         backend_logger.info("Invoking custom agent executor")
-        count = 0
+        count = 1
         agent_scratchpad = []
         while True:
             # invoke a step for the agent to generate a tool call
@@ -85,14 +79,13 @@ class CustomAgentExecutor:
             tool_name = tool_call.tool_calls[0]["name"]
             tool_args = tool_call.tool_calls[0]["args"]
             tool_call_id = tool_call.tool_calls[0]["id"]
+            backend_logger.debug(f"Iteration {count}: {tool_name}({tool_args})")
             tool_out = name2tool[tool_name](**tool_args)
 
             # add the tool output to the agent scratchpad
             tool_exec = ToolMessage(content=f"{tool_out}", tool_call_id=tool_call_id)
             agent_scratchpad.append(tool_exec)
 
-            backend_logger.debug(f"Iteration {count + 1}: {tool_name}({tool_args})")
-            count += 1
             # if the tool call is the final answer tool, we stop
             if tool_name == "final_answer":
                 break
@@ -106,6 +99,8 @@ class CustomAgentExecutor:
                     sources=[],
                     tools_used=[],
                 )
+
+            count += 1
         # add the final output to the chat history
         # final_answer = tool_out.answer
         # self.chat_history.extend(

@@ -30,7 +30,19 @@ QDRANT_VECTOR_SIZE: int = int(os.getenv("QDRANT_VECTOR_SIZE", default=0))
 
 EMBEDDING_MODEL_PATH = "../weights/ViT-B-32.pt"
 
+
+MSSQL_HOST = os.getenv("MSSQL_HOST", default="localhost")
+MSSQL_SERVER = os.getenv("MSSQL_SERVER", default="SQLEXPRESS")
+MSSQL_DATABASE = os.getenv("MSSQL_DATABASE", default="northwind")
+
 MSSQL_CONNECTION_STRING = (
-    "mssql+pyodbc://localhost\\SQLEXPRESS/northwind"
+    f"mssql+pyodbc://{MSSQL_HOST}\\{MSSQL_SERVER}/{MSSQL_DATABASE}"
     "?driver=ODBC+Driver+17+for+SQL+Server&Trusted_Connection=yes"
+)
+
+MSSQL_PYODBC_CONNECTION_STRING = (
+    "DRIVER={SQL Server};"
+    f"SERVER={MSSQL_HOST}\\{MSSQL_SERVER};"
+    f"DATABASE={MSSQL_DATABASE};"
+    "Trusted_Connection=yes;"
 )

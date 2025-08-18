@@ -110,7 +110,24 @@ def get_sql_response_prompt() -> ChatPromptTemplate:
         - Keep the answer brief and focused on the user's intent.
     """
     return ChatPromptTemplate.from_messages(
-        [
-            SystemMessagePromptTemplate.from_template(SQL_RESPONSE_SYSTEM_PROMPT),
-        ]
+        [SystemMessagePromptTemplate.from_template(SQL_RESPONSE_SYSTEM_PROMPT)]
+    )
+
+
+def get_document_prompt() -> ChatPromptTemplate:
+    DOCUMENT_SYSTEM_PROMPT = """
+        You are an expert data analyst.
+        Your task is to generate a paragraph based on the row from table {table_name}.
+        
+        Table info:
+        {table_info}
+        
+        Generate the id based on the primary key of the table. Remove staring zero from the id.
+        Generate compound id if the table has multiple primary keys.
+        Do not lose any information from the row.
+        
+        Row: {row}
+    """
+    return ChatPromptTemplate.from_messages(
+        [SystemMessagePromptTemplate.from_template(DOCUMENT_SYSTEM_PROMPT)]
     )

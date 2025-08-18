@@ -1,88 +1,67 @@
-from fastapi import APIRouter, Query
-
 from app.config import backend_logger
-from app.vectorstore.models import (
-    CollectionName,
-    SyncRequest,
-    SyncResponse,
-)
-from app.vectorstore.service import (
-    get_all_records,
-    handle_sync_collection,
-    handle_sync_image_collection,
-)
+from app.vectorstore.service import get_all_records, get_vectorstore_info
+from fastapi import APIRouter, HTTPException, Query
+
+from app.mssql.models import Table
 
 router = APIRouter()
 
 
-@router.post("/sync-all", response_model=SyncResponse)
-async def sync_all_collections() -> SyncResponse:
+@router.get(
+    "/info",
+    summary="Get vector store information",
+    description="Retrieve comprehensive information about the vector store including collections, statistics, and configuration details.",
+)
+def get_info():
     """
-    Upload all collections from the database to the vector store.
+    Get comprehensive information about the vector store.
 
-    This endpoint performs a full synchronization of multiple database tables into their corresponding vector store collections.
-    It is typically used to initialize or refresh the vector index with complete data.
+    This endpoint provides detailed information about the current state of the vector store,
+    including available collections, their sizes, configuration parameters, and health status.
+
+    Returns:
+        dict: A dictionary containing vector store information including:
+            - Available collections and their metadata
+            - Storage statistics and performance metrics
+            - Configuration details
+            - Connection status
     """
-    collections_to_sync: list[str] = [
-        CollectionName.products.value,
-        CollectionName.employees.value,
-        CollectionName.test.value,
-    ]
-
-    collections_synced, collections_failed = [], []
-
-    for collection in collections_to_sync:
-        if handle_sync_collection(collection):
-            collections_synced.append(collection)
-        else:
-            collections_failed.append(collection)
-
-    image_collections: list[tuple[str, str]] = [
-        (CollectionName.employees_photos.value, CollectionName.employees.value),
-    ]
-
-    for photos_collection, text_collection in image_collections:
-        if handle_sync_image_collection(photos_collection, text_collection):
-            collections_synced.append(photos_collection)
-
-    return SyncResponse(
-        collections_synced=collections_synced,
-        collections_failed=collections_failed,
-    )
-
-
-@router.post("/sync-collection", response_model=SyncResponse)
-async def sync_collection(payload: SyncRequest) -> SyncResponse:
-    """
-    Synchronize a single collection from the database to the vector store.
-
-    This endpoint synchronizes a specific collection from the database and uploads it to the vector store.
-    It returns a response indicating whether the synchronization was successful or if there was an error.
-    """
-    collection: str = payload.collection.value
-    if handle_sync_collection(collection):
-        return SyncResponse(collections_synced=[collection], collections_failed=[])
-    else:
-        return SyncResponse(collections_synced=[], collections_failed=[collection])
+    return get_vectorstore_info()
 
 
 @router.get(
     "/collection-ids",
     response_model=list[dict],
-    tags=["Vector Store"],
-    summary="Get all IDs from a vector collection",
+    summary="Get all document IDs from a vector collection",
+    description="Retrieve all document IDs and optionally their payload data from a specified vector store collection for inspection and debugging purposes.",
 )
 async def get_collection_ids(
-    collection: CollectionName = Query(
-        ..., description="Collection to retrieve IDs from"
-    ),
+    table: Table = Query(..., description="Collection to retrieve IDs from"),
     with_payload: bool = Query(False, description="Include payload data for each ID"),
 ) -> list[dict]:
     """
-    Retrieve all IDs (and optionally payloads) from a specified vector store collection.
+    Retrieve all document IDs (and optionally payloads) from a specified vector store collection.
+
+    This endpoint is primarily used for debugging, data inspection, and administrative tasks.
+    It allows you to examine what documents are stored in a collection and optionally
+    retrieve their content and metadata.
+
+    Args:
+        collection (CollectionName): The name of the collection to query.
+            Must be one of the predefined collection names (products, employees, test, etc.)
+        with_payload (bool, optional): Whether to include document content and metadata.
+            - False (default): Returns only document IDs
+            - True: Returns IDs with full document content and metadata
+
+    Returns:
+        list[dict]: A list of dictionaries.
     """
-    backend_logger.info(f"Retrieving all IDs from collection: {collection.value}")
-    return get_all_records(
-        collection_name=collection.value,
-        with_payload=with_payload,
-    )
+    backend_logger.info(f"Retrieving all IDs from collection: {table.value}")
+    try:
+        return get_all_records(
+            collection_name=table.value,
+            with_payload=with_payload,
+        )
+    except Exception as e:
+        backend_logger.error(f"Error retrieving from collection '{table.value}':\n{e}")
+        raise HTTPException(status_code=500, detail=str(e))

@@ -31,6 +31,6 @@ def test_get_table_names():
 
 
 def test_get_table_info():
-    response = client.post("/table-info", params={"table_names": ["Products"]})
+    response = client.post("/table-info", params=[("tables", "Products")])
     assert response.status_code == 200
     # assert response.json() == "Fake info for: mock_table1"

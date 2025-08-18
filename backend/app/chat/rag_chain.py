@@ -5,28 +5,17 @@ from app.chat.rag_llm import (
     generate_sql_query,
     get_relevant_tables,
 )
-from app.config import (
-    MSSQL_CONNECTION_STRING,
-    OLLAMA_BASE_URL,
-    OLLAMA_CHAT_MODEL,
-    backend_logger,
-)
-from app.prompts.prompts import get_rag_prompt
+from app.config import MSSQL_CONNECTION_STRING, backend_logger
+from app.llm.ollama import get_ollama
+from app.llm.prompts import get_rag_prompt
 from fastapi import HTTPException
 from langchain_community.utilities import SQLDatabase
-from langchain_ollama import ChatOllama
-
-ollama = ChatOllama(
-    model=OLLAMA_CHAT_MODEL,
-    base_url=OLLAMA_BASE_URL,
-    temperature=0.0,
-)
 
 
 async def generate_answer_from_docs(query: str, docs: list[str]) -> LLMResponse:
     prompt_template = get_rag_prompt()
 
-    structured_ollama = ollama.with_structured_output(LLMResponse)
+    structured_ollama = get_ollama().with_structured_output(LLMResponse)
 
     pipelines = (
         {"query": lambda x: x["query"], "context": lambda x: x["context"]}
@@ -46,7 +35,7 @@ async def generate_answer_from_docs(query: str, docs: list[str]) -> LLMResponse:
 
 async def generate_answer_from_sql(user_question: str):
     """Generate answer from SQL database with proper error handling."""
-    relevant_tables = False
+    relevant_tables = True
     regenerate_sql_query = True
     try:
         db = SQLDatabase.from_uri(MSSQL_CONNECTION_STRING)
@@ -56,6 +45,7 @@ async def generate_answer_from_sql(user_question: str):
         else:
             table_names = table_list
         table_info = db.get_table_info(table_names)
+        backend_logger.trace(f"Table info: {table_info}")
 
         sql_query = await generate_sql_query(user_question, table_info)
         query_results, sql_query = await execute_sql_query(
