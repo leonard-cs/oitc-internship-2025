@@ -118,12 +118,16 @@ export function Chat() {
           }
         );
       } else {
-        response = await fetch("http://localhost:8000/api/v1/agent/ask_agent", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ user_query: userMessage.content }),
-          signal: abortControllerRef.current.signal,
+        const queryParams = new URLSearchParams({
+          query: userMessage.content,
         });
+        response = await fetch(
+          `http://localhost:8000/api/v1/agent/ask_agent?${queryParams}`,
+          {
+            method: "POST",
+            signal: abortControllerRef.current.signal,
+          }
+        );
       }
 
       if (!response.ok) {
