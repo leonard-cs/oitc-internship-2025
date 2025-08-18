@@ -1,6 +1,5 @@
 from app.agent.models import AgentResponse
 from app.config import backend_logger
-from app.embed.clipembedder import get_clip_embedder
 from app.mssql.dependencies import get_db
 from app.mssql.models import Table
 from app.mssql.services import execute_sql, fetch_table_info
@@ -17,22 +16,13 @@ def vector_search(query: str, collection_name: str) -> list[Document]:
     Returns top 5 most relevant context documents and their sources.
     """
     backend_logger.info("Executing 'vector_search' tool")
-    
+
     qdrant = get_vectorstore()
     if not qdrant.collection_exists(collection_name):
         return f"Collection {collection_name} does not exist.\nAvailable collections: {qdrant.get_collections()}"
-    
+
     documents: list[Document] = search(query, collection_name)
     return documents
-
-
-@tool
-def gen_embedding(text: str) -> list:
-    """
-    Generate an embedding of a text.
-    Return embeddings
-    """
-    return get_clip_embedder().encode_text(text)
 
 
 @tool

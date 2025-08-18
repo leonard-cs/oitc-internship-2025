@@ -7,7 +7,7 @@ from app.chat.rag_llm import (
 )
 from app.config import MSSQL_CONNECTION_STRING, backend_logger
 from app.llm.ollama import get_ollama
-from app.prompts.prompts import get_rag_prompt
+from app.llm.prompts import get_rag_prompt
 from fastapi import HTTPException
 from langchain_community.utilities import SQLDatabase
 

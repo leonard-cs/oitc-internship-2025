@@ -8,7 +8,7 @@ from app.embed.clipembedder import get_clip_embedder
 from app.llm.ollama import get_ollama
 from app.mssql.models import ImageTable, LLMDocumentResponse, Table
 from app.mssql.utils import delete_file
-from app.prompts.prompts import get_document_prompt
+from app.llm.prompts import get_document_prompt
 from app.vectorstore.service import get_vectorstore
 from app.vectorstore.utils import generate_uuid
 from langchain_community.utilities import SQLDatabase

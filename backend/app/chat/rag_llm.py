@@ -5,7 +5,7 @@ from app.chat.models import (
 )
 from app.config import backend_logger
 from app.llm.ollama import get_ollama
-from app.prompts.prompts import (
+from app.llm.prompts import (
     get_regenerate_sql_query_prompt,
     get_relevant_tables_prompt,
     get_sql_query_prompt,
