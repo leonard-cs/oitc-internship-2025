@@ -62,3 +62,15 @@ This will spin up:
 | ----------- | --------------------------------------------------------------- | -------------------------------- |
 | Frontend    | [http://localhost:3000](http://localhost:3000)                  | Frontend app                     |
 | Backend     | [http://localhost:8000/docs#/](http://localhost:8000/docs#/)    | FastAPI documents                | -->
+
+## Backend Development
+Backend docs: [backend/README.md](./backend/README.md).
+
+## Frontend Development
+Frontend docs: [frontend/README.md](./frontend/README.md).
+
+## Deployment
+Deployment docs: [deployment.md](./deployment.md).
+
+## Development
+General development docs: [development.md](./development.md).

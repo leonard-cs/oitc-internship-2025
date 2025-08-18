@@ -1,5 +1,10 @@
 # FastAPI Backend - Development
 
+## Prerequisites
+Make sure you have the following installed:
+- [pnpm](https://pnpm.io/installation)
+- [uv](https://docs.astral.sh/uv/getting-started/installation/)
+
 ## Local Development
 
 The Docker Compose files are configured so that each of the services is available in a different port in `localhost`.
@@ -18,6 +23,7 @@ And then start the local frontend development server:
 
 ```bash
 cd frontend
+pnpm install
 pnpm next-dev
 ```
 
