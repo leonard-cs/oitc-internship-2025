@@ -1,4 +1,4 @@
-name: FastAPI Test
+name: Test Backend
 
 on:
   push:
@@ -15,7 +15,7 @@ jobs:
 
     steps:
     - name: Checkout repository
-      uses: actions/checkout@v4
+      uses: actions/checkout@v5
 
     - name: Set up Python with uv and enable cache
       uses: astral-sh/setup-uv@v6
