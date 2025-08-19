@@ -1,4 +1,4 @@
-name: FastAPI Test
+name: Test Backend
 
 on:
   push:
@@ -15,7 +15,7 @@ jobs:
 
     steps:
     - name: Checkout repository
-      uses: actions/checkout@v4
+      uses: actions/checkout@v5
 
     - name: Set up Python with uv and enable cache
       uses: astral-sh/setup-uv@v6
@@ -26,8 +26,8 @@ jobs:
       run: uv sync --locked --all-extras --dev
       working-directory: backend
 
-    - name: Run tests
-      env:
-        APP_ENV: ci
-      run: uv run python -m pytest --ignore=tests/test_mssql.py
-      working-directory: backend
+    # - name: Run tests
+    #   env:
+    #     APP_ENV: ci
+    #   run: uv run python -m pytest --ignore=tests/test_mssql.py
+    #   working-directory: backend

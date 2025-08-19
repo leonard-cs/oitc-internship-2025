@@ -15,6 +15,7 @@ if os.path.exists(env_path):
     load_dotenv(dotenv_path=env_path)
 else:
     backend_logger.error(f".env file not found at {os.path.abspath(env_path)}.")
+    exit(1)
 
 # Ollama configuration
 OLLAMA_BASE_URL = os.getenv("OLLAMA_BASE_URL", default="")

@@ -2,7 +2,6 @@ from app.agent.models import AgentResponse
 from app.config import backend_logger
 from app.mssql.dependencies import get_db
 from app.mssql.models import Table
-from app.mssql.services import execute_sql, fetch_table_info
 from app.vectorstore.service import get_vectorstore, search
 from langchain_core.documents import Document
 from langchain_core.tools import tool
@@ -40,9 +39,7 @@ def get_table_schema(table_names: list[Table]) -> str:
     Get the schema of the table.
     Return the schema of the table.
     """
-    db = get_db()
-    return fetch_table_info(db, table_names)
-    # return fetch_table_info(db, fetch_table_names(db))
+    return get_db().get_table_info(table_names)
 
 
 @tool
@@ -51,8 +48,7 @@ def execute_sql_tool(sql_query: str) -> str:
     Execute a SQL query against the database.
     Return the result of the query.
     """
-    db = get_db()
-    return execute_sql(db, sql_query)
+    return get_db().run_no_throw(sql_query)
 
 
 @tool
