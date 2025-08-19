@@ -11,3 +11,14 @@ def get_ollama() -> ChatOllama:
         base_url=OLLAMA_BASE_URL,
         temperature=0.0,
     )
+
+
+@lru_cache(maxsize=1)
+def get_stream_ollama() -> ChatOllama:
+    return ChatOllama(
+        model=OLLAMA_CHAT_MODEL,
+        base_url=OLLAMA_BASE_URL,
+        temperature=0.0,
+        stream=True,
+        reasoning=False,
+    )

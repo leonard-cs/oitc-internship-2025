@@ -5,7 +5,10 @@ from app.chat.service import (
     handle_chat_request_sql,
 )
 from app.config import backend_logger
-from fastapi import APIRouter, File, Form, HTTPException, Query, UploadFile
+from app.llm.ollama import get_stream_ollama
+from fastapi import APIRouter, File, HTTPException, Query, UploadFile
+from fastapi.responses import StreamingResponse
+from langchain_core.messages import HumanMessage
 
 router = APIRouter()
 
@@ -141,3 +144,15 @@ async def image_query(
         return result
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
+
+
+@router.post("/stream-chat")
+async def stream_chat(message: str = Query(..., description="The user's message")):
+    llm = get_stream_ollama()
+
+    async def generate_chunks():
+        async for chunk in llm.astream([HumanMessage(content=message)]):
+            if chunk.content:
+                yield f"data: {chunk.content}\n\n"
+
+    return StreamingResponse(generate_chunks(), media_type="text/event-stream")
