@@ -11,12 +11,12 @@ router = APIRouter()
 
 
 @router.post(
-    "/ask",
+    "/vector-rag-query",
     response_model=ChatResponse,
     summary="Process Chat Query with RAG Pipeline",
     description="Process a user query through the complete Retrieval-Augmented Generation (RAG) chatbot pipeline with optional query preprocessing",
 )
-async def ask_chat(payload: ChatRequest) -> ChatResponse:
+async def vector_rag_query(payload: ChatRequest) -> ChatResponse:
     """
     Process a user query through the full RAG chatbot pipeline.
 
@@ -52,12 +52,12 @@ async def ask_chat(payload: ChatRequest) -> ChatResponse:
 
 
 @router.post(
-    "/ask-sql",
+    "/sql-rag-query",
     response_model=ChatResponse,
     summary="Process SQL-Based Query with RAG Pipeline",
     description="Process a user query through the SQL-focused Retrieval-Augmented Generation pipeline for database-related questions",
 )
-async def ask_chat_sql(
+async def sql_rag_query(
     query: str = Query(
         ..., description="The user's natural language query about database content"
     ),
@@ -99,9 +99,9 @@ async def ask_chat_sql(
     summary="Process Image-Based Query with Multimodal RAG",
     description="Analyze uploaded images and answer questions about their content using multimodal Retrieval-Augmented Generation",
 )
-async def process_image_query(
+async def image_query(
     file: UploadFile = File(..., description="Image file to analyze (JPEG, PNG, etc.)"),
-    user_query: str = Form(
+    user_query: str = Query(
         ..., description="Question or query about the uploaded image content"
     ),
 ) -> ChatResponse:
