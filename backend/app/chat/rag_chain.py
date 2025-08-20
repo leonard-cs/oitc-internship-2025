@@ -12,7 +12,7 @@ from fastapi import HTTPException
 from langchain_community.utilities import SQLDatabase
 
 
-async def generate_answer_from_docs(query: str, docs: list[str]) -> LLMResponse:
+async def generate_answer_with_context(query: str, context: str) -> LLMResponse:
     prompt_template = get_rag_prompt()
 
     structured_ollama = get_ollama().with_structured_output(LLMResponse)
@@ -25,9 +25,9 @@ async def generate_answer_from_docs(query: str, docs: list[str]) -> LLMResponse:
 
     backend_logger.trace(f"Input variables: {prompt_template.input_variables}")
     backend_logger.trace(
-        f"Prompt template:\n{prompt_template.format(query=query, context=docs)}"
+        f"Prompt template:\n{prompt_template.format(query=query, context=context)}"
     )
-    response: LLMResponse = pipelines.invoke({"query": query, "context": docs})
+    response: LLMResponse = pipelines.invoke({"query": query, "context": context})
     backend_logger.trace(response)
     backend_logger.success("Generated answer from LLM successfully")
     return response

@@ -3,6 +3,7 @@ from app.config import backend_logger
 from app.mssql.dependencies import get_db, get_mssql_pyodbc_connection
 from app.mssql.models import ImageTable, Table
 from app.mssql.services import (
+    extract_images,
     fetch_table_info,
     fetch_table_names,
     sync_table_ai,
@@ -204,6 +205,8 @@ async def sync_images(
     tables_synced, tables_failed = [], []
     for table in tables:
         try:
+            # db_connection = get_mssql_pyodbc_connection()
+            # extract_images(db_connection, table)
             ids = await sync_table_images(db_connection, db, table)
             if ids:
                 tables_synced.append(table.value)

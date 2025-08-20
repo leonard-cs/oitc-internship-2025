@@ -15,12 +15,13 @@ def get_rag_prompt() -> ChatPromptTemplate:
     """Get the RAG chain prompt template."""
 
     RAG_SYSTEM_PROMPT = """
-        You are a helpful assistant that answers questions based on the provided context.
-        Your responses should be concise and directly address the user's query.
-        If the context does not contain enough information to answer the question, respond with "I don't know."
-        
-        Context: 
-        {context}
+You are a helpful assistant that answers questions based on the provided context.
+Your responses should be concise and directly address the user's query.
+If the context does not contain enough information to answer the question, respond with "I don't know."
+
+<Context>
+{context}
+</Context>
     """
     return ChatPromptTemplate.from_messages(
         [

@@ -1,8 +1,9 @@
 from app.chat.models import ChatResponse, LLMResponse, QueryProcessorResponse
 from app.chat.query_processor import process_query
-from app.chat.rag_chain import generate_answer_from_docs, generate_answer_from_sql
+from app.chat.rag_chain import generate_answer_from_sql, generate_answer_with_context
 from app.config import backend_logger
 from app.mssql.models import Table
+from app.utils import documents_to_string
 from app.vectorstore.models import CollectionName
 from app.vectorstore.service import search, search_image
 from fastapi import HTTPException, UploadFile
@@ -19,10 +20,11 @@ async def handle_chat_request(
         semantic_query = processor_response.summary
 
     documents = search(semantic_query, CollectionName.products.value)
-    backend_logger.debug(documents)
+    documents_string = documents_to_string(documents)
+    backend_logger.debug(documents_string)
 
-    llm_response: LLMResponse = await generate_answer_from_docs(
-        query=user_query, docs=documents
+    llm_response: LLMResponse = await generate_answer_with_context(
+        query=user_query, context=documents_string
     )
     backend_logger.debug(f"LLM response: {llm_response}")
     return ChatResponse(
@@ -52,8 +54,8 @@ async def handle_chat_request_image(user_query: str, image: UploadFile) -> ChatR
     documents = await search_image(file=image, collection=Table.employees.value)
     backend_logger.debug(documents)
 
-    llm_response: LLMResponse = await generate_answer_from_docs(
-        query=user_query, docs=documents
+    llm_response: LLMResponse = await generate_answer_with_context(
+        query=user_query, context=documents
     )
     backend_logger.debug(f"LLM response: {llm_response}")
     return ChatResponse(
