@@ -1,4 +1,5 @@
-from app.agent.service import handle_chat_request_agent
+from app.agent.custom_agent_executor import CustomAgentExecutor
+from app.agent.models import AgentResponse
 from app.chat.models import ChatResponse
 from app.config import backend_logger
 from fastapi import APIRouter, HTTPException, Query
@@ -10,31 +11,23 @@ router = APIRouter()
     "/ask_agent",
     response_model=ChatResponse,
     summary="Process Query through Agent RAG Pipeline",
-    description="Process user queries through an intelligent agent-based Retrieval-Augmented Generation system with tool utilization capabilities",
 )
 async def ask_chat_agent(
-    query: str = Query(
-        ..., description="The user's question, request, or conversation input"
-    ),
+    query: str = Query(..., description="The user's query"),
 ):
     """
-    Process a user query through the intelligent agent RAG chatbot pipeline.
-
-    Args:
-        payload (ChatRequest): The chat request containing:
-            - user_query (str): The user's question, request, or conversation input
-            - use_query_processor (bool, optional): disabled for agent
-
-    Returns:
-        ChatResponse: The processed response containing:
-            - semantic_query (str): The processed/semantic version of the query
-            - answer (str): Comprehensive response utilizing agent capabilities
-            - sources (list[str]): List of source document references used
-            - tools_used (list, optional): Tools and reasoning chains utilized
+    Process a user query through the agentic RAG pipeline.
     """
     backend_logger.info("Received chat request for agent")
     try:
-        return await handle_chat_request_agent(user_query=query)
+        agent = CustomAgentExecutor()
+        response: AgentResponse = agent.invoke(query=query)
+        return ChatResponse(
+            semantic_query=query,
+            answer=response.answer,
+            sources=response.sources,
+            tools_used=response.tools_used,
+        )
     except Exception as e:
         backend_logger.error(f"Error when invoking agent: {e}")
         raise HTTPException(status_code=500, detail=str(e))
