@@ -16,7 +16,7 @@ system_prompt = """You are a helpful assistant that answers questions.
     When answering, use one of the tools provided. After using a tool the tool output will be provided in the 'scratchpad' below.
     If you have an answer in the scratchpad you should not use any more tools and instead answer directly to the user.
     Your responses should be concise and directly address the user's query.
-    If you don't have enough information to answer the question, respond with "I don't know."
+    If you don't have enough information to answer the question, choose "direct_answer" with "I don't know."
     """
 
 prompt_template = ChatPromptTemplate.from_messages(
@@ -86,8 +86,8 @@ class CustomAgentExecutor:
             tool_exec = ToolMessage(content=f"{tool_out}", tool_call_id=tool_call_id)
             agent_scratchpad.append(tool_exec)
 
-            # if the tool call is the final answer tool, we stop
-            if tool_name == "final_answer":
+            # if the tool call is the direct answer tool, we stop
+            if tool_name == "direct_answer":
                 break
             if count >= self.max_iterations:
                 backend_logger.warning(

@@ -8,7 +8,7 @@ from langchain_core.tools import tool
 
 
 @tool
-def vector_search(query: str, collection_name: str) -> list[Document]:
+def vector_search(query: str, table_name: str) -> list[Document]:
     """
     Perform a vector similarity search against a set of documents.
     The query should contain the semantic meaning of original query.
@@ -17,10 +17,10 @@ def vector_search(query: str, collection_name: str) -> list[Document]:
     backend_logger.info("Executing 'vector_search' tool")
 
     qdrant = get_vectorstore()
-    if not qdrant.collection_exists(collection_name):
-        return f"Collection {collection_name} does not exist.\nAvailable collections: {qdrant.get_collections()}"
+    if not qdrant.collection_exists(table_name):
+        return f"Table {table_name} does not exist.\nAvailable tables: {qdrant.get_collections()}"
 
-    documents: list[Document] = search(query, collection_name)
+    documents: list[Document] = search(query, table_name)
     return documents
 
 
@@ -52,17 +52,18 @@ def execute_sql_tool(sql_query: str) -> str:
 
 
 @tool
-def final_answer(answer: str, sources: list[str], tools_used: list[str]):
-    """Use this tool to provide a final answer to the user.
-    The answer should be in natural language as this will be provided
-    to the user directly. The tools_used must include a list of tool
-    names that were used within the `scratchpad`.
+def direct_answer(answer: str, sources: list[str], tools_used: list[str]):
+    """Use this tool to provide a direct answer to the user for general knowledge questions, greetings
+    , or the llm already knows the answer.
+    The answer should be in natural language as this will be provided to the user directly.
+    The `tools_used` parameter must include a list of tool names utilized in the `scratchpad`(excluding `direct_answer`).
+    The `sources` parameter must include a list of source document references used.
     """
     return AgentResponse(answer=answer, sources=sources, tools_used=tools_used)
 
 
 tools = [
-    final_answer,
+    direct_answer,
     vector_search,
     get_table_names,
     get_table_schema,
