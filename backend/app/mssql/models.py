@@ -18,7 +18,23 @@ class Table(str, Enum):
 
     def sql(self, limit: int | None = None) -> str:
         limit_str = f"TOP {limit}" if limit else ""
-        if self == Table.employees:
+        if self == Table.products:
+            return f"""
+                SELECT {limit_str}
+                    ProductID,
+                    ProductName,
+                    SupplierID,
+                    CategoryName,
+                    QuantityPerUnit,
+                    UnitPrice,
+                    UnitsInStock,
+                    UnitsOnOrder,
+                    ReorderLevel,
+                    Discontinued
+                FROM [{self.value}] p
+                JOIN [{Table.categories.value}] c ON p.CategoryID = c.CategoryID
+            """
+        elif self == Table.employees:
             return f"""
                 SELECT {limit_str}
                     EmployeeID,
