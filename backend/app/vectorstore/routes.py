@@ -1,8 +1,9 @@
-from app.config import backend_logger
+from app.config import QDRANT_URL, QDRANT_VECTOR_SIZE, backend_logger
+from app.embed.service import handle_text_embed
+from app.mssql.models import Table
+from app.vectorstore.qdrant_vectorstore import MyQdrantVectorStore
 from app.vectorstore.service import get_all_records, get_vectorstore_info
 from fastapi import APIRouter, HTTPException, Query
-
-from app.mssql.models import Table
 
 router = APIRouter()
 
@@ -65,3 +66,36 @@ async def get_collection_ids(
     except Exception as e:
         backend_logger.error(f"Error retrieving from collection '{table.value}':\n{e}")
         raise HTTPException(status_code=500, detail=str(e))
+
+
+@router.get("/test/inset")
+def test_inset(
+    text: str = Query(..., description="The text to insert"),
+    collection: str = Query(
+        default="test", description="The collection to insert into"
+    ),
+):
+    qdrant = MyQdrantVectorStore(url=QDRANT_URL)
+    qdrant.create_collection(collection_name=collection, vector_size=QDRANT_VECTOR_SIZE)
+    vector = handle_text_embed(text)
+    return qdrant.upsert(collection_name=collection, vector=vector, page_content=text)
+
+
+@router.get("/test/search")
+def test_search(
+    text: str = Query(..., description="The text to search for"),
+    collection: str = Query(default="test", description="The collection to search in"),
+):
+    qdrant = MyQdrantVectorStore(url=QDRANT_URL)
+    vector = handle_text_embed(text)
+    results = qdrant.search(collection_name=collection, vector=vector)
+    return results
+
+
+@router.get("/test/points")
+def test_points(
+    collection: str = Query(
+        default="test", description="The collection to get points from"
+    ),
+):
+    return get_all_records(collection_name=collection)

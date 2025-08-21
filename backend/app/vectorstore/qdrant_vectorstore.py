@@ -128,6 +128,11 @@ class MyQdrantVectorStore(VectorStore):
         )
         return id
 
+    def search(self, collection_name: str, vector: list[float], limit: int = 5):
+        return self.client.search(
+            collection_name=collection_name, query_vector=vector, limit=limit
+        )
+
 
 if __name__ == "__main__":
     vectorstore = MyQdrantVectorStore(url=QDRANT_URL)
