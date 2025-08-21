@@ -1,42 +1,11 @@
-from app.chat.models import ChatResponse, QueryProcessorResponse
-from app.chat.query_processor import process_query
+from app.chat.models import ChatResponse
 from app.chat.rag_chain import generate_answer_from_sql
 from app.config import backend_logger
 from app.llm.models import RAGResponse
-from app.llm.rag_services import decide_collection, generate_answer_with_context
+from app.llm.rag_services import generate_answer_with_context
 from app.mssql.models import Table
-from app.utils import documents_to_string
-from app.vectorstore.service import search, search_image
+from app.vectorstore.service import search_image
 from fastapi import HTTPException, UploadFile
-
-
-async def handle_chat_request(
-    user_query: str, use_query_processor: bool = False
-) -> ChatResponse:
-    backend_logger.info("Received chat request")
-
-    collection = decide_collection(user_query, Table.values())
-    backend_logger.debug(f"Collection: {collection}")
-
-    semantic_query = user_query
-    if use_query_processor:
-        processor_response: QueryProcessorResponse = await process_query(user_query)
-        semantic_query = processor_response.summary
-
-    documents = search(semantic_query, collection)
-    documents_string = documents_to_string(documents)
-    backend_logger.debug(documents_string)
-
-    llm_response: RAGResponse = await generate_answer_with_context(
-        query=user_query, context=documents_string
-    )
-    backend_logger.debug(f"LLM response: {llm_response}")
-    return ChatResponse(
-        answer=llm_response.answer,
-        semantic_query=semantic_query,
-        sources=llm_response.sources,
-        tools_used=["vector_search"],
-    )
 
 
 async def handle_chat_request_sql(user_query: str) -> ChatResponse:
