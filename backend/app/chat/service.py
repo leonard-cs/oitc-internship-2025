@@ -1,5 +1,5 @@
 from app.chat.models import ChatResponse
-from app.chat.rag_chain import generate_answer_from_sql
+from app.llm.rag_services import generate_answer_from_sql
 from app.config import backend_logger
 from app.llm.models import RAGResponse
 from app.llm.rag_services import generate_answer_with_context
