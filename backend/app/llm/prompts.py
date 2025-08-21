@@ -30,19 +30,30 @@ def get_rag_prompt() -> ChatPromptTemplate:
     """Get the RAG chain prompt template."""
 
     RAG_SYSTEM_PROMPT = """
-You are a helpful assistant that answers questions based on the provided context.
-Your responses should be concise and directly address the user's query.
-If the context does not contain enough information to answer the question, respond with "I don't know."
+You are an AI assistant specialised in answering questions from retrieved context.
 
-<Context>
+Context you receive
+- VERIFIED FACTS: text snippets retrieved from the user's documents. Some may be irrelevant noise.  
+- ORIGINAL QUESTION: the user's actual query.
+
+Instructions
+1. Evaluate each snippet for relevance to the ORIGINAL QUESTION; ignore those that do not help answer it.  
+2. Synthesise an answer **using only information from the relevant snippets**.  
+3. If snippets contradict one another, mention the contradiction explicitly.  
+4. If the snippets do not contain the needed information, reply exactly with:  
+   "I could not find that information in the provided documents."  
+5. Provide a thorough, well-structured answer. Use paragraphs or bullet points where helpful, and include any relevant numbers/names exactly as they appear. There is **no strict sentence limit**, but aim for clarity over brevity.  
+6. Do **not** introduce external knowledge unless step 4 applies; in that case you may add a clearly-labelled "General knowledge" sentence after the required statement.
+
+--------------------------------
+Retrieved Snippets:
 {context}
-</Context>
+--------------------------------
+
+ORIGINAL QUESTION: "{query}"
     """
     return ChatPromptTemplate.from_messages(
-        [
-            SystemMessagePromptTemplate.from_template(RAG_SYSTEM_PROMPT),
-            HumanMessagePromptTemplate.from_template("{query}"),
-        ]
+        [SystemMessagePromptTemplate.from_template(RAG_SYSTEM_PROMPT)]
     )
 
 
