@@ -2,9 +2,9 @@ from app.chat.models import ChatResponse, LLMResponse, QueryProcessorResponse
 from app.chat.query_processor import process_query
 from app.chat.rag_chain import generate_answer_from_sql, generate_answer_with_context
 from app.config import backend_logger
+from app.llm.rag_services import decide_collection
 from app.mssql.models import Table
 from app.utils import documents_to_string
-from app.vectorstore.models import CollectionName
 from app.vectorstore.service import search, search_image
 from fastapi import HTTPException, UploadFile
 
@@ -14,12 +14,15 @@ async def handle_chat_request(
 ) -> ChatResponse:
     backend_logger.info("Received chat request")
 
+    collection = decide_collection(user_query, Table.values())
+    backend_logger.debug(f"Collection: {collection}")
+
     semantic_query = user_query
     if use_query_processor:
         processor_response: QueryProcessorResponse = await process_query(user_query)
         semantic_query = processor_response.summary
 
-    documents = search(semantic_query, CollectionName.products.value)
+    documents = search(semantic_query, collection)
     documents_string = documents_to_string(documents)
     backend_logger.debug(documents_string)
 

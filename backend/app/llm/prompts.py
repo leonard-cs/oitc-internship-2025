@@ -11,6 +11,21 @@ You can classify queries, extract key information, and determine the best approa
 
 
 # RAG Chain Prompts
+def get_collection_decision_prompt() -> ChatPromptTemplate:
+    COLLECTION_DECISION_SYSTEM_PROMPT = """
+    You are an AI assistant that decides which collection to search for a given query.
+    The collections are: {collections}
+    """
+    return ChatPromptTemplate.from_messages(
+        [
+            SystemMessagePromptTemplate.from_template(
+                COLLECTION_DECISION_SYSTEM_PROMPT
+            ),
+            HumanMessagePromptTemplate.from_template("{query}"),
+        ]
+    )
+
+
 def get_rag_prompt() -> ChatPromptTemplate:
     """Get the RAG chain prompt template."""
 

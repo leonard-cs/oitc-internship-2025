@@ -16,6 +16,10 @@ class Table(str, Enum):
     suppliers = "Suppliers"
     territories = "Territories"
 
+    @classmethod
+    def values(cls) -> list[str]:
+        return [table.value for table in cls]
+
     def sql(self, limit: int | None = None) -> str:
         limit_str = f"TOP {limit}" if limit else ""
         if self == Table.products:
