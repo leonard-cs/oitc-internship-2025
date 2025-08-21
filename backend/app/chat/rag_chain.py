@@ -14,7 +14,6 @@ from langchain_community.utilities import SQLDatabase
 
 async def generate_answer_with_context(query: str, context: str) -> RAGResponse:
     prompt_template = get_rag_prompt()
-
     structured_ollama = get_ollama().with_structured_output(RAGResponse)
 
     pipelines = (
@@ -23,13 +22,13 @@ async def generate_answer_with_context(query: str, context: str) -> RAGResponse:
         | structured_ollama
     )
 
-    backend_logger.trace(f"Input variables: {prompt_template.input_variables}")
-    backend_logger.trace(
-        f"Prompt template:\n{prompt_template.format(query=query, context=context)}"
-    )
+    # backend_logger.trace(
+    #     f"Prompt template:\n{prompt_template.format(query=query, context=context)}"
+    # )
+
     response: RAGResponse = pipelines.invoke({"query": query, "context": context})
     backend_logger.trace(response)
-    backend_logger.success("Generated answer from LLM successfully")
+
     return response
 
 

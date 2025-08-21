@@ -1,11 +1,9 @@
-from app.chat.models import ChatRequest, ChatResponse
-from app.chat.service import (
-    handle_chat_request,
-    handle_chat_request_image,
-    handle_chat_request_sql,
-)
+from app.chat.models import ChatResponse
+from app.chat.service import handle_chat_request_image, handle_chat_request_sql
 from app.config import backend_logger
+from app.llm.models import RAGResponse
 from app.llm.ollama import get_stream_ollama
+from app.rag_system.pipelines import vector_rag_pipeline
 from fastapi import APIRouter, File, HTTPException, Query, UploadFile
 from fastapi.responses import StreamingResponse
 from langchain_core.messages import HumanMessage
@@ -19,37 +17,17 @@ router = APIRouter()
     summary="Process Chat Query with RAG Pipeline",
     description="Process a user query through the complete Retrieval-Augmented Generation (RAG) chatbot pipeline with optional query preprocessing",
 )
-async def vector_rag_query(payload: ChatRequest) -> ChatResponse:
-    """
-    Process a user query through the full RAG chatbot pipeline.
-
-    This endpoint handles general chat queries by:
-    1. Optionally preprocessing the query through a query processor for better understanding
-    2. Retrieving relevant context from the vector database
-    3. Generating a comprehensive response using the LLM with retrieved context
-    4. Returning the answer along with source references
-
-    Args:
-        payload (ChatRequest): The chat request containing:
-            - user_query (str): The user's question or query
-            - use_query_processor (bool, optional): Whether to preprocess the query for better retrieval. Defaults to False.
-
-    Returns:
-        ChatResponse: Contains:
-            - semantic_query (str): The processed/semantic version of the query
-            - answer (str): The generated response from the LLM
-            - sources (list[str]): List of source document references used
-            - tools_used (list, optional): Any tools that were utilized during processing
-
-    Raises:
-        HTTPException: 500 status code if processing fails
-    """
+async def vector_rag_query(
+    query: str = Query(..., description="The user's question or query"),
+) -> ChatResponse:
     try:
-        result: ChatResponse = await handle_chat_request(
-            user_query=payload.user_query,
-            use_query_processor=payload.use_query_processor,
+        rag_response: RAGResponse = await vector_rag_pipeline(query)
+        return ChatResponse(
+            answer=rag_response.answer,
+            semantic_query=query,
+            sources=rag_response.sources,
+            tools_used=["vector_search"],
         )
-        return result
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 

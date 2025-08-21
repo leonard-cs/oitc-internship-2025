@@ -1,3 +1,4 @@
+from app.config import backend_logger
 from app.llm.models import CollectionDecisionResponse
 from app.llm.ollama import get_ollama
 from app.llm.prompts import get_collection_decision_prompt
@@ -16,6 +17,7 @@ def decide_collection(query: str, tables: list[str]) -> str:
     collection_response: CollectionDecisionResponse = pipelines.invoke(
         {"query": query, "collections": tables}
     )
+    backend_logger.trace(collection_response)
     return collection_response.collection
 
 

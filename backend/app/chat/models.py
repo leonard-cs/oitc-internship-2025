@@ -3,11 +3,6 @@ from typing import Optional
 from pydantic import BaseModel, Field
 
 
-class ChatRequest(BaseModel):
-    user_query: str
-    use_query_processor: bool = False
-
-
 class ChatResponse(BaseModel):
     semantic_query: str
     answer: str
