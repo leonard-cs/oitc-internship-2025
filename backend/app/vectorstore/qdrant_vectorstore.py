@@ -74,7 +74,7 @@ class MyQdrantVectorStore(VectorStore):
         page_contents: list[str],
         metadata: list[dict[str, any]],
         ids: list[str] | None = None,
-    ) -> None:
+    ) -> list[str]:
         """Upload vectors and payload to the collection.
         This method will perform automatic batching of the data.
         If you need to perform a single update, use `upsert` method.
@@ -90,25 +90,28 @@ class MyQdrantVectorStore(VectorStore):
             }
             for page_content, m in zip(page_contents, metadata)
         ]
+        ids = ids if ids else [str(uuid.uuid4()) for _ in range(len(vectors))]
         self.create_collection(collection_name, len(vectors[0]))
         self.client.upload_collection(
             collection_name=collection_name, vectors=vectors, payload=payload, ids=ids
         )
+        return ids
 
     def upsert(
         self,
         collection_name: str,
         vector: list[float],
         page_content: str,
-        metadata: dict[str, any],
-        id: str | None = str(uuid.uuid4()),
-    ) -> None:
+        metadata: dict[str, any] | None = None,
+        id: str | None = None,
+    ) -> str:
         """
         Update or insert a new point into the collection.
 
         If point with given ID already exists - it will be overwritten.
         """
         self.create_collection(collection_name, len(vector))
+        id = id if id else str(uuid.uuid4())
         self.client.upsert(
             collection_name=collection_name,
             points=[
@@ -116,13 +119,14 @@ class MyQdrantVectorStore(VectorStore):
                     id=id,
                     vector=vector,
                     payload={
-                        "id": metadata.get("source"),
+                        "id": metadata.get("source") if metadata else id,
                         "page_content": page_content,
-                        "metadata": metadata,
+                        "metadata": metadata if metadata else {},
                     },
                 )
             ],
         )
+        return id
 
 
 if __name__ == "__main__":

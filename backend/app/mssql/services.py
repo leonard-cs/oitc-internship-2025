@@ -64,7 +64,7 @@ async def sync_table_ai(
             )
 
     vectorstore = get_vectorstore()
-    vectorstore.upload_collection(
+    added_ids = vectorstore.upload_collection(
         collection_name=table_name,
         vectors=embeddings,
         page_contents=contents,
@@ -73,7 +73,7 @@ async def sync_table_ai(
     )
 
     backend_logger.trace(f"Document ids: {document_ids}")
-    return ids
+    return added_ids
 
 
 def extract_images(
@@ -160,7 +160,7 @@ async def sync_table_images(
             )
 
     vectorstore = get_vectorstore()
-    vectorstore.upload_collection(
+    added_ids = vectorstore.upload_collection(
         collection_name=table_name,
         vectors=image_embeddings,
         page_contents=contents,
@@ -169,7 +169,7 @@ async def sync_table_images(
     )
     backend_logger.trace(f"Document ids: {document_ids}")
 
-    return ids
+    return added_ids
 
 
 def parse_table_info(table_info: str) -> str:
