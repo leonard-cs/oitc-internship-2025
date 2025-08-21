@@ -6,30 +6,8 @@ from app.chat.rag_llm import (
 )
 from app.config import MSSQL_CONNECTION_STRING, backend_logger
 from app.llm.models import RAGResponse
-from app.llm.ollama import get_ollama
-from app.llm.prompts import get_rag_prompt
 from fastapi import HTTPException
 from langchain_community.utilities import SQLDatabase
-
-
-async def generate_answer_with_context(query: str, context: str) -> RAGResponse:
-    prompt_template = get_rag_prompt()
-    structured_ollama = get_ollama().with_structured_output(RAGResponse)
-
-    pipelines = (
-        {"query": lambda x: x["query"], "context": lambda x: x["context"]}
-        | prompt_template
-        | structured_ollama
-    )
-
-    # backend_logger.trace(
-    #     f"Prompt template:\n{prompt_template.format(query=query, context=context)}"
-    # )
-
-    response: RAGResponse = pipelines.invoke({"query": query, "context": context})
-    backend_logger.trace(response)
-
-    return response
 
 
 async def generate_answer_from_sql(user_question: str):

@@ -1,7 +1,6 @@
-from app.chat.rag_chain import generate_answer_with_context
 from app.config import backend_logger
 from app.llm.models import RAGResponse
-from app.llm.rag_services import decide_collection
+from app.llm.rag_services import decide_collection, generate_answer_with_context
 from app.mssql.models import Table
 from app.utils import documents_to_string
 from app.vectorstore.service import search
