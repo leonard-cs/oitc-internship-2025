@@ -10,6 +10,11 @@ class CollectionName(str, Enum):
     test = "Test"
 
 
+class FailedTable(BaseModel):
+    table: str
+    error: str
+
+
 class SyncResponse(BaseModel):
     success: list[str]
-    failed: list[str]
+    failed: list[FailedTable]

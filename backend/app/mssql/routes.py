@@ -9,7 +9,7 @@ from app.mssql.services import (
     sync_table_ai,
     sync_table_images,
 )
-from app.vectorstore.models import SyncResponse
+from app.vectorstore.models import FailedTable, SyncResponse
 from fastapi import APIRouter, Depends, Query
 from langchain_community.utilities import SQLDatabase
 
@@ -118,7 +118,7 @@ async def ai_sync(
                 tables_failed.append(table.value)
         except Exception as e:
             backend_logger.error(f"Error syncing table {table.value}: {e}")
-            tables_failed.append(table.value)
+            tables_failed.append(FailedTable(table=table.value, error=str(e)))
     return SyncResponse(
         success=tables_synced,
         failed=tables_failed,
@@ -163,7 +163,7 @@ async def ai_sync_all(
                 tables_failed.append(table.value)
         except Exception as e:
             backend_logger.error(f"Error syncing table {table.value}: {e}")
-            tables_failed.append(table.value)
+            tables_failed.append(FailedTable(table=table.value, error=str(e)))
     return SyncResponse(
         success=tables_synced,
         failed=tables_failed,
@@ -214,7 +214,7 @@ async def sync_images(
                 tables_failed.append(table.value)
         except Exception as e:
             backend_logger.error(f"Error syncing table {table.value}: {e}")
-            tables_failed.append(table.value)
+            tables_failed.append(FailedTable(table=table.value, error=str(e)))
     return SyncResponse(
         success=tables_synced,
         failed=tables_failed,
