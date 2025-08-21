@@ -1,9 +1,9 @@
 from app.chat.models import ChatResponse
-from app.chat.service import handle_chat_request_image, handle_chat_request_sql
+from app.chat.service import handle_chat_request_image
 from app.config import backend_logger
-from app.llm.models import RAGResponse
+from app.llm.models import RAGResponse, SQLRAGResponse
 from app.llm.ollama import get_stream_ollama
-from app.rag_system.pipelines import vector_rag_pipeline
+from app.rag_system.pipelines import sql_rag_pipeline, vector_rag_pipeline
 from fastapi import APIRouter, File, HTTPException, Query, UploadFile
 from fastapi.responses import StreamingResponse
 from langchain_core.messages import HumanMessage
@@ -36,7 +36,7 @@ async def vector_rag_query(
 
 @router.post(
     "/sql-rag-query",
-    response_model=ChatResponse,
+    response_model=SQLRAGResponse,
     summary="Process SQL-Based Query with RAG Pipeline",
     description="Process a user query through the SQL-focused Retrieval-Augmented Generation pipeline for database-related questions",
 )
@@ -44,36 +44,8 @@ async def sql_rag_query(
     query: str = Query(
         ..., description="The user's natural language query about database content"
     ),
-) -> ChatResponse:
-    """
-    Process a user query through the SQL RAG chatbot pipeline.
-
-    This endpoint is specifically designed for database-related queries and:
-    1. Analyzes the user's natural language query to understand database intent
-    2. Identifies relevant database tables and schemas
-    3. Generates appropriate SQL queries when needed
-    4. Retrieves and processes database information
-    5. Provides natural language responses based on database content
-
-    Args:
-        query (str): The user's natural language question about database content.
-                    Examples: "Show me sales data from last month", "What customers are from California?"
-
-    Returns:
-        ChatResponse: Contains:
-            - semantic_query (str): The processed/semantic version of the query
-            - answer (str): Natural language response based on database content
-            - sources (list[str]): Database tables or sources referenced
-            - tools_used (list, optional): SQL queries or database tools used
-
-    Raises:
-        HTTPException: 500 status code if SQL processing or database query fails
-    """
-    try:
-        result: ChatResponse = await handle_chat_request_sql(user_query=query)
-        return result
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
+) -> SQLRAGResponse:
+    return await sql_rag_pipeline(query)
 
 
 @router.post(
