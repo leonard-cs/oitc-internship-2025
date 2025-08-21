@@ -7,4 +7,6 @@ class AppError(Exception):
 class CollectionNotFoundError(AppError):
     """Raised when a collection is not found."""
 
-    pass
+    def __init__(self, collection_name: str):
+        self.collection_name = collection_name
+        super().__init__(f"Collection '{collection_name}' does not exist")

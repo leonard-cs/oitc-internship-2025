@@ -131,9 +131,7 @@ class MyQdrantVectorStore(VectorStore):
 
     def search(self, collection_name: str, vector: list[float], limit: int = 5):
         if not self.collection_exists(collection_name):
-            raise CollectionNotFoundError(
-                f"Collection '{collection_name}' does not exist"
-            )
+            raise CollectionNotFoundError(collection_name)
         return self.client.search(
             collection_name=collection_name, query_vector=vector, limit=limit
         )
