@@ -1,4 +1,3 @@
-from app.chat.models import LLMResponse
 from app.chat.rag_llm import (
     execute_sql_query,
     generate_final_response,
@@ -6,16 +5,17 @@ from app.chat.rag_llm import (
     get_relevant_tables,
 )
 from app.config import MSSQL_CONNECTION_STRING, backend_logger
+from app.llm.models import RAGResponse
 from app.llm.ollama import get_ollama
 from app.llm.prompts import get_rag_prompt
 from fastapi import HTTPException
 from langchain_community.utilities import SQLDatabase
 
 
-async def generate_answer_with_context(query: str, context: str) -> LLMResponse:
+async def generate_answer_with_context(query: str, context: str) -> RAGResponse:
     prompt_template = get_rag_prompt()
 
-    structured_ollama = get_ollama().with_structured_output(LLMResponse)
+    structured_ollama = get_ollama().with_structured_output(RAGResponse)
 
     pipelines = (
         {"query": lambda x: x["query"], "context": lambda x: x["context"]}
@@ -27,7 +27,7 @@ async def generate_answer_with_context(query: str, context: str) -> LLMResponse:
     backend_logger.trace(
         f"Prompt template:\n{prompt_template.format(query=query, context=context)}"
     )
-    response: LLMResponse = pipelines.invoke({"query": query, "context": context})
+    response: RAGResponse = pipelines.invoke({"query": query, "context": context})
     backend_logger.trace(response)
     backend_logger.success("Generated answer from LLM successfully")
     return response
@@ -53,7 +53,7 @@ async def generate_answer_from_sql(user_question: str):
         )
         final_response = await generate_final_response(user_question, query_results)
 
-        return LLMResponse(answer=final_response, sources=table_names, log=sql_query)
+        return RAGResponse(answer=final_response, sources=table_names, log=sql_query)
 
     except Exception as e:
         error_msg = f"Error in SQL answer generation: {str(e)}"

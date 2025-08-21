@@ -1,7 +1,8 @@
-from app.chat.models import ChatResponse, LLMResponse, QueryProcessorResponse
+from app.chat.models import ChatResponse, QueryProcessorResponse
 from app.chat.query_processor import process_query
 from app.chat.rag_chain import generate_answer_from_sql, generate_answer_with_context
 from app.config import backend_logger
+from app.llm.models import RAGResponse
 from app.llm.rag_services import decide_collection
 from app.mssql.models import Table
 from app.utils import documents_to_string
@@ -26,7 +27,7 @@ async def handle_chat_request(
     documents_string = documents_to_string(documents)
     backend_logger.debug(documents_string)
 
-    llm_response: LLMResponse = await generate_answer_with_context(
+    llm_response: RAGResponse = await generate_answer_with_context(
         query=user_query, context=documents_string
     )
     backend_logger.debug(f"LLM response: {llm_response}")
@@ -40,7 +41,7 @@ async def handle_chat_request(
 
 async def handle_chat_request_sql(user_query: str) -> ChatResponse:
     backend_logger.info("Received chat request for SQL")
-    llm_response: LLMResponse = await generate_answer_from_sql(user_query)
+    llm_response: RAGResponse = await generate_answer_from_sql(user_query)
     return ChatResponse(
         answer=llm_response.answer,
         semantic_query=user_query,
@@ -57,7 +58,7 @@ async def handle_chat_request_image(user_query: str, image: UploadFile) -> ChatR
     documents = await search_image(file=image, collection=Table.employees.value)
     backend_logger.debug(documents)
 
-    llm_response: LLMResponse = await generate_answer_with_context(
+    llm_response: RAGResponse = await generate_answer_with_context(
         query=user_query, context=documents
     )
     backend_logger.debug(f"LLM response: {llm_response}")
