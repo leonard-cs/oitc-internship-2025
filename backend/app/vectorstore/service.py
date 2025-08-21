@@ -4,10 +4,11 @@ from app.config import QDRANT_URL, QDRANT_VECTOR_SIZE, backend_logger
 from app.embed.clipembedder import get_clip_embedder
 from app.embed.service import handle_image_embed
 from app.vectorstore.qdrant_vectorstore import MyQdrantVectorStore
-from fastapi import UploadFile
+from fastapi import HTTPException, UploadFile
 from langchain_core.documents import Document
 from langchain_qdrant import QdrantVectorStore
 from qdrant_client import QdrantClient
+from qdrant_client.http.exceptions import UnexpectedResponse
 from qdrant_client.http.models import models
 
 
@@ -18,11 +19,14 @@ def get_qdrant_client():
 
 @lru_cache(maxsize=20)
 def get_qdrant_vector_store(collection_name: str):
-    return QdrantVectorStore(
-        client=get_qdrant_client(),
-        collection_name=collection_name,
-        embedding=get_clip_embedder(),
-    )
+    try:
+        return QdrantVectorStore(
+            client=get_qdrant_client(),
+            collection_name=collection_name,
+            embedding=get_clip_embedder(),
+        )
+    except UnexpectedResponse as e:
+        raise HTTPException(status_code=e.status_code, detail=e.content.decode("utf-8"))
 
 
 @lru_cache(maxsize=1)

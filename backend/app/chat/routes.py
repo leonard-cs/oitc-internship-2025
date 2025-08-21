@@ -28,6 +28,8 @@ async def vector_rag_query(
             sources=rag_response.sources,
             tools_used=["vector_search"],
         )
+    except HTTPException as e:
+        raise e
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
