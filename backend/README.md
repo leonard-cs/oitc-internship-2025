@@ -43,7 +43,7 @@ backend/
 │   │   ├── save_model.py               # Model persistence utilities
 │   │   └── clipembedder.py             # CLIP embedding implementation
 │   │
-│   ├── mssql/                          # 
+│   ├── mssql/
 │   │   ├── ...
 │   │   ├── dependencies.py
 │   │   └── utils.py
@@ -53,14 +53,18 @@ backend/
 │   │   ├── qdrant_vectorstore.py
 │   │   └── utils.py                    # Vectorstore utility functions
 │   │
+│   ├── rag_system/
+│   │   └── pipelines.py
+│   │
 │   ├── llm/
+│   │   ├── ...
 │   │   ├── ollama.py
-│   │   └── prompts.py
+│   │   ├── prompts.py
+│   │   └── rag_services.py
 │   │
 │   ├── chat/
 │   │   ├── ...
 │   │   ├── query_processor.py          # Query processing logic
-│   │   ├── rag_chain.py                # RAG (Retrieval-Augmented Generation) chain
 │   │   └── rag_llm.py                  # RAG LLM integration
 │   │
 │   ├── agent/
