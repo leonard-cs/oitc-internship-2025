@@ -2,6 +2,7 @@ import uuid
 from abc import ABC, abstractmethod
 
 from app.config import QDRANT_URL, backend_logger
+from app.exceptions.errors import CollectionNotFoundError
 from qdrant_client import QdrantClient
 from qdrant_client.models import Distance, PayloadSchemaType, PointStruct, VectorParams
 
@@ -129,6 +130,10 @@ class MyQdrantVectorStore(VectorStore):
         return id
 
     def search(self, collection_name: str, vector: list[float], limit: int = 5):
+        if not self.collection_exists(collection_name):
+            raise CollectionNotFoundError(
+                f"Collection '{collection_name}' does not exist"
+            )
         return self.client.search(
             collection_name=collection_name, query_vector=vector, limit=limit
         )

@@ -1,5 +1,6 @@
 from app.config import QDRANT_URL, QDRANT_VECTOR_SIZE, backend_logger
 from app.embed.service import handle_text_embed
+from app.exceptions.errors import CollectionNotFoundError
 from app.mssql.models import Table
 from app.vectorstore.qdrant_vectorstore import MyQdrantVectorStore
 from app.vectorstore.service import get_all_records, get_vectorstore_info
@@ -88,8 +89,11 @@ def test_search(
 ):
     qdrant = MyQdrantVectorStore(url=QDRANT_URL)
     vector = handle_text_embed(text)
-    results = qdrant.search(collection_name=collection, vector=vector)
-    return results
+    try:
+        results = qdrant.search(collection_name=collection, vector=vector)
+        return results
+    except CollectionNotFoundError as e:
+        raise HTTPException(status_code=404, detail=str(e))
 
 
 @router.get("/test/points")
