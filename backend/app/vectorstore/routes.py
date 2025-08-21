@@ -69,6 +69,24 @@ async def get_collection_ids(
         raise HTTPException(status_code=500, detail=str(e))
 
 
+@router.get(
+    "/delete-collection",
+    responses={404: {"description": "Collection not found"}},
+)
+def delete_collection(
+    collection: str = Query(..., description="The collection to delete"),
+):
+    qdrant = MyQdrantVectorStore(url=QDRANT_URL)
+    try:
+        result = qdrant.delete_collection(collection_name=collection)
+        if result:
+            return {"message": f"Collection '{collection}' deleted successfully"}
+        else:
+            raise HTTPException(status_code=500, detail="Failed to delete collection")
+    except CollectionNotFoundError as e:
+        raise HTTPException(status_code=404, detail=str(e))
+
+
 @router.get("/test/inset")
 def test_inset(
     text: str = Query(..., description="The text to insert"),

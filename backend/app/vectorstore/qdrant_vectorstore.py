@@ -136,6 +136,11 @@ class MyQdrantVectorStore(VectorStore):
             collection_name=collection_name, query_vector=vector, limit=limit
         )
 
+    def delete_collection(self, collection_name: str) -> bool:
+        if not self.collection_exists(collection_name):
+            raise CollectionNotFoundError(collection_name)
+        return self.client.delete_collection(collection_name)
+
 
 if __name__ == "__main__":
     vectorstore = MyQdrantVectorStore(url=QDRANT_URL)
