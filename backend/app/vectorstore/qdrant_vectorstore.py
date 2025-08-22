@@ -3,6 +3,7 @@ from abc import ABC, abstractmethod
 
 from app.config import QDRANT_URL, backend_logger
 from app.exceptions.errors import CollectionNotFoundError
+from app.vectorstore.utils import generate_uuid
 from qdrant_client import QdrantClient
 from qdrant_client.models import Distance, PayloadSchemaType, PointStruct, VectorParams
 
@@ -73,7 +74,7 @@ class MyQdrantVectorStore(VectorStore):
         collection_name: str,
         vectors: list[list[float]],
         page_contents: list[str],
-        metadata: list[dict[str, any]],
+        metadata: list[dict[str, any]] | None = None,
         ids: list[str] | None = None,
     ) -> list[str]:
         """Upload vectors and payload to the collection.
@@ -83,9 +84,13 @@ class MyQdrantVectorStore(VectorStore):
         backend_logger.info(
             f"Uploading collection {collection_name} with {len(vectors)} vectors"
         )
+
+        if metadata is None:
+            metadata = [{} for _ in range(len(page_contents))]
+
         payload = [
             {
-                "id": m.get("source"),
+                "id": m.get("source") if m else None,
                 "page_content": page_content,
                 "metadata": m,
             }
@@ -143,17 +148,13 @@ class MyQdrantVectorStore(VectorStore):
 
 
 if __name__ == "__main__":
-    vectorstore = MyQdrantVectorStore(url=QDRANT_URL)
-    vectorstore.upload_collection(
-        collection_name="Test",
-        vectors=[[1, 2, 3]],
-        page_contents=["test"],
-        metadata=[{"test": "test"}],
-    )
+    from app.embed.service import get_text_embeddings
 
-    vectorstore.upsert(
-        collection_name="Test",
-        vector=[1, 2, 3],
-        page_content="test",
-        metadata={"test": "test"},
+    vectorstore = MyQdrantVectorStore(url=QDRANT_URL)
+    texts = ["Chang", "water", "beer", "wine"]
+    embeddings = [get_text_embeddings(t) for t in texts]
+    ids = [generate_uuid(t) for t in texts]
+
+    vectorstore.upload_collection(
+        collection_name="test", vectors=embeddings, page_contents=texts, ids=ids
     )
