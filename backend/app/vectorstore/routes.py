@@ -1,5 +1,5 @@
 from app.config import QDRANT_URL, QDRANT_VECTOR_SIZE, backend_logger
-from app.embed.service import handle_text_embed
+from app.embed.service import get_text_embeddings
 from app.exceptions.errors import CollectionNotFoundError
 from app.mssql.models import Table
 from app.vectorstore.qdrant_vectorstore import MyQdrantVectorStore
@@ -96,7 +96,7 @@ def test_inset(
 ):
     qdrant = MyQdrantVectorStore(url=QDRANT_URL)
     qdrant.create_collection(collection_name=collection, vector_size=QDRANT_VECTOR_SIZE)
-    vector = handle_text_embed(text)
+    vector = get_text_embeddings(text)
     return qdrant.upsert(collection_name=collection, vector=vector, page_content=text)
 
 
@@ -106,7 +106,7 @@ def test_search(
     collection: str = Query(default="test", description="The collection to search in"),
 ):
     qdrant = MyQdrantVectorStore(url=QDRANT_URL)
-    vector = handle_text_embed(text)
+    vector = get_text_embeddings(text)
     try:
         results = qdrant.search(collection_name=collection, vector=vector)
         return results

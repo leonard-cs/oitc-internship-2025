@@ -1,4 +1,4 @@
-from app.embed.service import handle_image_embed, handle_text_embed
+from app.embed.service import get_text_embeddings, handle_image_embed
 from fastapi import APIRouter, File, Form, HTTPException, UploadFile
 
 router = APIRouter()
@@ -22,7 +22,7 @@ async def embed_image_text(
         EmbedderResponse containing embeddings and similarity score
     """
     try:
-        return await handle_text_embed(text)
+        return await get_text_embeddings(text)
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 

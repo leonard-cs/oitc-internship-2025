@@ -6,7 +6,7 @@ from PIL import Image
 from PIL.ImageFile import ImageFile
 
 
-def handle_text_embed(text: str) -> list[float]:
+def get_text_embeddings(text: str) -> list[float]:
     return get_clip_embedder().encode_text(text)
 
 
