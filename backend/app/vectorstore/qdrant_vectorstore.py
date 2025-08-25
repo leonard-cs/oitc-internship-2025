@@ -149,12 +149,16 @@ class MyQdrantVectorStore(VectorStore):
 
 if __name__ == "__main__":
     from app.embed.service import get_text_embeddings
+    from app.embed.nomic_embedder import NomicEmbedder
 
     vectorstore = MyQdrantVectorStore(url=QDRANT_URL)
-    texts = ["Chang", "water", "beer", "wine"]
-    embeddings = [get_text_embeddings(t) for t in texts]
-    ids = [generate_uuid(t) for t in texts]
+    words = ["apple", "banana", "cherry", "grape", "lemon", "mango", "orange",
+             "dog", "cat", "bird", "fish", "horse", "rabbit", "snake", "tiger", "lion", "zebra",
+             "sun", "moon", "star", "sky", "cloud", "rain", "snow", "wind", "fire", "water"]
+    
+    embeddings = [NomicEmbedder().embed_text(t) for t in words]
+    ids = [generate_uuid(t) for t in words]
 
     vectorstore.upload_collection(
-        collection_name="test", vectors=embeddings, page_contents=texts, ids=ids
+        collection_name="test", vectors=embeddings, page_contents=words, ids=ids
     )

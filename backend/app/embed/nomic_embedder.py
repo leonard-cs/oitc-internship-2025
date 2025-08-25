@@ -1,9 +1,9 @@
 # llm_server/embeddings/nomic_embedder.py
 
 import requests
-from embeddings.base import BaseEmbedder
 
-class NomicEmbedder(BaseEmbedder):
+
+class NomicEmbedder:
     def __init__(self, model="nomic-embed-text", base_url="http://localhost:11434"):
         self.model = model
         self.url = f"{base_url}/api/embed"
@@ -21,6 +21,7 @@ class NomicEmbedder(BaseEmbedder):
 
     def embed_image(self, image_path: str) -> list[float]:
         raise NotImplementedError("OllamaEmbedder does not support image embeddings.")
+
 
 if __name__ == "__main__":
     print(len(NomicEmbedder().embed_text("Hi")))
