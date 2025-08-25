@@ -4,7 +4,7 @@ from app.config import backend_logger
 from app.llm.models import RAGResponse, SQLRAGResponse
 from app.llm.ollama import get_stream_ollama
 from app.rag_system.pipelines import sql_rag_pipeline, vector_rag_pipeline
-from fastapi import APIRouter, File, HTTPException, Query, UploadFile
+from fastapi import APIRouter, File, Form, HTTPException, Query, UploadFile
 from fastapi.responses import StreamingResponse
 from langchain_core.messages import HumanMessage
 
@@ -56,7 +56,7 @@ async def sql_rag_query(
 )
 async def image_query(
     file: UploadFile = File(..., description="Image file to analyze (JPEG, PNG, etc.)"),
-    user_query: str = Query(
+    user_query: str = Form(
         ..., description="Question or query about the uploaded image content"
     ),
 ) -> ChatResponse:
