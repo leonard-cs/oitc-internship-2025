@@ -13,6 +13,9 @@ def vector_search(query: str, table_name: str) -> list[Document]:
     Perform a vector similarity search against a set of documents.
     The query should contain the semantic meaning of original query.
     Returns top 5 most relevant context documents and their sources.
+    You should use get_table_names tool to get the table names if uou are not sure about the table name.
+    This tool will convert the query to vector.
+    This tool dont need to know the table schema.
     """
     backend_logger.info("Executing 'vector_search' tool")
 

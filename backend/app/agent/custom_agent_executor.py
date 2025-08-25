@@ -14,9 +14,14 @@ from langchain_core.runnables.base import RunnableSerializable
 
 system_prompt = """You are a helpful assistant that answers questions.
     When answering, use one of the tools provided. After using a tool the tool output will be provided in the 'scratchpad' below.
-    If you have an answer in the scratchpad you should not use any more tools and instead answer directly to the user.
+    If you have an answer in the scratchpad you should NOT use any more tools and instead MUST use the direct_answer tool to answer directly to the user.
     Your responses should be concise and directly address the user's query.
     If you don't have enough information to answer the question, choose "direct_answer" with "I don't know."
+    
+    Choose the searching tools that best fit the user's query.
+    
+    If the sql query has errors, you should check the table schema before retrying, do NOT repeat the same query.
+    If the sql query returns no results, you should use the direct_answer tool to answer that you received no results.
     """
 
 prompt_template = ChatPromptTemplate.from_messages(
