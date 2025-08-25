@@ -2,7 +2,7 @@ from functools import lru_cache
 
 from app.config import QDRANT_URL, QDRANT_VECTOR_SIZE, backend_logger
 from app.embed.clipembedder import get_clip_embedder
-from app.embed.service import handle_image_embed
+from app.embed.service import get_image_uploadfile_embeddings
 from app.vectorstore.qdrant_vectorstore import MyQdrantVectorStore
 from fastapi import HTTPException, UploadFile
 from langchain_core.documents import Document
@@ -51,7 +51,7 @@ async def search_image(file: UploadFile, collection: str) -> list[Document]:
         return []
     backend_logger.info(f"Searching for image in collection: '{collection}'")
 
-    image_embedding = await handle_image_embed(file)
+    image_embedding = await get_image_uploadfile_embeddings(file)
     results: list[Document] = embedding_search(image_embedding, collection)
     return results
 

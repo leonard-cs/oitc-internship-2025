@@ -7,10 +7,14 @@ from PIL.ImageFile import ImageFile
 
 
 def get_text_embeddings(text: str) -> list[float]:
-    return get_clip_embedder().encode_text(text)
+    return get_clip_embedder().embed_query(text)
 
 
-async def handle_image_embed(file: UploadFile) -> list[float]:
+def get_image_file_embeddings(image: ImageFile) -> list[float]:
+    return get_clip_embedder().encode_image(image)
+
+
+async def get_image_uploadfile_embeddings(file: UploadFile) -> list[float]:
     contents = await file.read()
     image: ImageFile = Image.open(io.BytesIO(contents)).convert("RGB")
     return get_clip_embedder().encode_image(image)

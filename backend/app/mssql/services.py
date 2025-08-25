@@ -4,11 +4,11 @@ from datetime import datetime
 
 import pyodbc
 from app.config import backend_logger
-from app.embed.clipembedder import get_clip_embedder
+from app.embed.service import get_image_file_embeddings, get_text_embeddings
 from app.llm.ollama import get_ollama
+from app.llm.prompts import get_document_prompt
 from app.mssql.models import ImageTable, LLMDocumentResponse, Table
 from app.mssql.utils import delete_file
-from app.llm.prompts import get_document_prompt
 from app.vectorstore.service import get_vectorstore
 from app.vectorstore.utils import generate_uuid
 from langchain_community.utilities import SQLDatabase
@@ -54,7 +54,7 @@ async def sync_table_ai(
         document_id = f"{table_name}_{id}"
         document_ids.append(document_id)
         contents.append(text)
-        embeddings.append(get_clip_embedder().encode_text(text))
+        embeddings.append(get_text_embeddings(text))
         metadata.append({"source": document_id, "created_at": str(datetime.now())})
         ids.append(generate_uuid(document_id))
 
@@ -116,9 +116,9 @@ async def sync_table_images(
         image_data = image[78:]
 
         try:
-            image: ImageFile = Image.open(io.BytesIO(image_data))
-            image.load()  # Load the image to make sure it's not lazy-loaded
-            image_embeddings.append(get_clip_embedder().encode_image(image))
+            image_file: ImageFile = Image.open(io.BytesIO(image_data))
+            image_file.load()  # Load the image to make sure it's not lazy-loaded
+            image_embeddings.append(get_image_file_embeddings(image_file))
 
         except Exception as e:
             backend_logger.warning(f"Failed to process image ID {id}: {e}")

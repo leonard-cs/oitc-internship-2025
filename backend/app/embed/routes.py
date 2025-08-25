@@ -1,11 +1,11 @@
-from app.embed.service import get_text_embeddings, handle_image_embed
+from app.embed.service import get_text_embeddings, get_image_uploadfile_embeddings
 from fastapi import APIRouter, File, Form, HTTPException, UploadFile
 
 router = APIRouter()
 
 
 @router.post("/embed-text", summary="Generate embeddings for text")
-async def embed_image_text(
+def embed_image_text(
     text: str = Form(..., description="Text to embed"),
 ) -> list[float]:
     """
@@ -22,7 +22,7 @@ async def embed_image_text(
         EmbedderResponse containing embeddings and similarity score
     """
     try:
-        return await get_text_embeddings(text)
+        return get_text_embeddings(text)
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
@@ -48,6 +48,6 @@ async def embed_image(
         raise HTTPException(status_code=400, detail="Invalid image type")
 
     try:
-        return await handle_image_embed(file)
+        return await get_image_uploadfile_embeddings(file)
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
