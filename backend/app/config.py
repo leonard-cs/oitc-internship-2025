@@ -29,7 +29,7 @@ WEIGHTS_DIR = os.getenv("WEIGHTS_DIR", default="weights")
 QDRANT_URL = os.getenv("QDRANT_URL", default="")
 QDRANT_VECTOR_SIZE: int = int(os.getenv("QDRANT_VECTOR_SIZE", default=0))
 
-EMBEDDING_MODEL_PATH = "../weights/ViT-B-32.pt"
+EMBEDDING_MODEL_PATH = "weights/ViT-B-32.pt"
 
 
 MSSQL_HOST = os.getenv("MSSQL_HOST", default="localhost")

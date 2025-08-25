@@ -5,7 +5,7 @@ from typing import override
 # see: https://github.com/mlfoundations/open_clip
 import open_clip
 import torch
-from app.config import EMBEDDING_MODEL_PATH, backend_logger
+from app.config import EMBEDDING_MODEL_PATH, WEIGHTS_DIR, backend_logger
 from langchain_core.embeddings.embeddings import Embeddings
 from PIL import Image
 from PIL.ImageFile import ImageFile
@@ -17,6 +17,7 @@ class CLIPEmbedder(Embeddings):
         Initialize the CLIPEmbedder by loading the CLIP model, preprocessing pipeline, and tokenizer.
         """
         self.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+        self._save_model(WEIGHTS_DIR)
         self.model, self.preprocess, self.tokenizer = self._load_model(
             EMBEDDING_MODEL_PATH
         )
@@ -28,6 +29,13 @@ class CLIPEmbedder(Embeddings):
     @override
     def embed_documents(self, texts) -> list[list[float]]:
         return [self._handle_encode(text) for text in texts]
+
+    def _save_model(self, path: str):
+        os.makedirs(path, exist_ok=True)
+        model, _, _ = open_clip.create_model_and_transforms(
+            "ViT-B-32", pretrained="openai", force_quick_gelu=True
+        )
+        torch.save(model.state_dict(), f"{path}/ViT-B-32.pt")
 
     def _load_model(self, path: str):
         """
