@@ -97,22 +97,22 @@ backend/
 ### Document Processing
 <!-- ![](/Documentation/images/Document%20Preprocessing.png) -->
 
-<div align="center>
+<div align="center">
     <img src="/Documentation/images/Document Preprocessing.png" alt="Documant Processing Pipeline" width="600"/>
 </div>
 
 ### Document Retreval
-<div align="center>
+<div align="center">
     <img src="/Documentation/images/Vector Search.png" alt="Documant Retreval Pipeline" width="600"/>
 </div>
 
 ### SQL Search
-<div align="center>
+<div align="center">
     <img src="/Documentation/images/SQL Search.png" alt="SQL Search Pipeline" width="600"/>
 </div>
 
 ### Agentic loop
-<div align="center>
+<div align="center">
     <img src="/Documentation/images/Agent Pipeline.png" alt="Agent Pipeline" width="600"/>
 </div>
 
