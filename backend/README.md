@@ -94,7 +94,9 @@ backend/
 
 
 ## Architecture & Design
-### Document Storage
+### Document Processing
+<img src="/Documentation/images/Document Preprocessing.png" alt="Documant Processing Pipeline" width="300"/>
+
 ![](/Documentation/images/Document%20Preprocessing.png)
 
 ### Document Retreval
