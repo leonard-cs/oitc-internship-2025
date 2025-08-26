@@ -98,7 +98,7 @@ backend/
 <!-- ![](/Documentation/images/Document%20Preprocessing.png) -->
 
 <div align="center">
-    <img src="/Documentation/images/Document Preprocessing.png" alt="Documant Processing Pipeline" width="600"/>
+    <img src="/Documentation/images/Document Preprocessing.png" alt="Documant Processing Pipeline" width="700"/>
 </div>
 
 ### Document Retreval
@@ -113,7 +113,7 @@ backend/
 
 ### Agentic loop
 <div align="center">
-    <img src="/Documentation/images/Agent Pipeline.png" alt="Agent Pipeline" width="600"/>
+    <img src="/Documentation/images/Agent Pipeline.png" alt="Agent Pipeline" width="800"/>
 </div>
 
 ## Models
