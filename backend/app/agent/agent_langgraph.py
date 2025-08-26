@@ -1,5 +1,8 @@
 import time
 
+from langchain_community.agent_toolkits import SQLDatabaseToolkit
+from langchain_community.utilities import SQLDatabase
+from langchain_core.language_models.chat_models import BaseChatModel
 from langchain_ollama import ChatOllama
 from langgraph.checkpoint.memory import MemorySaver
 from langgraph.config import get_stream_writer
@@ -8,6 +11,10 @@ from langgraph.prebuilt import create_react_agent
 
 OLLAMA_BASE_URL = "http://localhost:11434"
 OLLAMA_CHAT_MODEL = "qwen3:latest"
+MSSQL_CONNECTION_STRING = (
+    "mssql+pyodbc://AMRO\\SQLEXPRESS/northwind"
+    "?driver=ODBC+Driver+17+for+SQL+Server&Trusted_Connection=yes"
+)
 
 
 def visualize_graph(graph: CompiledStateGraph):
@@ -84,15 +91,11 @@ def custom_streaming(agent: CompiledStateGraph, config: dict, input_message: dic
             time.sleep(0.01)  # Delay to simulate streaming
 
 
-def main():
-    memory = MemorySaver()
-    model = ChatOllama(model=OLLAMA_CHAT_MODEL, base_url=OLLAMA_BASE_URL)
-
+def agent_streaming_demo(llm: BaseChatModel, memory: MemorySaver, config: dict):
     tools = [add]
 
-    agent_executor = create_react_agent(model, tools, checkpointer=memory)
+    agent_executor = create_react_agent(llm, tools, checkpointer=memory)
     # visualize_graph(agent_executor)
-    config = {"configurable": {"thread_id": "abc123"}}
 
     input_message = {"role": "user", "content": "Hi, my name is John Doe."}
     stream_agent_messages(agent_executor, config, input_message)
@@ -104,6 +107,58 @@ def main():
     input_message = {"role": "user", "content": "What is 1 + 1?"}
     # stream_tool_updates(agent_executor, config, input_message)
     custom_streaming(agent_executor, config, input_message)
+
+
+def sql_agent_demo(llm: BaseChatModel, memory: MemorySaver, config: dict):
+    db = SQLDatabase.from_uri(MSSQL_CONNECTION_STRING)
+    toolkit = SQLDatabaseToolkit(db=db, llm=llm)
+    tools = toolkit.get_tools()
+    # print(tools)
+
+    system_message = """
+        You are an agent designed to interact with a SQL database.
+        Given an input question, create a syntactically correct {dialect} query to run,
+        then look at the results of the query and return the answer. Unless the user
+        specifies a specific number of examples they wish to obtain, always limit your
+        query to at most {top_k} results.
+
+        You can order the results by a relevant column to return the most interesting
+        examples in the database. Never query for all the columns from a specific table,
+        only ask for the relevant columns given the question.
+
+        You MUST double check your query before executing it. If you get an error while
+        executing a query, rewrite the query and try again.
+
+        DO NOT make any DML statements (INSERT, UPDATE, DELETE, DROP etc.) to the
+        database.
+
+        To start you should ALWAYS look at the tables in the database to see what you
+        can query. Do NOT skip this step.
+
+        Then you should query the schema of the most relevant tables.
+    """.format(
+        dialect="MSSQL",
+        top_k=5,
+    )
+    agent_executor = create_react_agent(
+        llm, tools, prompt=system_message, checkpointer=memory
+    )
+
+    input_message = {
+        "role": "user",
+        "content": "How many products are in the database?",
+    }
+    stream_agent_messages(agent_executor, config, input_message)
+
+
+def main():
+    memory = MemorySaver()
+    model = ChatOllama(model=OLLAMA_CHAT_MODEL, base_url=OLLAMA_BASE_URL)
+    config = {"configurable": {"thread_id": "abc123"}}
+
+    # agent_streaming_demo(model, memory, config)
+
+    sql_agent_demo(model, memory, config)
 
 
 if __name__ == "__main__":
