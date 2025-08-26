@@ -95,18 +95,26 @@ backend/
 
 ## Architecture & Design
 ### Document Processing
-<img src="/Documentation/images/Document Preprocessing.png" alt="Documant Processing Pipeline" width="300"/>
+<!-- ![](/Documentation/images/Document%20Preprocessing.png) -->
 
-![](/Documentation/images/Document%20Preprocessing.png)
+<div align="center>
+    <img src="/Documentation/images/Document Preprocessing.png" alt="Documant Processing Pipeline" width="600"/>
+</div>
 
 ### Document Retreval
-![](/Documentation/images/Vector%20Search.png)
+<div align="center>
+    <img src="/Documentation/images/Vector Search.png" alt="Documant Retreval Pipeline" width="600"/>
+</div>
 
 ### SQL Search
-![](/Documentation/images/SQL%20Search.png)
+<div align="center>
+    <img src="/Documentation/images/SQL Search.png" alt="SQL Search Pipeline" width="600"/>
+</div>
 
 ### Agentic loop
-![](/Documentation/images/Agent%20Pipeline.png)
+<div align="center>
+    <img src="/Documentation/images/Agent Pipeline.png" alt="Agent Pipeline" width="600"/>
+</div>
 
 ## Models
 This system relies on a suite of powerful, open-source models.
