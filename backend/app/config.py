@@ -18,7 +18,7 @@ else:
     exit(1)
 
 # Ollama configuration
-OLLAMA_BASE_URL = os.getenv("OLLAMA_BASE_URL", default="")
+OLLAMA_BASE_URL = os.getenv("OLLAMA_BASE_URL", default="http://localhost:11434")
 # OLLAMA_CHAT_MODEL = os.getenv("PHI3_MODEL", default="")
 # OLLAMA_CHAT_MODEL = os.getenv("DEEPSEEK_MODEL", default="")
 # OLLAMA_CHAT_MODEL = os.getenv("GEMMA_MODEL", default="")
