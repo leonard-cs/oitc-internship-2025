@@ -8,7 +8,7 @@ from app.embed.service import get_image_file_embeddings, get_text_embeddings
 from app.llm.ollama import get_ollama
 from app.llm.prompts import get_document_prompt
 from app.mssql.models import ImageTable, LLMDocumentResponse, Table
-from app.mssql.utils import delete_file, remove_sample_rows
+from app.mssql.utils import delete_file, extract_sql_results, remove_sample_rows
 from app.vectorstore.service import get_vectorstore
 from app.vectorstore.utils import generate_uuid
 from langchain_community.utilities import SQLDatabase
@@ -31,7 +31,7 @@ async def sync_table_ai(
     table_name = table.value
 
     rows = db.run_no_throw(table.sql(limit=limit), fetch="all", include_columns=True)
-    parsed_rows = parse_sql_result_string(rows)
+    parsed_rows = extract_sql_results(rows)
 
     if not parsed_rows:
         backend_logger.error(f"No rows found for table {table_name}")
@@ -130,7 +130,7 @@ async def sync_table_images(
     table_name = full_table.value
 
     rows = db.run_no_throw(full_table.sql(), fetch="all", include_columns=True)
-    parsed_rows = parse_sql_result_string(rows)
+    parsed_rows = extract_sql_results(rows)
 
     if not parsed_rows:
         backend_logger.error(f"No rows found for table {table_name}")
@@ -170,28 +170,6 @@ async def sync_table_images(
     backend_logger.trace(f"Document ids: {document_ids}")
 
     return added_ids
-
-
-def parse_sql_result_string(result_string: str) -> list[str]:
-    """
-    Split a string representation of SQL results by closing braces.
-
-    Args:
-        result_string: String representation of SQL results
-
-    Returns:
-        List of strings split by '}'
-    """
-    parts = result_string.split("}")
-
-    # Filter out empty strings and clean up
-    cleaned_parts = []
-    for part in parts:
-        part = part.strip()
-        if part and part != "]":  # Only add non-empty parts
-            cleaned_parts.append(part)
-
-    return cleaned_parts
 
 
 async def generate_text_and_id(
