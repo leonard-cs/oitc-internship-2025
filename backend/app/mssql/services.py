@@ -8,7 +8,7 @@ from app.embed.service import get_image_file_embeddings, get_text_embeddings
 from app.llm.ollama import get_ollama
 from app.llm.prompts import get_document_prompt
 from app.mssql.models import ImageTable, LLMDocumentResponse, Table
-from app.mssql.utils import delete_file
+from app.mssql.utils import delete_file, remove_sample_rows
 from app.vectorstore.service import get_vectorstore
 from app.vectorstore.utils import generate_uuid
 from langchain_community.utilities import SQLDatabase
@@ -27,7 +27,7 @@ def fetch_table_info(db: SQLDatabase, table_names: list[str]) -> str:
 async def sync_table_ai(
     db: SQLDatabase, table: Table, limit: int | None = None
 ) -> list[str]:
-    table_info = parse_table_info(fetch_table_info(db, [table.value]))
+    table_info = remove_sample_rows(fetch_table_info(db, [table.value]))
     table_name = table.value
 
     rows = db.run_no_throw(table.sql(limit=limit), fetch="all", include_columns=True)
@@ -126,7 +126,7 @@ async def sync_table_images(
 
     full_table = Table(image_table.value)
 
-    table_info = parse_table_info(fetch_table_info(db, [full_table.value]))
+    table_info = remove_sample_rows(fetch_table_info(db, [full_table.value]))
     table_name = full_table.value
 
     rows = db.run_no_throw(full_table.sql(), fetch="all", include_columns=True)
@@ -170,11 +170,6 @@ async def sync_table_images(
     backend_logger.trace(f"Document ids: {document_ids}")
 
     return added_ids
-
-
-def parse_table_info(table_info: str) -> str:
-    table_info = table_info.split("/*")[0]
-    return table_info
 
 
 def parse_sql_result_string(result_string: str) -> list[str]:
