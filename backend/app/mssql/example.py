@@ -1,12 +1,8 @@
+from app.config import MSSQL_SQLDATABASE_PYMSSQL_CONNECTION_STRING
 from app.mssql.models import Table
 from app.mssql.services import fetch_table_info
 from app.mssql.utils import extract_sql_results, remove_sample_rows
 from langchain_community.utilities import SQLDatabase
-
-MSSQL_CONNECTION_STRING = (
-    "mssql+pyodbc://AMRO\\SQLEXPRESS/northwind"
-    "?driver=ODBC+Driver+17+for+SQL+Server&Trusted_Connection=yes"
-)
 
 
 def get_table_schema_demo(db: SQLDatabase):
@@ -26,7 +22,7 @@ def execute_sql_demo(db: SQLDatabase):
 
 
 def main():
-    db = SQLDatabase.from_uri(MSSQL_CONNECTION_STRING)
+    db = SQLDatabase.from_uri(MSSQL_SQLDATABASE_PYMSSQL_CONNECTION_STRING)
     # get_table_schema_demo(db)
     execute_sql_demo(db)
 

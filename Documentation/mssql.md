@@ -121,10 +121,10 @@ async def sync_table_ai(db: SQLDatabase, table: Table, limit: int | None = None)
 
 ### Image Processing
 ```python
-def extract_images(db_connection: pyodbc.Connection, table: ImageTable, export_dir: str = "exports") -> str:
+def extract_images(db_connection: pymssql.Connection, table: ImageTable, export_dir: str = "exports") -> str:
     """Extract images from database and save to filesystem"""
 
-async def sync_table_images(db_connection: pyodbc.Connection, db: SQLDatabase, image_table: ImageTable) -> list[str]:
+async def sync_table_images(db_connection: pymssql.Connection, db: SQLDatabase, image_table: ImageTable) -> list[str]:
     """Process and synchronize image data to vector store"""
 ```
 
@@ -155,11 +155,9 @@ def get_db():
     except Exception as e:
         raise RuntimeError(f"Database connection failed: {e}")
 
-@lru_cache(maxsize=1)  
-def get_mssql_pyodbc_connection() -> pyodbc.Connection:
-    """Get direct PyODBC connection for binary data operations"""
-    conn: pyodbc.Connection = pyodbc.connect(MSSQL_PYODBC_CONNECTION_STRING)
-    return conn
+@lru_cache(maxsize=1)
+def get_pymssql_connection() -> pymssql.Connection:
+    return connect(host=MSSQL_HOST, server=MSSQL_SERVER, database=MSSQL_DATABASE)
 ```
 
 **Features:**
@@ -203,3 +201,6 @@ MSSQL_PYODBC_CONNECTION_STRING = (
 ## Reference
 - [Python drivers for SQL Server | Microsoft Learn](https://learn.microsoft.com/en-us/sql/connect/python/python-driver-for-sql-server?view=sql-server-ver17)
 - [LangChain SQLDatabase Docs](https://python.langchain.com/api_reference/community/utilities/langchain_community.utilities.sql_database.SQLDatabase.html)
+- [Setup SQL Server Auth (Chinese)](https://ithelp.ithome.com.tw/articles/10214386)
+- [Window Defender Firewall for SQL Server](https://i-freelancer.net/WebHelp/Qboss/ACC40_WebHelp/SQLServerAw1.html)
+- [Error: Adapve Server is unavalible](https://blog.csdn.net/vbwhere/article/details/103690794)

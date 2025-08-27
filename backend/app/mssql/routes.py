@@ -1,6 +1,6 @@
-import pyodbc
+import pymssql
 from app.config import backend_logger
-from app.mssql.dependencies import get_db, get_mssql_pyodbc_connection
+from app.mssql.dependencies import get_db, get_pymssql_connection
 from app.mssql.models import ImageTable, Table
 from app.mssql.services import (
     extract_images,
@@ -180,7 +180,7 @@ async def sync_images(
     tables: list[ImageTable] = Query(
         ..., description="List of image tables to extract and synchronize"
     ),
-    db_connection: pyodbc.Connection = Depends(get_mssql_pyodbc_connection),
+    db_connection: pymssql.Connection = Depends(get_pymssql_connection),
     db: SQLDatabase = Depends(get_db),
 ) -> SyncResponse:
     """
@@ -193,9 +193,6 @@ async def sync_images(
         tables (list[ImageTable]): List of image table enum values containing
                                 image data to synchronize. Each table should
                                 contain image columns (BLOB, VARBINARY, etc.).
-        db_connection (pyodbc.Connection): Direct MSSQL database connection for
-                                        binary data extraction. Automatically
-                                        injected by FastAPI dependency.
 
     Returns:
         SyncResponse: Response object containing:
@@ -205,7 +202,6 @@ async def sync_images(
     tables_synced, tables_failed = [], []
     for table in tables:
         try:
-            # db_connection = get_mssql_pyodbc_connection()
             # extract_images(db_connection, table)
             ids = await sync_table_images(db_connection, db, table)
             if ids:

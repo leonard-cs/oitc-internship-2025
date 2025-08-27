@@ -2,7 +2,7 @@ import io
 import os
 from datetime import datetime
 
-import pyodbc
+import pymssql
 from app.config import backend_logger
 from app.embed.service import get_image_file_embeddings, get_text_embeddings
 from app.llm.ollama import get_ollama
@@ -77,7 +77,7 @@ async def sync_table_ai(
 
 
 def extract_images(
-    db_connection: pyodbc.Connection, table: ImageTable, export_dir: str = "exports"
+    db_connection: pymssql.Connection, table: ImageTable, export_dir: str = "exports"
 ) -> str:
     cursor = db_connection.cursor()
     cursor.execute(table.sql_image())
@@ -104,7 +104,7 @@ def extract_images(
 
 
 async def sync_table_images(
-    db_connection: pyodbc.Connection, db: SQLDatabase, image_table: ImageTable
+    db_connection: pymssql.Connection, db: SQLDatabase, image_table: ImageTable
 ) -> list[str]:
     cursor = db_connection.cursor()
     cursor.execute(image_table.sql_image())

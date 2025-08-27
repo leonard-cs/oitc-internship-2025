@@ -1,21 +1,14 @@
 import os
 import sys
-from pathlib import Path
 
+from dotenv import load_dotenv
 from loguru import logger
 
 logger.remove()
 logger.add(sys.stderr, level="TRACE")
 backend_logger = logger.bind(name="backend")
 
-env_path = Path("../.env")
-if os.path.exists(env_path):
-    from dotenv import load_dotenv
-
-    load_dotenv(dotenv_path=env_path)
-else:
-    backend_logger.error(f".env file not found at {os.path.abspath(env_path)}.")
-    exit(1)
+load_dotenv()
 
 # Ollama configuration
 OLLAMA_BASE_URL = os.getenv("OLLAMA_BASE_URL", default="http://localhost:11434")
@@ -35,11 +28,15 @@ EMBEDDING_MODEL_PATH = "weights/ViT-B-32.pt"
 MSSQL_HOST = os.getenv("MSSQL_HOST", default="localhost")
 MSSQL_SERVER = os.getenv("MSSQL_SERVER", default="SQLEXPRESS")
 MSSQL_DATABASE = os.getenv("MSSQL_DATABASE", default="northwind")
+MSSQL_USERNAME = os.getenv("MSSQL_USERNAME", default="")
+MSSQL_PASSWORD = os.getenv("MSSQL_PASSWORD", default="")
 
-MSSQL_CONNECTION_STRING = (
-    f"mssql+pyodbc://{MSSQL_HOST}\\{MSSQL_SERVER}/{MSSQL_DATABASE}"
-    "?driver=ODBC+Driver+17+for+SQL+Server&Trusted_Connection=yes"
-)
+# MSSQL_SQLDATABASE_PYODBC_CONNECTION_STRING = (
+#     f"mssql+pyodbc://{MSSQL_HOST}\\{MSSQL_SERVER}/{MSSQL_DATABASE}"
+#     "?driver=ODBC+Driver+17+for+SQL+Server&Trusted_Connection=yes"
+# )
+
+MSSQL_SQLDATABASE_PYMSSQL_CONNECTION_STRING = f"mssql+pymssql://{MSSQL_USERNAME}:{MSSQL_PASSWORD}@{MSSQL_HOST}\\{MSSQL_SERVER}/{MSSQL_DATABASE}"
 
 MSSQL_PYODBC_CONNECTION_STRING = (
     "DRIVER={SQL Server};"
