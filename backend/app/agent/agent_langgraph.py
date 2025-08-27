@@ -1,5 +1,6 @@
 import time
 
+from app.config import MSSQL_SQLDATABASE_PYMSSQL_CONNECTION_STRING
 from langchain_community.agent_toolkits import SQLDatabaseToolkit
 from langchain_community.utilities import SQLDatabase
 from langchain_core.language_models.chat_models import BaseChatModel
@@ -11,10 +12,6 @@ from langgraph.prebuilt import create_react_agent
 
 OLLAMA_BASE_URL = "http://localhost:11434"
 OLLAMA_CHAT_MODEL = "qwen3:latest"
-MSSQL_CONNECTION_STRING = (
-    "mssql+pyodbc://AMRO\\SQLEXPRESS/northwind"
-    "?driver=ODBC+Driver+17+for+SQL+Server&Trusted_Connection=yes"
-)
 
 
 def visualize_graph(graph: CompiledStateGraph):
@@ -110,7 +107,7 @@ def agent_streaming_demo(llm: BaseChatModel, memory: MemorySaver, config: dict):
 
 
 def sql_agent_demo(llm: BaseChatModel, memory: MemorySaver, config: dict):
-    db = SQLDatabase.from_uri(MSSQL_CONNECTION_STRING)
+    db = SQLDatabase.from_uri(MSSQL_SQLDATABASE_PYMSSQL_CONNECTION_STRING)
     toolkit = SQLDatabaseToolkit(db=db, llm=llm)
     tools = toolkit.get_tools()
     # print(tools)
