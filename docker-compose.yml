@@ -53,21 +53,26 @@ services:
       # - anythingllm
       # - qdrant
 
-  # backend:
-  #   build:
-  #     context: ./backend
-  #     dockerfile: Dockerfile
-  #   container_name: backend
-  #   ports:
-  #     - "8080:80"
-  #   env_file:
-  #     - .env
-  #   depends_on:
-  #     - qdrant
-  #     - ollama
-  #   volumes:
-  #     - ./backend:/app
-  #     - backend_venv:/app/.venv
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: backend
+    env_file:
+      - .env
+    environment:
+      - MSSQL_HOST=host.docker.internal
+      - QDRANT_URL=http://qdrant:6333
+      - OLLAMA_BASE_URL=http://ollama:11434
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./backend/app:/app/app
+    depends_on:
+      - qdrant
+      - ollama
+    networks:
+      - app-network
 
   ollama:
     build:
@@ -83,6 +88,8 @@ services:
     runtime: nvidia
     environment:
       - NVIDIA_VISIBLE_DEVICES=all
+    networks:
+      - app-network
 
   # anythingllm:
   #   image: mintplexlabs/anythingllm:latest
@@ -107,10 +114,15 @@ services:
       - "6333:6333"
     volumes:
       - qdrant_storage:/qdrant/storage
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    driver: bridge
 
 volumes:
   postgres_data:
   pgadmin_data:
   ollama_data:
   qdrant_storage:
-  backend_venv:

@@ -1,16 +1,34 @@
 FROM python:3.12-slim
 
+ENV PYTHONUNBUFFERED=1
+
 # Install uv.
 COPY --from=ghcr.io/astral-sh/uv:latest /uv /uvx /bin/
 
-# Copy the application into the container.
-COPY . /app
+ENV UV_COMPILE_BYTE=1
 
-# Install the application dependencies.
+ENV UV_LINK_MODE=copy
+
+# Change the working directory to the `app` directory
 WORKDIR /app
-RUN uv sync --frozen
 
-EXPOSE 80
+ENV PATH="/app/.venv/bin:$PATH"
+
+COPY ./pyproject.toml ./uv.lock ./.python-version /app/
+
+# Install dependencies
+RUN --mount=type=cache,target=/root/.cache/uv \
+    --mount=type=bind,source=uv.lock,target=uv.lock \
+    --mount=type=bind,source=pyproject.toml,target=pyproject.toml \
+    uv sync --frozen --no-install-project --no-dev
+
+# Copy the project into the image
+COPY ./app /app/app
+
+# Sync the project
+RUN --mount=type=cache,target=/root/.cache/uv \
+    uv sync --frozen --no-dev
 
 # Run the application.
-CMD ["uv", "run", "uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "80"]
+# CMD ["uv", "run", "uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000"]
+CMD ["fastapi", "run", "--workers", "4", "app/main.py"]
