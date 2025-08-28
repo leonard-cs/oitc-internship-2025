@@ -1,11 +1,11 @@
 FROM ollama/ollama
 
-# Install curl so we can wait for the server in the init script
-RUN apt-get update && apt-get install -y curl
+# Install curl and dos2unix
+RUN apt-get update && apt-get install -y curl dos2unix
 
 # Copy and make the startup script executable
 COPY ollama-init.sh /ollama-init.sh
-RUN chmod +x /ollama-init.sh
+RUN dos2unix /ollama-init.sh && chmod +x /ollama-init.sh
 
 # RUN ls -l /ollama-init.sh
 
