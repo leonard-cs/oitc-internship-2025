@@ -1,71 +1,17 @@
 services:
-  # db:
-  #   image: postgres:15
-  #   container_name: postgres
-  #   env_file:
-  #     - .env
-  #   volumes:
-  #     - postgres_data:/var/lib/postgresql/data
-  #   ports:
-  #     - "5432:5432"
-
-  # pgadmin:
-  #   image: dpage/pgadmin4
-  #   container_name: pgadmin
-  #   env_file:
-  #     - .env
-  #   ports:
-  #     - "5050:80"
-  #   volumes:
-  #     - pgadmin_data:/var/lib/pgadmin
-  #   depends_on:
-  #     - db
-
-  # chat-ui:
-  #   build:
-  #     context: ./chat-ui
-  #     dockerfile: Dockerfile
-  #   container_name: chat-ui
-  #   env_file:
-  #     - .env
-  #   environment:
-  #     LLM_API_URL: http://anythingllm:3001
-  #   ports:
-  #     - "3000:3000"
-  #   depends_on:
-  #     - db
-  #   develop:
-  #     watch:
-  #       - action: sync
-  #         path: ./chat-ui
-  #         target: /app
-  #       - action: rebuild
-  #         path: ./chat-ui/package.json
-
-  # llm-server:
-  #   build:
-  #     context: ./llm-server
-  #     dockerfile: Dockerfile
-  #   container_name: llm-server
-  #   ports:
-  #     - "8000:8000"
-  #   depends_on:
-      # - anythingllm
-      # - qdrant
-
   backend:
     build:
       context: ./backend
       dockerfile: Dockerfile
     container_name: backend
+    ports:
+      - "8000:8000"
     env_file:
       - .env
     environment:
       - MSSQL_HOST=host.docker.internal
       - QDRANT_URL=http://qdrant:6333
       - OLLAMA_BASE_URL=http://ollama:11434
-    ports:
-      - "8000:8000"
     volumes:
       - ./backend/app:/app/app
     depends_on:
@@ -81,31 +27,15 @@ services:
     container_name: ollama
     ports:
       - "11434:11434"
-    volumes:
-      - ollama_data:/root/.ollama
     cap_add:
       - SYS_ADMIN
     runtime: nvidia
     environment:
       - NVIDIA_VISIBLE_DEVICES=all
+    volumes:
+      - ollama_data:/root/.ollama
     networks:
       - app-network
-
-  # anythingllm:
-  #   image: mintplexlabs/anythingllm:latest
-  #   container_name: anythingllm
-  #   ports:
-  #     - "3001:3001"
-  #   cap_add:
-  #     - SYS_ADMIN
-  #   volumes:
-  #     - ./anythingllm/storage:/app/server/storage
-  #     - ./anythingllm/.env:/app/server/.env
-  #   environment:
-  #     - OLLAMA_BASE_URL=http://ollama:11434
-  #     - STORAGE_DIR=/app/server/storage
-  #   depends_on:
-  #     - ollama
   
   qdrant:
     image: qdrant/qdrant
@@ -122,7 +52,5 @@ networks:
     driver: bridge
 
 volumes:
-  postgres_data:
-  pgadmin_data:
   ollama_data:
   qdrant_storage:

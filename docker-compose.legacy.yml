@@ -1,0 +1,74 @@
+services:
+  db:
+    image: postgres:15
+    container_name: postgres
+    env_file:
+      - .env
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+
+  pgadmin:
+    image: dpage/pgadmin4
+    container_name: pgadmin
+    env_file:
+      - .env
+    ports:
+      - "5050:80"
+    volumes:
+      - pgadmin_data:/var/lib/pgadmin
+    depends_on:
+      - db
+
+  chat-ui:
+    build:
+      context: ./chat-ui
+      dockerfile: Dockerfile
+    container_name: chat-ui
+    env_file:
+      - .env
+    environment:
+      LLM_API_URL: http://anythingllm:3001
+    ports:
+      - "3000:3000"
+    depends_on:
+      - db
+    develop:
+      watch:
+        - action: sync
+          path: ./chat-ui
+          target: /app
+        - action: rebuild
+          path: ./chat-ui/package.json
+
+  llm-server:
+    build:
+      context: ./llm-server
+      dockerfile: Dockerfile
+    container_name: llm-server
+    ports:
+      - "8000:8000"
+    depends_on:
+      - anythingllm
+      - qdrant
+
+  anythingllm:
+    image: mintplexlabs/anythingllm:latest
+    container_name: anythingllm
+    ports:
+      - "3001:3001"
+    cap_add:
+      - SYS_ADMIN
+    volumes:
+      - ./anythingllm/storage:/app/server/storage
+      - ./anythingllm/.env:/app/server/.env
+    environment:
+      - OLLAMA_BASE_URL=http://ollama:11434
+      - STORAGE_DIR=/app/server/storage
+    depends_on:
+      - ollama
+
+volumes:
+  postgres_data:
+  pgadmin_data:
