@@ -8,3 +8,5 @@ anythingllm/.env
 weights/
 
 .env
+
+backend/.venv/
