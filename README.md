@@ -1,9 +1,21 @@
-# OITC Internship 2025
+# OITC Internship 2025 - RAG AI Agent
 This project implements a retrieval-augmented generation (RAG) chatbot that allows users to query MSSQL database content—including both text and images—using natural language or image inputs. Data from the database is extracted and converted into vector embeddings stored in Qdrant vector database for efficient semantic search. When a user submits a query, the system retrieves the most relevant information based on vector similarity and passes this context to the Ollama language model, which generates accurate, context-aware natural language responses. This combination of retrieval and generation enables the chatbot to deliver precise, up-to-date answers grounded in the underlying data while supporting image-based similarity search.
 
 ## Table of Contents
+- [Technology Stack](#technology-stack)
 - [Project Structure](#project-structure)
 - [Getting Started](#getting-started)
+
+## Technology Stack
+- ⚡ **FastAPI** for the Python backend API.
+    - 🦜🔗 Integration with **LangChain** and **LangGraph** for advanced language model workflows
+- 🚀 **React** for the frontend.
+- 🦙 **Ollama** for LLM-based processing and containerized AI services
+- 🧮 **Qdrant** as the vector database for semantic search and embeddings
+- 🗄️ **Microsoft SQL Server (MSSQL)** Northwind database used for development and testing of data interactions
+- 🐋 **Docker Compose** for development and production.
+- ✅ Tests with **Pytest**.
+- 🏭 **CI/CD** pipelines configured with **GitHub Actions**.
 
 ## Project Structure
 ```bash
