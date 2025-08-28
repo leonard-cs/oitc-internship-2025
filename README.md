@@ -11,30 +11,20 @@ oitc-internship-2025/
 ├─ backend/                         # FastAPI backend
 │   ├─
 │   └─
+│
 ├─ frontend/                        # Next.js frontend
 │   ├─
 │   └─
-├─ weights/                         # Storing embedder (.gitignore)
-│   └─
-├─ llm_server/                      # Python backend v1 (not used)
-│   ├─ db_uploader/                 # Extract data from MSSQL and push it to AnythingLLM
-│   ├─ image_search/                # Image-based vector search logic
-│   ├─ app.py                       # Main FastAPI application to handle image search
-│   ├─ Dockerfile
-│   └─ requirements.txt
-├─ chat-ui/                         # Frontend built with Next.js v1 (not used)
-│   ├─ entrypoint.sh                # Entrypoint script to run Next.js app inside a container
-│   └─ Dockerfile                      # Embed data and push to vector store
-├─ anythingllm/                     # AnythingLLM configuration and storage
-│   ├─ .env.example
-│   └─ storage/
-├─ ollama/                          # LLM-based processing (Ollama container and API)
+│
+├─ ollama/                          # Ollama container
 │   ├─ ollama-init.sh               # Initialization script for Ollama container
 │   └─ Dockerfile
-├─ playground/                      #
-│   └─
-├─ docker-compose.yml
+│
+├─ Documentation/
+│
 ├─ .env.example
+├─ .gitignore
+├─ docker-compose.yml
 └─ README.md
 ```
 
