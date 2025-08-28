@@ -4,7 +4,8 @@ This project implements a retrieval-augmented generation (RAG) chatbot that allo
 ## Table of Contents
 - [Technology Stack](#technology-stack)
 - [Project Structure](#project-structure)
-- [Getting Started](#getting-started)
+- [🚀 Quick Start](#-quick-start)
+- [🎯 Getting Started](#-getting-started)
 
 ## Technology Stack
 - ⚡ **FastAPI** for the Python backend API.
@@ -40,7 +41,8 @@ oitc-internship-2025/
 └─ README.md
 ```
 
-## Getting Started
+## 🚀 Quick Start
+⚠️ Currently tested on **Windows** only.
 ### 1. Prerequisites
 Make sure you have the following installed:
 - [Docker](https://www.docker.com/products/docker-desktop/)
@@ -70,11 +72,9 @@ To start the project, follow these steps:
     pnpm next-dev
     ```
 
-### 4. Verifying MSSQL Connection
-Before proceeding, ensure that MSSQL is accessible. If the firewall isn't properly configured or you're unable to connect to MSSQL, you can use a local backend instead of the default one.
-
-**To use a local backend:**
-1. **Stop the backend service:**
+### 4. Using a Local Backend (Optional)
+If MSSQL is not accessible (e.g., due to firewall restrictions):
+1. **Stop the docker backend service:**
     ```bash
     docker compose stop backend
     ```
@@ -88,9 +88,28 @@ Before proceeding, ensure that MSSQL is accessible. If the firewall isn't proper
 Here are the URLs for the available services:
 | Service     | URL                                                                     | Notes                 |
 | ----------- | ----------------------------------------------------------------------- | --------------------- |
-| Backend     | [http://localhost:8000/docs#/](http://localhost:8000/docs#/)            | FastAPI documentation     |
-| Frontend    | [http://localhost:3000](http://localhost:3000)                          | Chat interface        |
+| Backend     | [http://localhost:8000/docs#/](http://localhost:8000/docs#/)            | FastAPI API docs      |
+| Frontend    | [http://localhost:3000](http://localhost:3000)                          | Chat UI               |
 | Qdrant      | [http://localhost:6333/dashboard#/](http://localhost:6333/dashboard#/)  | Qdrant dashboard      |
+
+## 🎯 Getting Started
+### 1. Sync MSSQL to Vector Database
+Update the tables enum and SQL queries in `/backend/app/mssql/models.py` to match your database schema.
+
+Execute the [AI Sync All endpoint](http://localhost:8000/docs#/mssql/ai_sync_all_api_v1_mssql_ai_sync_all__post) to load data from MSSQL into Qdrant.
+
+### 2. Verify Vector Store
+Call the [Vector Store Info endpoint](http://localhost:8000/docs#/vectorstore/get_info_api_v1_vectorstore_info_get) to confirm sync success.
+
+### 3. Chat with RAG
+Try different endpoints:
+- [vector-rag-query](http://localhost:8000/docs#/chat/vector_rag_query_api_v1_chat_vector_rag_query_post)
+- [sql-rag-query](http://localhost:8000/docs#/chat/vector_rag_query_api_v1_chat_sql_rag_query_post)
+- [image-query](http://localhost:8000/docs#/chat/image_query_api_v1_chat_image_query_post)
+- [stream-chat](http://localhost:8000/docs#/chat/stream_chat_api_v1_chat_stream_chat_post)
+
+### 4. Use the Agent
+Call the [ask_agent endpoint](http://localhost:8000/docs#/agent/ask_chat_agent_api_v1_agent_ask_agent_post) or use the [frontend chat interface](http://localhost:3000).
 
 ## Backend Development
 Backend docs: [backend/README.md](./backend/README.md).
