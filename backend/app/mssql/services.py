@@ -31,10 +31,11 @@ async def sync_table_ai(
     table_name = table.value
 
     rows = db.run_no_throw(table.sql(limit=limit), fetch="all", include_columns=True)
+    # backend_logger.trace(f"Rows: {rows}")
     parsed_rows = extract_sql_results(rows)
+    # backend_logger.trace(f"Parsed rows: {parsed_rows}")
 
     if not parsed_rows:
-        backend_logger.error(f"No rows found for table {table_name}")
         raise Exception(f"No rows found for table {table_name}")
     backend_logger.debug(f"Retrieved {len(parsed_rows)} rows from table {table_name}")
 

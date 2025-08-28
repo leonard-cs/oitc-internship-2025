@@ -18,4 +18,4 @@ def extract_sql_results(result_string: str) -> list[str]:
     """
     Extracts all SQL result strings from a given string.
     """
-    return re.findall(r"\(.*?\)", result_string)
+    return re.findall(r"\{.*?\}", result_string)
