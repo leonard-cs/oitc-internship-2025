@@ -40,5 +40,5 @@ cd backend
 uv run fastapi dev
 ```
 
-## Undertanding the code
-To understandthe code go to backend/app/{module}/route.py tham follow the function definition.
+## Understanding the Code
+To understand the code, navigate to `backend/app/{module}/route.py`, then follow the function definitions from there.
