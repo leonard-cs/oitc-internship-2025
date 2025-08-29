@@ -1,5 +1,18 @@
 # Agent
 
+## Table of Contents
+- [Knowledge](#-knowledge)
+- [LangChain Custom Agent](#langchain-custom-agent)
+- [LangGraph Agent](#langgraph-agent)
+- [Reference](#reference)
+
+## 🧠 Knowledge
+### Memory
+We can implement a **write module** to decide which information should be stored in a vector database as memory. Similarly, a **retrieve module** can be used to fetch relevant memory from the vector database.
+- Prioritize storing **positive feedback** (e.g. successful task completions).
+- Avoid storing **negative feedback** (e.g. what not to do). For instance, instead of telling the LLM “don’t give long responses,” prefer instructing it with “give short responses.”
+- A possible implementation: when the LLM successfully completes a task and the user gives a 👍 (thumbs up), that success can be stored in memory. Later, when a similar task arises, the agent can retrieve this successful memory to improve performance.
+
 ## LangChain Custom Agent
 
 A handcrafted agent implementation using LangChain with a custom execution loop. This agent provides flexible tool integration and robust error handling for both vector search and SQL database operations.
