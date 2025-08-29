@@ -1,5 +1,10 @@
 # 🛠️ SQL Server Setup Guide
 
+## Table of Contents
+- [SQL Authentication](#enable-sql-authentication--create-a-login)
+- [SQL Server Network Port](#configure-sql-server-network-port)
+- [Windows Defender Firewall](#allow-sql-server-port-in-windows-defender-firewall)
+
 ## Enable SQL Authentication & Create a Login
 1. In SSMS → right-click the server → Properties → Security:
     - Select SQL Server and Windows Authentication mode → OK.
@@ -45,3 +50,8 @@
     - Name: SQL Server 1433.
 
 3. Click Finish.
+
+## Reference
+- [Setup SQL Server Auth (Chinese)](https://ithelp.ithome.com.tw/articles/10214386)
+- [Window Defender Firewall for SQL Server (Chinese)](https://i-freelancer.net/WebHelp/Qboss/ACC40_WebHelp/SQLServerAw1.html)
+- [Error: Adapve Server is unavalible (Chinese)](https://blog.csdn.net/vbwhere/article/details/103690794)

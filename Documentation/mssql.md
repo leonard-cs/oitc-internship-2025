@@ -201,6 +201,3 @@ MSSQL_PYODBC_CONNECTION_STRING = (
 ## Reference
 - [Python drivers for SQL Server | Microsoft Learn](https://learn.microsoft.com/en-us/sql/connect/python/python-driver-for-sql-server?view=sql-server-ver17)
 - [LangChain SQLDatabase Docs](https://python.langchain.com/api_reference/community/utilities/langchain_community.utilities.sql_database.SQLDatabase.html)
-- [Setup SQL Server Auth (Chinese)](https://ithelp.ithome.com.tw/articles/10214386)
-- [Window Defender Firewall for SQL Server](https://i-freelancer.net/WebHelp/Qboss/ACC40_WebHelp/SQLServerAw1.html)
-- [Error: Adapve Server is unavalible](https://blog.csdn.net/vbwhere/article/details/103690794)
