@@ -39,3 +39,6 @@ And then you can run the local development server for the backend:
 cd backend
 uv run fastapi dev
 ```
+
+## Undertanding the code
+To understandthe code go to backend/app/{module}/route.py tham follow the function definition.

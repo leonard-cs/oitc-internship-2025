@@ -45,10 +45,11 @@ oitc-internship-2025/
 ⚠️ Currently tested on **Windows** only.
 ### 1. Prerequisites
 Make sure you have the following installed:
+- [uv]
 - [Docker](https://www.docker.com/products/docker-desktop/)
 - [pnpm](https://pnpm.io/installation)
 
-Additionally, set up MSSQL SQL Server Authentication. For more details, refer to the [MSSQL Setup Guide](./Documentation/mssql.md).
+Additionally, set up MSSQL SQL Server Authentication. For more details, refer to the [MSSQL Setup Guide](./Documentation/mssql_setup.md).
 
 ### 2. Environment Setup
 Copy the example environment file and update values as needed:
